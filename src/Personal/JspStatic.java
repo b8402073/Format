@@ -48,13 +48,10 @@ public class JspStatic {
     }
 
     public StringBuffer MyText, OutputText;
-    public Vector<Integer> CrLf; // Record the position of CrLf
-    public Vector<Integer> SemiColon; // Record the position of ';'
-    public Vector<Integer> Left; // Record the position of '{'
-    public Vector<Integer> Right; // Record the position of '}'
+    
     public Vector<Integer> SmallLeft; // Record the position of '('
     public Vector<Integer> SmallRight;// Record the position of ')'
-    public Vector<Integer> LeftOrRight;
+
     public Vector<Pair> SQArea;
     public Vector<Pair> DQArea;
     public Vector<Pair> CommentArea;
@@ -69,8 +66,7 @@ public class JspStatic {
         Build_DQ_Area(MyText, DQArea);
         Build_SQ_Area(MyText, DQArea, SQArea);
         Build_Comment_Area(MyText, DQArea, SQArea, CommentArea);
-        Fix_if_SQDQ_SLeft_SRight_SemiColon_in_CommentArea(MyText, SQArea, DQArea, CommentArea, SmallLeft, SmallRight,
-                SemiColon, CrLf, LeftOrRight);
+        Fix_if_SQDQ_SLeft_SRight_SemiColon_in_CommentArea(MyText, SQArea, DQArea, CommentArea, SmallLeft, SmallRight);
         Build_Header_Area(MyText, SmallLeft, SmallRight, CommentArea, FuncHeaderArea);
         Build_Class_Area(MyText, ClassArea);
         System.out.println(Main.ToStr(ClassArea, MyText));
@@ -210,11 +206,6 @@ public class JspStatic {
 
     public void init() {
         OutputText = new StringBuffer();
-        SemiColon = new Vector<Integer>();
-        CrLf = new Vector<Integer>();
-        Left = new Vector<Integer>();
-        Right = new Vector<Integer>();
-        LeftOrRight = new Vector<Integer>();
         SmallLeft = new Vector<Integer>();
         SmallRight =    new Vector<Integer>();
 
@@ -230,20 +221,10 @@ public class JspStatic {
         for (int i = start; i < end; i++) {
             switch (MyText.charAt(i)) {
                 case '{':
-                    Left.add(i);
-                    LeftOrRight.add(i);
                     Level++;
                     break;
                 case '}':
-                    Right.add(i);
-                    LeftOrRight.add(i);
                     Level--;
-                    break;
-                case ';':
-                    SemiColon.add(i);
-                    break;
-                case '\n':
-                    CrLf.add(i);
                     break;
                 case '(':
                     if (Level == 0) {
@@ -347,8 +328,7 @@ public class JspStatic {
     }
 
     public static void Fix_if_SQDQ_SLeft_SRight_SemiColon_in_CommentArea(StringBuffer text, Vector<Pair> SQArea,
-            Vector<Pair> DQArea, Vector<Pair> CommentArea, Vector<Integer> SmallLeft, Vector<Integer> SmallRight,
-            Vector<Integer> SemiColon, Vector<Integer> CrLf, Vector<Integer> LeftOrRight) {
+            Vector<Pair> DQArea, Vector<Pair> CommentArea, Vector<Integer> SmallLeft, Vector<Integer> SmallRight) {
         Vector<Integer> ALLSQ = new Vector<Integer>();
         Vector<Integer> ALLDQ = new Vector<Integer>();
         for (Pair SQ : SQArea) {
@@ -385,24 +365,6 @@ public class JspStatic {
                     SmallRight.removeElementAt(i);
                 }
             }
-            for (int i = SemiColon.size() - 1; i >= 0; i--) {
-                int that = SemiColon.get(i);
-                if (Comment.getStart() <= that && that <= Comment.getEnd()) {
-                    SemiColon.removeElementAt(i);
-                }
-            }
-            for (int i = CrLf.size() - 1; i >= 0; i--) {
-                int that = CrLf.get(i);
-                if (Comment.getStart() <= that && that <= Comment.getEnd()) {
-                    CrLf.removeElementAt(i);
-                }
-            }
-            for (int i = LeftOrRight.size() - 1; i >= 0; i--) {
-                int that = LeftOrRight.get(i);
-                if (Comment.getStart() <= that && that <= Comment.getEnd()) {
-                    LeftOrRight.removeElementAt(i);
-                }
-            }
         }
         if (ALLDQ.size() % 2 == 1) {
             System.out.println("ALLDQ=" + ALLDQ);
@@ -419,13 +381,6 @@ public class JspStatic {
         }
         for (int i = 0; i < ALLDQ.size(); i += 2) {
             DQArea.add(new Pair(ALLDQ.get(i), ALLDQ.get(i + 1)));
-        }
-        for (int i = SemiColon.size() - 1; i >= 0; i--) {
-            if (Main.In(SemiColon.get(i), DQArea)) {
-                SemiColon.removeElementAt(i);
-            } else if (Main.In(SemiColon.get(i), SQArea)) {
-                SemiColon.removeElementAt(i);
-            }
         }
     }
 
@@ -637,33 +592,7 @@ public class JspStatic {
         return that.toString();
     }
 
-    public int QuickSearchAfterPos(char c, int pos) {
-        Vector<Integer> src = null;
-        int ret = (-1);
-        switch (c) {
-            case '{':
-                src = Left;
-                break;
-            case '}':
-                src = Right;
-                break;
-            case '(':
-                src = SmallLeft;
-                break;
-            case ')':
-                src = SmallRight;
-                break;
-            case '\n':
-                src = CrLf;
-                break;
-            case ';':
-                src = SemiColon;
-                break;
-            default:
-                return ret;
-        }
-        return QuickSearchAfterPos(src, c, pos);
-    }
+
 
     public static int QuickSearchAfterPos(Vector<Integer> src, char c, int pos) {
         for (int i = 0; i < src.size() - 1; i++) {
@@ -674,33 +603,6 @@ public class JspStatic {
         return (-1);
     }
 
-    public int QuickSearchIndexAfterPos(char c, int pos) {
-        Vector<Integer> src = null;
-        int ret = (-1);
-        switch (c) {
-            case '{':
-                src = Left;
-                break;
-            case '}':
-                src = Right;
-                break;
-            case '(':
-                src = SmallLeft;
-                break;
-            case ')':
-                src = SmallRight;
-                break;
-            case '\n':
-                src = CrLf;
-                break;
-            case ';':
-                src = SemiColon;
-                break;
-            default:
-                return ret;
-        }
-        return QuickSearchIndexAfterPos(src, c, pos);
-    }
 
     public int QuickSearchIndexAfterPos(Vector<Integer> src, char c, int pos) {
         for (int i = 0; i < src.size(); i++) {

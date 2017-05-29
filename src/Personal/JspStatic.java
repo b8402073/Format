@@ -70,7 +70,8 @@ public class JspStatic {
         Fix_if_SQDQ_SLeft_SRight_SemiColon_in_CommentArea(MyText, SQArea, DQArea, CommentArea, SmallLeft, SmallRight);
         Build_Header_Area(MyText, SmallLeft, SmallRight, CommentArea, FuncHeaderArea);
         Build_Class_Area(MyText, ClassArea);
-        System.out.println(Main.ToStr(ClassArea, MyText));
+        Build_Array_Area(MyText,ArrayArea);
+        System.out.println(Main.ToStr(ArrayArea, MyText));
         Make();
         for (int i = 0; i < Analysis.size(); i++) {
             System.out.println(Analysis.get(i));
@@ -108,7 +109,7 @@ public class JspStatic {
                     throw new RuntimeException("Bad CommentArea");
                 }
             } else if (MyText.charAt(i) == '{' || MyText.charAt(i) == '}')  {
-                if (Main.In(i, CommentArea))
+                if (Main.In(i, ArrayArea) || Main.In(i, CommentArea) || Main.In(i, DQArea) || Main.In(i, SQArea))
                     continue;
                 Analysis.add("" + MyText.charAt(i));
                 continue;
@@ -481,7 +482,31 @@ public class JspStatic {
             }
         }
     }
-
+    public  void Build_Array_Area(StringBuffer text,Vector<Pair> dest) {
+        for (int i=0; i<text.length(); i++) {
+            if ((text.charAt(i)=='=' || text.substring(i).startsWith("new"))
+                 && !Main.In(i,SQArea) && !Main.In(i,DQArea) && !Main.In(i, CommentArea)) {
+                int start=i;
+                int end=GetFirstCharInCodeAfterPos(text,';',i,DQArea,SQArea,CommentArea);
+                int pairStart=(-1),pairEnd;
+                boolean hasComma=false;
+                for (int j=i+1; j<end; j++ ) {
+                    if (text.charAt(j)=='{' && !Main.In(j,SQArea) && !Main.In(j, DQArea) && !Main.In(j, CommentArea)) {
+                        pairStart=j;
+                    }else if (text.charAt(j)==',' && !Main.In(j, SQArea) && !Main.In(j,DQArea) && !Main.In(j,CommentArea)) {
+                        hasComma=true;
+                    }else if (text.charAt(j)=='}' && !Main.In(j, SQArea) && !Main.In(j, DQArea) && !Main.In(j,CommentArea)) {
+                        pairEnd=j;
+                        if (hasComma && pairStart>=0) {
+                            ArrayArea.add(new Pair(pairStart,pairEnd+1));
+                            i=pairEnd;
+                            break;
+                        }
+                    }
+                }                
+            }
+        }
+    }
     public static int GetLineHead(StringBuffer text, int pos) {
         while (pos >= 0) {
             if (text.charAt(pos) != '\n') {
@@ -533,7 +558,7 @@ public class JspStatic {
                     return i;
                 }
             }
-            i--;
+            i++;
         }
         return (-1);
     }

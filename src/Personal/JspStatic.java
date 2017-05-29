@@ -57,6 +57,7 @@ public class JspStatic {
     public Vector<Pair> CommentArea;
     public Vector<Pair> FuncHeaderArea;
     public Vector<Pair> ClassArea;
+    public Vector<Pair> ArrayArea;
     public Vector<String> Analysis;
 
     public JspStatic(StringBuffer Text) {
@@ -106,7 +107,9 @@ public class JspStatic {
                 } else {
                     throw new RuntimeException("Bad CommentArea");
                 }
-            } else if (MyText.charAt(i) == '{' || MyText.charAt(i) == '}') {
+            } else if (MyText.charAt(i) == '{' || MyText.charAt(i) == '}')  {
+                if (Main.In(i, CommentArea))
+                    continue;
                 Analysis.add("" + MyText.charAt(i));
                 continue;
             } else if (isToken(MyText, i, "if") && !Main.In(i, DQArea)) {
@@ -175,16 +178,38 @@ public class JspStatic {
             } else if (isToken(MyText, i, "case") && !Main.In(i, DQArea)) {
                 int sL = GetFirstCharInCodeAfterPos(MyText, ':', i, DQArea, SQArea, CommentArea);
                 Analysis.add("case#" + MyText.substring(i, sL + 1));
-            } else if (MyText.charAt(i) == ';' && !Main.In(i, DQArea) && !Main.In(i, SQArea)) {
+            } else if (MyText.charAt(i) == ';' && !Main.In(i, DQArea) && !Main.In(i, SQArea)) { 
+                int Base=Math.max(GetFuncBase(i),GetClassBase(i));
+                //這次改動的重點是要辨別出array initialization stmt;
                 int t1 = GetFirstCharInCodeBeforePos(MyText, ';', i, DQArea, SQArea, CommentArea);
+                if (t1<Base)  t1=(-1);
                 int t2=  GetFirstCharInCodeBeforePos(MyText,'{',i,DQArea,SQArea,CommentArea);
+                if (t2<Base)  t2=(-1);
+                int com= GetFirstCharInCodeBeforePos(MyText,',',i,DQArea,SQArea,CommentArea);
+                if (com<Base) com=(-1);                    
                 int t3=  GetFirstCharInCodeBeforePos(MyText,'}',i,DQArea,SQArea,CommentArea);
-                int t=max(t1,t2,t3);
-                if (t==(-1))
-                    t= GetLineHead(MyText,i);
-                Analysis.add("stmt#" + MyText.substring(t+1, i + 1).trim());
-                 continue;
+                if (t3<Base)  t3=(-1);
+                int t4=  GetFirstCharInCodeBeforePos(MyText,'=',i,DQArea,SQArea,CommentArea);
+                if (t4<Base)   t4=(-1);
+                int t5=  GetLineHead(MyText,i);
+                int statement_start;                    
+                if (t1==(-1) || t1<Base) {
+                    if (t5<t2) {
+                       statement_start=t5; 
+                    }else {
+                       statement_start=t2;
+                    }
+                }else {
+                    statement_start=t1;
+                }                                                    
+                if (statement_start<= t4 && t4<t2 && t2<com && com<t3 && t3<i ) {
+                    //在這裡確定是array initialization stmt
+                    Analysis.add("stmt#"+MyText.substring(statement_start,i+1));
+                }else //在這裡確定不是 array initialization stmt
+                    Analysis.add("stmt#" + MyText.substring(statement_start, i + 1).trim());
+                
             }
+            
         }
     }
     public void Make2() {
@@ -214,6 +239,7 @@ public class JspStatic {
         CommentArea = new Vector<Pair>();
         FuncHeaderArea = new Vector<Pair>();
         ClassArea = new Vector<Pair>();
+        ArrayArea= new Vector<Pair>();
     }
 
     public void Build(int start,int end) {
@@ -408,9 +434,13 @@ public class JspStatic {
 					throw new RuntimeException("We meet the end of text...q="+q);
 			}
              */
-
+            
             if (t >= 0 && q >= 0) {
-                dest.add(new Pair(t, q));
+                String thatString= text.substring(t,q);
+                if (thatString.indexOf("=")>=0)
+                    return;                        //含有等號就不是FuncArea,應該當成stmt處理
+                else
+                    dest.add(new Pair(t, q));
             } else {
                 throw new RuntimeException("Build_Header_Area Wrong: i=" + i + "  t=" + t);
             }
@@ -686,5 +716,26 @@ public class JspStatic {
         else if (t2>=t1 && t2>=t3)
             return t2;
         return t3;
+    }
+    public  int GetFuncBase(int pos) {
+        for (int i=0; i<FuncHeaderArea.size(); i++) {
+            Pair that=FuncHeaderArea.get(i);
+            int start=GetFirstCharInCodeAfterPos(MyText,'{',that.getEnd(),DQArea,SQArea,CommentArea);
+            int end=FindSymmetric(MyText,start,CommentArea,DQArea,SQArea);
+            if (start<=pos && pos<=end)
+                return start;
+        }
+        return (-1);
+    }
+    public int GetClassBase(int pos) {
+        for (int i=ClassArea.size()-1; i>=0; i--) {
+            Pair that=ClassArea.get(i);
+            int start=GetFirstCharInCodeAfterPos(MyText,'{',that.getEnd(),DQArea,SQArea,CommentArea);
+            int end=FindSymmetric(MyText,start,CommentArea,DQArea,SQArea);
+            if (start<=pos && pos<=end) {
+                return start;
+            }
+        }
+        return (-1);
     }
 }

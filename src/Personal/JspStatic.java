@@ -47,7 +47,7 @@ public class JspStatic {
         return ret.toString();
     }
 
-    public StringBuffer MyText, OutputText;
+    public static StringBuffer MyText, OutputText;
     
     public Vector<Integer> SmallLeft; // Record the position of '('
     public Vector<Integer> SmallRight;// Record the position of ')'
@@ -59,7 +59,7 @@ public class JspStatic {
     public Vector<Pair> ClassArea;
     public Vector<Pair> ArrayArea;
     public Vector<Resolution> Analysis;
-
+    
     public JspStatic(StringBuffer Text) {
         MyText = GetMyText(Text);
         init();
@@ -68,14 +68,18 @@ public class JspStatic {
         Build_SQ_Area(MyText, DQArea, SQArea);
         Build_Comment_Area(MyText, DQArea, SQArea, CommentArea);
         Fix_if_SQDQ_SLeft_SRight_SemiColon_in_CommentArea(MyText, SQArea, DQArea, CommentArea, SmallLeft, SmallRight);
-        Build_Header_Area(MyText, SmallLeft, SmallRight, CommentArea, FuncHeaderArea);
+        Build_Header_Area(MyText, SmallLeft, SmallRight, FuncHeaderArea);
         Build_Class_Area(MyText, ClassArea);
         Build_Array_Area(MyText,ArrayArea);
         System.out.println(Main.ToStr(ArrayArea, MyText));
         Make();
+        
         for (int i = 0; i < Analysis.size(); i++) {
-            System.out.println(Analysis.get(i));
+           System.out.println(Analysis.get(i).that.toString());
+           System.out.println(Analysis.get(i).toString(MyText));
         }
+        
+        Make2();
     }
 
     public void Make() {
@@ -95,8 +99,8 @@ public class JspStatic {
                 Pair that = GetPair(i, ClassArea);
                 if (that != null) {
                     //Analysis.add("class#" + MyText.substring(that.getStart(), that.getEnd() + 1));
-                    Analysis.add(new Resolution("class#",that.getStart(),that.getEnd()+1));
-                    i = that.getEnd() + 1;
+                    Analysis.add(new Resolution("class#",that.getStart(),that.getEnd()));
+                    i = that.getEnd();
                     continue;
                 } else {
                     throw new RuntimeException("Bad CommentArea");
@@ -204,7 +208,7 @@ public class JspStatic {
                     t3=GetFirstCharInCodeBeforePos(MyText,'}',t3-1,DQArea,SQArea,CommentArea);
                 }
                 if (t3<Base)  t3=(-1);
-                int statement_Start= max(t1,t2,t3);
+                int statement_Start= max(t1,t2,t3)+1;
                 //Analysis.add("stmt#" + MyText.substring(statement_start, i + 1).trim());
                 Analysis.add(new Resolution("stmt#",statement_Start,i+1));
                 
@@ -212,13 +216,19 @@ public class JspStatic {
             
         }
     }
-    public void Make2() {
+    public void Make2() {        
+        Vector<String> List=new Vector<String>();
         for (int i=0; i<Analysis.size(); i++) {
-            
-            for (int j=0; j<CommentArea.size(); j++) {
-                
+            Vector<Resolution> Hand= Resolution.GetResolution(Analysis.get(i), CommentArea);
+            for (int j=0; j<Hand.size(); j++) {
+                List.add(Hand.get(j).toString(MyText));
             }
         }
+        System.out.println("List");
+        for (int i=0; i<List.size(); i++) {
+            System.out.println(List.get(i));
+        }
+        
     }
     public static boolean isToken(StringBuffer text, int Pos, String str) {
         if (text.substring(Pos).startsWith(str)) {
@@ -410,8 +420,7 @@ public class JspStatic {
         }
     }
 
-    public static void Build_Header_Area(StringBuffer text, Vector<Integer> refSmallLeft, Vector<Integer> refSmallRight,
-            Vector<Pair> refCommentArea, Vector<Pair> dest) {
+    public  void Build_Header_Area(StringBuffer text, Vector<Integer> refSmallLeft, Vector<Integer> refSmallRight, Vector<Pair> dest) {
         if (refSmallLeft.size() != refSmallRight.size()) {
             throw new RuntimeException("小括號不對稱");
         }
@@ -420,13 +429,14 @@ public class JspStatic {
             int LeftEnd = refSmallLeft.get(i);
             int t = GetLineHead(text, LeftEnd);   //t is the left-end of new  HeaderArea;
             t = GetFirstAlphabetAfterPos(text, t);
-            while (Main.In(t, refCommentArea)) {
+            while (Main.In(t, CommentArea)) {
                 t++;
                 if (t == text.length()) {
                     throw new RuntimeException("We meet the end of text...t=" + t);
                 }
             }
             int q = RightEnd + 1;		//q is the right-end of new Header Area;
+            int q2= GetFirstCharInCodeAfterPos(text,'{',q,DQArea,SQArea,CommentArea);
             /*
 			while(text.charAt(q)!='{'||Main.In(q, refCommentArea)) {
 				q++;
@@ -435,12 +445,12 @@ public class JspStatic {
 			}
              */
             
-            if (t >= 0 && q >= 0) {
+            if (t >= 0 && q2 >= 0) {
                 String thatString= text.substring(t,q);
                 if (thatString.indexOf("=")>=0)
                     return;                        //含有等號就不是FuncArea,應該當成stmt處理
                 else
-                    dest.add(new Pair(t, q));
+                    dest.add(new Pair(t, q2-1));
             } else {
                 throw new RuntimeException("Build_Header_Area Wrong: i=" + i + "  t=" + t);
             }
@@ -468,14 +478,14 @@ public class JspStatic {
                         }
                     }
                     if (t >= 0 && q >= 0) {
-                        dest.add(new Pair(t, q));
+                        dest.add(new Pair(t, q-1));
                     } else {
                         throw new RuntimeException("Class_Area Wrong: i=" + i + "  t=" + t);
                     }
                     int r=FindSymmetric(text,q,CommentArea,DQArea,SQArea);
                     SmallLeft.clear(); SmallRight.clear();                    
                     Build(q+1,r);
-                    Build_Header_Area(text, SmallLeft, SmallRight,CommentArea, FuncHeaderArea);   
+                    Build_Header_Area(text, SmallLeft, SmallRight,FuncHeaderArea);   
                     Collections.sort(FuncHeaderArea,PairSortObj);
                 }
             }

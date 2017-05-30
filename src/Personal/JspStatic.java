@@ -89,7 +89,7 @@ public class JspStatic {
                 Pair that = GetPair(i, CommentArea);
                 if (that != null) {
                     //Analysis.add("comment#" + MyText.substring(that.getStart(), that.getEnd() + 1));
-                    Analysis.add(new Resolution("comment#",that.getStart(), that.getEnd()+1));
+                    Analysis.add(new Resolution("comment#",that.getStart(), that.getEnd()));
                     i = that.getEnd() + 1;
                     continue;
                 } else {
@@ -109,7 +109,7 @@ public class JspStatic {
                 Pair that = GetPair(i, FuncHeaderArea);
                 if (that != null) {
                     //Analysis.add("func#" + MyText.substring(that.getStart(), that.getEnd() + 1));
-                    Analysis.add(new Resolution("func#",that.getStart(),that.getEnd()+1));
+                    Analysis.add(new Resolution("func#",that.getStart(),that.getEnd()));
                     i = that.getEnd() ;
                      continue;
                 } else {
@@ -119,80 +119,48 @@ public class JspStatic {
                 if (Main.In(i, ArrayArea) || Main.In(i, CommentArea) || Main.In(i, DQArea) || Main.In(i, SQArea))
                     continue;
                 //Analysis.add("" + MyText.charAt(i));
-                Analysis.add(new Resolution(""+MyText.charAt(i),i,i+1));
+                Analysis.add(new Resolution(""+MyText.charAt(i),i,i));
                 continue;
             } else if (isToken(MyText, i, "if") && !Main.In(i, DQArea)) {
                 int t = GetLineHead(MyText, i);   //t is the left-end of new  HeaderArea;
                 t = GetFirstAlphabetAfterPos(MyText, t);
                 int sL = GetFirstCharInCodeAfterPos(MyText, '(', i, DQArea, SQArea, CommentArea);
-                int j = sL + 1, Level = 0;
-                do {
-                    if (MyText.charAt(j) == '(') {
-                        Level += 1;
-                    } else if (MyText.charAt(j) == ')') {
-                        Level -= 1;
-                    }
-                    j++;
-                } while (Main.In(j, CommentArea) || Level > 0 || MyText.charAt(j) != ')');
-                //Analysis.add("if#" + MyText.substring(t, j + 1));
-                Analysis.add(new Resolution("if#",t,j+1));
+                int eL =  FindSymmetric(MyText,sL,CommentArea,DQArea,SQArea);                                
+                Analysis.add(new Resolution("if#",t,eL));
+                i=eL;
                 continue;
             } else if (isToken(MyText, i, "else") && !Main.In(i, DQArea)) {
-                //Analysis.add("else#");
                 Analysis.add(new Resolution("#else",i,i+5));
+                i+=3;
                 continue;
             } else if (isToken(MyText, i, "while") && !Main.In(i, DQArea)) {
                 int t = GetLineHead(MyText, i);   //t is the left-end of new  HeaderArea;
                 t = GetFirstAlphabetAfterPos(MyText, t);
                 int sL = GetFirstCharInCodeAfterPos(MyText, '(', i, DQArea, SQArea, CommentArea);
-                int j = sL + 1, Level = 0;
-                do {
-                    if (MyText.charAt(j) == '(') {
-                        Level += 1;
-                    } else if (MyText.charAt(j) == ')') {
-                        Level -= 1;
-                    }
-                    j++;
-                } while (Main.In(j, CommentArea) || Level > 0 || MyText.charAt(j) != ')');
-                //Analysis.add("while#" + MyText.substring(t, j + 1));
-                Analysis.add(new Resolution("while#",t,j+1));                
+                int eL = FindSymmetric(MyText,sL,CommentArea,DQArea,SQArea);
+                Analysis.add(new Resolution("while#",t,eL));                
+                i=eL;
                 continue;
             } else if (isToken(MyText, i, "for") && !Main.In(i, DQArea)) {
                 int t = GetLineHead(MyText, i);   //t is the left-end of new  HeaderArea;
                 t = GetFirstAlphabetAfterPos(MyText, t);
                 int sL = GetFirstCharInCodeAfterPos(MyText, '(', i, DQArea, SQArea, CommentArea);
-                int j = sL + 1, Level = 0;
-                do {
-                    if (MyText.charAt(j) == '(') {
-                        Level += 1;
-                    } else if (MyText.charAt(j) == ')') {
-                        Level -= 1;
-                    }
-                    j++;
-                } while (Main.In(j, CommentArea) || Level > 0 || MyText.charAt(j) != ')');
-                //Analysis.add("for#" + MyText.substring(t, j + 1));
-                Analysis.add(new Resolution("for#",t,j+1));
+                int eL = FindSymmetric(MyText,sL,CommentArea,DQArea,SQArea);
+                Analysis.add(new Resolution("for#",t,eL));
+                i=eL;
                  continue;
             } else if (isToken(MyText, i, "switch") && !Main.In(i, DQArea)) {
                 int t = GetLineHead(MyText, i);   //t is the left-end of new  HeaderArea;
                 t = GetFirstAlphabetAfterPos(MyText, t);
                 int sL = GetFirstCharInCodeAfterPos(MyText, '(', i, DQArea, SQArea, CommentArea);
-                int j = sL + 1, Level = 0;
-                do {
-                    if (MyText.charAt(j) == '(') {
-                        Level += 1;
-                    } else if (MyText.charAt(j) == ')') {
-                        Level -= 1;
-                    }
-                    j++;
-                } while (Main.In(j, CommentArea) || Level > 0 || MyText.charAt(j) != ')');
-                //Analysis.add("switch#" + MyText.substring(t, j + 1));
-                Analysis.add(new Resolution("switch#",t,j+1));
+                int eL = FindSymmetric(MyText,sL,CommentArea,DQArea,SQArea);
+                Analysis.add(new Resolution("switch#",t,eL));
+                i=eL;
                  continue;
             } else if (isToken(MyText, i, "case") && !Main.In(i, DQArea)) {
-                int sL = GetFirstCharInCodeAfterPos(MyText, ':', i, DQArea, SQArea, CommentArea);
-                //Analysis.add("case#" + MyText.substring(i, sL + 1));
+                int sL = GetFirstCharInCodeAfterPos(MyText, ':', i, DQArea, SQArea, CommentArea);                
                 Analysis.add(new Resolution("case#",i,sL+1));
+                i=sL;
             } else if (MyText.charAt(i) == ';' && !Main.In(i, DQArea) && !Main.In(i, SQArea)) { 
                 int Base=Math.max(GetFuncBase(i),GetClassBase(i));
                 //新增ArrayArea這個變數
@@ -209,8 +177,7 @@ public class JspStatic {
                 }
                 if (t3<Base)  t3=(-1);
                 int statement_Start= max(t1,t2,t3)+1;
-                //Analysis.add("stmt#" + MyText.substring(statement_start, i + 1).trim());
-                Analysis.add(new Resolution("stmt#",statement_Start,i+1));
+                Analysis.add(new Resolution("stmt#",statement_Start,i));
                 
             }
             

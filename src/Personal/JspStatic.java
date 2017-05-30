@@ -58,7 +58,7 @@ public class JspStatic {
     public Vector<Pair> FuncHeaderArea;
     public Vector<Pair> ClassArea;
     public Vector<Pair> ArrayArea;
-    public Vector<String> Analysis;
+    public Vector<Resolution> Analysis;
 
     public JspStatic(StringBuffer Text) {
         MyText = GetMyText(Text);
@@ -79,12 +79,13 @@ public class JspStatic {
     }
 
     public void Make() {
-        Analysis = new Vector<String>();
+        Analysis = new Vector<Resolution>();
         for (int i = 0; i < MyText.length(); i++) {
             if (Main.In(i, CommentArea)) {
                 Pair that = GetPair(i, CommentArea);
                 if (that != null) {
-                    Analysis.add("comment#" + MyText.substring(that.getStart(), that.getEnd() + 1));
+                    //Analysis.add("comment#" + MyText.substring(that.getStart(), that.getEnd() + 1));
+                    Analysis.add(new Resolution("comment#",that.getStart(), that.getEnd()+1));
                     i = that.getEnd() + 1;
                     continue;
                 } else {
@@ -93,7 +94,8 @@ public class JspStatic {
             } else if (Main.In(i, ClassArea)) {
                 Pair that = GetPair(i, ClassArea);
                 if (that != null) {
-                    Analysis.add("class#" + MyText.substring(that.getStart(), that.getEnd() + 1));
+                    //Analysis.add("class#" + MyText.substring(that.getStart(), that.getEnd() + 1));
+                    Analysis.add(new Resolution("class#",that.getStart(),that.getEnd()+1));
                     i = that.getEnd() + 1;
                     continue;
                 } else {
@@ -102,7 +104,8 @@ public class JspStatic {
             } else if (Main.In(i, FuncHeaderArea)) {
                 Pair that = GetPair(i, FuncHeaderArea);
                 if (that != null) {
-                    Analysis.add("func#" + MyText.substring(that.getStart(), that.getEnd() + 1));
+                    //Analysis.add("func#" + MyText.substring(that.getStart(), that.getEnd() + 1));
+                    Analysis.add(new Resolution("func#",that.getStart(),that.getEnd()+1));
                     i = that.getEnd() ;
                      continue;
                 } else {
@@ -111,7 +114,8 @@ public class JspStatic {
             } else if (MyText.charAt(i) == '{' || MyText.charAt(i) == '}')  {
                 if (Main.In(i, ArrayArea) || Main.In(i, CommentArea) || Main.In(i, DQArea) || Main.In(i, SQArea))
                     continue;
-                Analysis.add("" + MyText.charAt(i));
+                //Analysis.add("" + MyText.charAt(i));
+                Analysis.add(new Resolution(""+MyText.charAt(i),i,i+1));
                 continue;
             } else if (isToken(MyText, i, "if") && !Main.In(i, DQArea)) {
                 int t = GetLineHead(MyText, i);   //t is the left-end of new  HeaderArea;
@@ -126,10 +130,12 @@ public class JspStatic {
                     }
                     j++;
                 } while (Main.In(j, CommentArea) || Level > 0 || MyText.charAt(j) != ')');
-                Analysis.add("if#" + MyText.substring(t, j + 1));
+                //Analysis.add("if#" + MyText.substring(t, j + 1));
+                Analysis.add(new Resolution("if#",t,j+1));
                 continue;
             } else if (isToken(MyText, i, "else") && !Main.In(i, DQArea)) {
-                Analysis.add("else#");
+                //Analysis.add("else#");
+                Analysis.add(new Resolution("#else",i,i+5));
                 continue;
             } else if (isToken(MyText, i, "while") && !Main.In(i, DQArea)) {
                 int t = GetLineHead(MyText, i);   //t is the left-end of new  HeaderArea;
@@ -144,7 +150,8 @@ public class JspStatic {
                     }
                     j++;
                 } while (Main.In(j, CommentArea) || Level > 0 || MyText.charAt(j) != ')');
-                Analysis.add("while#" + MyText.substring(t, j + 1));
+                //Analysis.add("while#" + MyText.substring(t, j + 1));
+                Analysis.add(new Resolution("while#",t,j+1));                
                 continue;
             } else if (isToken(MyText, i, "for") && !Main.In(i, DQArea)) {
                 int t = GetLineHead(MyText, i);   //t is the left-end of new  HeaderArea;
@@ -159,7 +166,8 @@ public class JspStatic {
                     }
                     j++;
                 } while (Main.In(j, CommentArea) || Level > 0 || MyText.charAt(j) != ')');
-                Analysis.add("for#" + MyText.substring(t, j + 1));
+                //Analysis.add("for#" + MyText.substring(t, j + 1));
+                Analysis.add(new Resolution("for#",t,j+1));
                  continue;
             } else if (isToken(MyText, i, "switch") && !Main.In(i, DQArea)) {
                 int t = GetLineHead(MyText, i);   //t is the left-end of new  HeaderArea;
@@ -174,40 +182,31 @@ public class JspStatic {
                     }
                     j++;
                 } while (Main.In(j, CommentArea) || Level > 0 || MyText.charAt(j) != ')');
-                Analysis.add("switch#" + MyText.substring(t, j + 1));
+                //Analysis.add("switch#" + MyText.substring(t, j + 1));
+                Analysis.add(new Resolution("switch#",t,j+1));
                  continue;
             } else if (isToken(MyText, i, "case") && !Main.In(i, DQArea)) {
                 int sL = GetFirstCharInCodeAfterPos(MyText, ':', i, DQArea, SQArea, CommentArea);
-                Analysis.add("case#" + MyText.substring(i, sL + 1));
+                //Analysis.add("case#" + MyText.substring(i, sL + 1));
+                Analysis.add(new Resolution("case#",i,sL+1));
             } else if (MyText.charAt(i) == ';' && !Main.In(i, DQArea) && !Main.In(i, SQArea)) { 
                 int Base=Math.max(GetFuncBase(i),GetClassBase(i));
-                //這次改動的重點是要辨別出array initialization stmt;
+                //新增ArrayArea這個變數
                 int t1 = GetFirstCharInCodeBeforePos(MyText, ';', i, DQArea, SQArea, CommentArea);
-                if (t1<Base)  t1=(-1);
+                if (t1<Base)  t1=(-2);
                 int t2=  GetFirstCharInCodeBeforePos(MyText,'{',i,DQArea,SQArea,CommentArea);
-                if (t2<Base)  t2=(-1);
-                int com= GetFirstCharInCodeBeforePos(MyText,',',i,DQArea,SQArea,CommentArea);
-                if (com<Base) com=(-1);                    
+                while (Main.In(t2, ArrayArea)) {
+                    t2= GetFirstCharInCodeBeforePos(MyText,'{',t2-1,DQArea,SQArea,CommentArea);
+                }
+                if (t2<Base)  t2=(-1);                
                 int t3=  GetFirstCharInCodeBeforePos(MyText,'}',i,DQArea,SQArea,CommentArea);
+                while(Main.In(t3, ArrayArea)) {
+                    t3=GetFirstCharInCodeBeforePos(MyText,'}',t3-1,DQArea,SQArea,CommentArea);
+                }
                 if (t3<Base)  t3=(-1);
-                int t4=  GetFirstCharInCodeBeforePos(MyText,'=',i,DQArea,SQArea,CommentArea);
-                if (t4<Base)   t4=(-1);
-                int t5=  GetLineHead(MyText,i);
-                int statement_start;                    
-                if (t1==(-1) || t1<Base) {
-                    if (t5<t2) {
-                       statement_start=t5; 
-                    }else {
-                       statement_start=t2;
-                    }
-                }else {
-                    statement_start=t1;
-                }                                                    
-                if (statement_start<= t4 && t4<t2 && t2<com && com<t3 && t3<i ) {
-                    //在這裡確定是array initialization stmt
-                    Analysis.add("stmt#"+MyText.substring(statement_start,i+1));
-                }else //在這裡確定不是 array initialization stmt
-                    Analysis.add("stmt#" + MyText.substring(statement_start, i + 1).trim());
+                int statement_Start= max(t1,t2,t3);
+                //Analysis.add("stmt#" + MyText.substring(statement_start, i + 1).trim());
+                Analysis.add(new Resolution("stmt#",statement_Start,i+1));
                 
             }
             
@@ -763,4 +762,5 @@ public class JspStatic {
         }
         return (-1);
     }
+
 }

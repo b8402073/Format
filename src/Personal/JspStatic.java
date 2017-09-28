@@ -58,7 +58,7 @@ public class JspStatic {
     public Vector<Pair> FuncHeaderArea;
     public Vector<Pair> ClassArea;
     public Vector<Pair> ArrayArea;
-    public Vector<Resolution> Analysis;
+    public Vector<Resolution> Analysis;    
     
     public JspStatic(StringBuffer Text) {
         MyText = GetMyText(Text);
@@ -121,7 +121,16 @@ public class JspStatic {
                 //Analysis.add("" + MyText.charAt(i));
                 Analysis.add(new Resolution(""+MyText.charAt(i),i,i));
                 continue;
-            } else if (isToken(MyText, i, "if") && !Main.In(i, DQArea)) {
+            } else if (isToken(MyText,i,"try") && !Main.In(i,DQArea) && !Main.In(i,CommentArea))  {
+                Analysis.add(new Resolution("TRY#",i,i+2));
+                i+=3;
+                continue;                
+            } else if (isToken(MyText,i,"catch") && !Main.In(i,DQArea) && !Main.In(i,CommentArea)) {
+                int sL=GetFirstCharInCodeAfterPos(MyText,'(',i,DQArea,SQArea,CommentArea);
+                int eL=FindSymmetric(MyText,sL,CommentArea,DQArea,SQArea);
+                Analysis.add(new Resolution("CATCH#",i,eL+1));
+                continue;
+            }else if (isToken(MyText, i, "if") && !Main.In(i, DQArea)) {
                 int t = GetLineHead(MyText, i);   //t is the left-end of new  HeaderArea;
                 t = GetFirstAlphabetAfterPos(MyText, t);
                 int sL = GetFirstCharInCodeAfterPos(MyText, '(', i, DQArea, SQArea, CommentArea);
@@ -177,7 +186,7 @@ public class JspStatic {
                 }
                 if (t3<Base)  t3=(-1);
                 int statement_Start= max(t1,t2,t3)+1;
-                Analysis.add(new Resolution("stmt#",statement_Start,i));
+                Analysis.add(new Resolution("stmt#",statement_Start,i+1));
                 
             }
             
@@ -186,7 +195,7 @@ public class JspStatic {
     public void Make2() {        
         Vector<String> List=new Vector<String>();
         for (int i=0; i<Analysis.size(); i++) {
-            Vector<Resolution> Hand= Resolution.GetResolution(Analysis.get(i), CommentArea);
+            Vector<Resolution> Hand= Resolution.GetResolution(Analysis.get(i), CommentArea,MyText);
             for (int j=0; j<Hand.size(); j++) {
                 List.add(Hand.get(j).toString(MyText));
             }

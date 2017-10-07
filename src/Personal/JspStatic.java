@@ -470,12 +470,12 @@ public class JspStatic {
                            }
                        }
                    }
+                   //tmpLine就是經過替換後的classArea(沒有註釋),但是這邊後來通通要改掉
+                   //下面是Old Running code.. 
+                    
+                    
+                    
                    
-                    
-                    
-                    
-                    
-                    
                     
                     if (t >= 0 && q >= 0) {
                         dest.add(new Pair(t, q-1));

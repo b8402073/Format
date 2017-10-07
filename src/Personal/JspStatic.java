@@ -433,8 +433,7 @@ public class JspStatic {
         }
     }
 
-    public  void Build_Class_Area(StringBuffer text, Vector<Pair> dest) {
-        String[] arrLine = text.toString().split("\n");
+    public  void Build_Class_Area(StringBuffer text, Vector<Pair> dest) {        
         for (int i = 0; i < text.length(); i++) {
             if (isToken(text, i, "class")) {
                 if (!Main.In(i, DQArea) && !Main.In(i, CommentArea)) {
@@ -453,6 +452,25 @@ public class JspStatic {
                             throw new RuntimeException("Wee meet the end of text...q=" + q);
                         }
                     }
+                   StringBuffer tmpLine=new StringBuffer(text.substring(t,q));
+                   for (int x=0; x<CommentArea.size(); x++) {
+                       Pair that=CommentArea.get(x);
+                       if (that.i_start>=t && that.i_end<=q) {
+                           String thatComment=text.substring(that.i_start,that.i_end+1);
+                           String corresponding=tmpLine.substring(that.i_start-t,that.i_end-t+1);
+                           if (thatComment.equals(corresponding)) {
+                               tmpLine.replace(that.i_start-t, that.i_end-t+1, "");  
+                               System.out.println(tmpLine.toString()); 
+                           }
+                       }
+                   }
+                   
+                    
+                    
+                    
+                    
+                    
+                    
                     if (t >= 0 && q >= 0) {
                         dest.add(new Pair(t, q-1));
                     } else {

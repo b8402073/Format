@@ -395,7 +395,13 @@ public class JspStatic {
             DQArea.add(new Pair(ALLDQ.get(i), ALLDQ.get(i + 1)));
         }
     }
-
+    /***
+     * 建構Function Header的東西...
+     * @param text
+     * @param refSmallLeft
+     * @param refSmallRight
+     * @param dest 
+     */
     public  void Build_Header_Area(StringBuffer text, Vector<Integer> refSmallLeft, Vector<Integer> refSmallRight, Vector<Pair> dest) {
         if (refSmallLeft.size() != refSmallRight.size()) {
             throw new RuntimeException("小括號不對稱");
@@ -460,7 +466,7 @@ public class JspStatic {
                            String corresponding=tmpLine.substring(that.i_start-t,that.i_end-t+1);
                            if (thatComment.equals(corresponding)) {
                                tmpLine.replace(that.i_start-t, that.i_end-t+1, "");  
-                               System.out.println(tmpLine.toString()); 
+                               //System.out.println(tmpLine.toString()); 
                            }
                        }
                    }
@@ -616,6 +622,36 @@ public class JspStatic {
         return new StringBuffer(my);
     }
 
+    public static String GetOneToken(StringBuffer text,int from_pos,Vector<Pair>CommentArea) {
+        final String WHITE=" \t\n\r\0";
+        StringBuffer ret=new StringBuffer();
+        for (int i=from_pos; i<text.length(); i++) {
+            Character that=text.charAt(i);
+            String sThat=new String(new char[]{that});
+            if (WHITE.contains(sThat)) {
+                continue;
+            }else {
+                boolean CommentHit=false;
+                for (int j=0; j<CommentArea.size(); j++) {
+                    Pair comment=CommentArea.get(j);
+                    if (i>=comment.getStart() && i<=comment.getEnd()) {
+                        i=comment.getEnd();
+                        CommentHit=true;
+                        break;
+                    }
+                }
+                if (CommentHit) {
+                    if (ret.length()>0) {
+                        return ret.toString();
+                    }
+                }else {
+                   ret.append(that);
+                }
+            }
+        }
+        return null;
+    }
+    
     public static StringBuffer GetComment(StringBuffer text, int pos, Vector<Pair> CommentArea) {
         for (int i = 0; i < CommentArea.size(); i++) {
             Pair that = CommentArea.get(i);

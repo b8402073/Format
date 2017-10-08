@@ -439,7 +439,8 @@ public class JspStatic {
         }
     }
 
-    public  void Build_Class_Area(StringBuffer text, Vector<Pair> dest) {        
+    public void Build_Class_Area(StringBuffer text, Vector<Pair> dest) {     
+        /*
         for(int i=0; i<text.length(); i++) {
             String hand=GetOneToken(text,i,CommentArea);
             if (hand.equals("class")) {
@@ -454,6 +455,7 @@ public class JspStatic {
                 }
             }
         }
+        */
         
         
         /*
@@ -662,27 +664,43 @@ public class JspStatic {
                 boolean ArrayHit=false;
                 Pair array=GetPair(i,ArrayArea);
                 if (array!=null) {
-                    i=array.getEnd();
                     ArrayHit=true;
                 }
                 boolean DQHit=false;        
                 Pair DQ=GetPair(i,DQArea);
                 if (DQ!=null) {
-                    i=DQ.getEnd();
                     DQHit=true;
                 }
                 boolean SQHit=false;
                 Pair SQ=GetPair(i,SQArea);
                 if (SQ!=null) {
-                    i=SQ.getEnd();
                     SQHit=true;
                 }
-                if (CommentHit || ArrayHit || DQHit || SQHit) {
+                if (CommentHit) {
                     if (retStr.length()>0) {
                         return new Focus(retStr.toString(),i+1);
-                    }else 
-                        continue;
-                } else {
+                    }else { 
+                        continue;                        
+                    }
+                }else if (ArrayHit)  {
+                    if (retStr.length()>0) {
+                        return new Focus(retStr.toString(),array.getStart());
+                    }else { 
+                        return new Focus();
+                    }                    
+                }else if (DQHit)  {
+                    if (retStr.length()>0) {
+                        return new Focus(retStr.toString(),DQ.getStart());
+                    }else { 
+                        return new Focus();
+                    } 
+                }else if (SQHit) {
+                    if (retStr.length()>0) {
+                        return new Focus(retStr.toString(),SQ.getStart());
+                    }else { 
+                        return new Focus();
+                    }                     
+                }else {
                    retStr.append(that);                   
                 }
             }

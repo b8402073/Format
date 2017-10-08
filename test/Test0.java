@@ -21,6 +21,7 @@ import org.junit.Test;
  */
 public class Test0 {
     final static StringBuffer str0=new StringBuffer("public final static class AAA    //this is class AAA\n" +
+                                                /////01234567890123456789012345678901234567890
 "	{\n" +
 "		class temp {\n" +
 "			public	int X=0;\n" +
@@ -93,6 +94,45 @@ public class Test0 {
         Focus aaa=JspStatic.GetOneToken(str0, 0, CommentArea, ArrayArea, DQArea, SQArea);
         assertTrue(aaa.RetString.equals("public"));
         assertTrue(aaa.NextCharPos==6);
-       
+        aaa=JspStatic.GetOneToken(str0, 1, CommentArea, ArrayArea, DQArea, SQArea); 
+        assertTrue(aaa.RetString.equals("ublic"));
+        assertTrue(aaa.NextCharPos==6);
+
+        aaa=JspStatic.GetOneToken(str0, 2, CommentArea, ArrayArea, DQArea, SQArea); 
+        assertTrue(aaa.RetString.equals("blic"));
+        assertTrue(aaa.NextCharPos==6);
+
+        aaa=JspStatic.GetOneToken(str0, 3, CommentArea, ArrayArea, DQArea, SQArea); 
+        assertTrue(aaa.RetString.equals("lic"));
+        assertTrue(aaa.NextCharPos==6);
+
+        aaa=JspStatic.GetOneToken(str0, 4, CommentArea, ArrayArea, DQArea, SQArea); 
+        assertTrue(aaa.RetString.equals("ic"));
+        assertTrue(aaa.NextCharPos==6);
+  
+        aaa=JspStatic.GetOneToken(str0, 5, CommentArea, ArrayArea, DQArea, SQArea); 
+        assertTrue(aaa.RetString.equals("c"));
+        assertTrue(aaa.NextCharPos==6);
+        
+        aaa=JspStatic.GetOneToken(str0, 6, CommentArea, ArrayArea, DQArea, SQArea); 
+        assertTrue(aaa.RetString.equals("final"));
+        assertTrue(aaa.NextCharPos==12);
+        
+        aaa=JspStatic.GetOneToken(str0,aaa.NextCharPos,CommentArea,ArrayArea,DQArea,SQArea);
+        assertTrue(aaa.RetString.equals("static"));
+        
+        aaa=JspStatic.GetOneToken(str0,aaa.NextCharPos,CommentArea,ArrayArea,DQArea,SQArea);
+        assertTrue(aaa.RetString.equals("class"));
+        
+        aaa=JspStatic.GetOneToken(str0,aaa.NextCharPos,CommentArea,ArrayArea,DQArea,SQArea);
+        assertTrue(aaa.RetString.equals("AAA")); 
+        
+        aaa=JspStatic.GetOneToken(str0,aaa.NextCharPos,CommentArea,ArrayArea,DQArea,SQArea);
+        assertTrue(aaa.RetString.equals("AAA"));       
+        
+        aaa=JspStatic.GetOneToken(str0, 29, CommentArea, ArrayArea, DQArea, SQArea);
+        System.out.println(aaa.RetString);
+        assertTrue(aaa.RetString.equals("{"));
+        assertTrue(aaa.NextCharPos==12);      
     }
 }

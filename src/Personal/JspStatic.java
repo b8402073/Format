@@ -440,6 +440,23 @@ public class JspStatic {
     }
 
     public  void Build_Class_Area(StringBuffer text, Vector<Pair> dest) {        
+        for(int i=0; i<text.length(); i++) {
+            String hand=GetOneToken(text,i,CommentArea);
+            if (hand.equals("class")) {
+                final String ClassName=GetOneToken(text,i+6,CommentArea);
+                String AfterName=GetOneToken(text, text.indexOf(ClassName)+ ClassName.length(),CommentArea);
+                if (AfterName.equals("extends")) {
+                    String afterClass=text.substring(i);
+                    
+                    String SuperClass=GetOneToken(text,afterClass.indexOf("extends"), text.indexOf())
+                }else if (AfterName.equals("implements")) {
+                    
+                }
+            }
+        }
+        
+        
+        /*
         for (int i = 0; i < text.length(); i++) {
             if (isToken(text, i, "class")) {
                 if (!Main.In(i, DQArea) && !Main.In(i, CommentArea)) {
@@ -490,6 +507,8 @@ public class JspStatic {
                 }
             }
         }
+        */
+        
     }
     public  void Build_Array_Area(StringBuffer text,Vector<Pair> dest) {
         for (int i=0; i<text.length(); i++) {
@@ -622,30 +641,49 @@ public class JspStatic {
         return new StringBuffer(my);
     }
 
-    public static String GetOneToken(StringBuffer text,int from_pos,Vector<Pair>CommentArea) {
+    public static Focus GetOneToken(StringBuffer text,int from_pos,Vector<Pair>CommentArea,Vector<Pair> ArrayArea, Vector<Pair> DQArea,Vector<Pair> SQArea) {
         final String WHITE=" \t\n\r\0";
-        StringBuffer ret=new StringBuffer();
+        StringBuffer retStr=new StringBuffer();
         for (int i=from_pos; i<text.length(); i++) {
             Character that=text.charAt(i);
             String sThat=new String(new char[]{that});
             if (WHITE.contains(sThat)) {
+                if (retStr.length()>=1) {
+                    return new Focus(retStr.toString(),i);
+                }
                 continue;
             }else {
                 boolean CommentHit=false;
-                for (int j=0; j<CommentArea.size(); j++) {
-                    Pair comment=CommentArea.get(j);
-                    if (i>=comment.getStart() && i<=comment.getEnd()) {
-                        i=comment.getEnd();
-                        CommentHit=true;
-                        break;
-                    }
+                Pair comment=GetPair(i,CommentArea);
+                if (comment!=null) {
+                    i=comment.getEnd();
+                    CommentHit=true;
+                }    
+                boolean ArrayHit=false;
+                Pair array=GetPair(i,ArrayArea);
+                if (array!=null) {
+                    i=array.getEnd();
+                    ArrayHit=true;
                 }
-                if (CommentHit) {
-                    if (ret.length()>0) {
-                        return ret.toString();
-                    }
-                }else {
-                   ret.append(that);
+                boolean DQHit=false;        
+                Pair DQ=GetPair(i,DQArea);
+                if (DQ!=null) {
+                    i=DQ.getEnd();
+                    DQHit=true;
+                }
+                boolean SQHit=false;
+                Pair SQ=GetPair(i,SQArea);
+                if (SQ!=null) {
+                    i=SQ.getEnd();
+                    SQHit=true;
+                }
+                if (CommentHit || ArrayHit || DQHit || SQHit) {
+                    if (retStr.length()>0) {
+                        return new Focus(retStr.toString(),i+1);
+                    }else 
+                        continue;
+                } else {
+                   retStr.append(that);                   
                 }
             }
         }

@@ -686,7 +686,7 @@ public class JspStatic {
                     if (retStr.length()>0) {
                         return new Focus(retStr.toString(),array.getStart());
                     }else { 
-                        return new Focus();
+                        return new Focus(Uncomment(text,array,CommentArea),array.getEnd()+1);
                     }                    
                 }else if (DQHit)  {
                     if (retStr.length()>0) {
@@ -707,7 +707,9 @@ public class JspStatic {
         }
         return null;
     }
-    
+    public static String Uncomment(StringBuffer text,Pair p,Vector<Pair> commentArea) {
+        
+    }
     public static StringBuffer GetComment(StringBuffer text, int pos, Vector<Pair> CommentArea) {
         for (int i = 0; i < CommentArea.size(); i++) {
             Pair that = CommentArea.get(i);

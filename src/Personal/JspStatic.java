@@ -36,8 +36,9 @@ public class JspStatic {
     }
     
     public final static PairSort PairSortObj=new PairSort();
-    public final static String Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    public final static String EMPTY = " \t\r\n";
+    public final static String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    public final static String EMPTY = " \t\r\n\0";
+    public final static String NUMBER="0123456789";
 
     public static String GetString(char c, int count) {
         StringBuffer ret = new StringBuffer();
@@ -208,7 +209,7 @@ public class JspStatic {
     }
     public static boolean isToken(StringBuffer text, int Pos, String str) {
         if (text.substring(Pos).startsWith(str)) {
-            if (Alphabet.indexOf(text.charAt(Pos - 1)) < 0 && Alphabet.indexOf(text.charAt(Pos+str.length())) < 0) {
+            if (ALPHABET.indexOf(text.charAt(Pos - 1)) < 0 && ALPHABET.indexOf(text.charAt(Pos+str.length())) < 0) {
                 return true;
             }
         }
@@ -550,7 +551,7 @@ public class JspStatic {
 
     public static int GetFirstAlphabetAfterPos(StringBuffer text, int pos) {
         while (pos < text.length()) {
-            if (Alphabet.indexOf(text.charAt(pos)) >= 0) {
+            if (ALPHABET.indexOf(text.charAt(pos)) >= 0) {
                 return pos;
             } else {
                 pos++;
@@ -702,9 +703,11 @@ public class JspStatic {
                     }                     
                 }else {                    
                    retStr.append(that);
-                   final String Special_OneCharacter_Token="{}()[];=><+-*/%^~@,:!|";
+                   final String Special_OneCharacter_Token="{}()[];=><+-*/%^~@,:!|.~";
                    if (Special_OneCharacter_Token.contains(retStr.toString())) {
                        return new Focus(retStr.toString(),i+1);
+                   }else if (Special_OneCharacter_Token.indexOf(retStr.charAt(retStr.length()-1))>=0) {
+                       //...¤£·|¼g...
                    }
                 }
             }
@@ -876,5 +879,13 @@ public class JspStatic {
         }
         return (-1);
     }
-
+    public static boolean ThisDot_Is_PartOf_Number(StringBuffer text,int pos) {
+        if (text.charAt(pos)=='.') {
+            char prev=text.charAt(pos-1);
+            char next=text.charAt(pos+1);
+            if (NUMBER.indexOf(prev)>=0 && NUMBER.indexOf(next)>=0)
+                return true;
+        }
+        return false;
+    }
 }

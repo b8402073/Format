@@ -52,7 +52,7 @@ public class Test0 {
 "		try {\n" +
 "		   b=null;\n" +
 "		} catch(Exception ex) {\n" +
-"                   System.out.println(\"ok\");\n" +
+"                   System.out.println(\"ok¤pª¯\");\n" +
 "		}	\n" +
 "	}  ");
     Vector<Pair> DQArea=new Vector<Pair>();

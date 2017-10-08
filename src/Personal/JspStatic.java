@@ -707,7 +707,8 @@ public class JspStatic {
                    if (Special_OneCharacter_Token.contains(retStr.toString())) {
                        return new Focus(retStr.toString(),i+1);
                    }else if (Special_OneCharacter_Token.indexOf(retStr.charAt(retStr.length()-1))>=0) {
-                       //...¤£·|¼g...
+                       int length=retStr.length();
+                       return new Focus(retStr.substring(0,length-1),i);//@@??
                    }
                 }
             }

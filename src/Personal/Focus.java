@@ -15,4 +15,8 @@ public class Focus {
     public Focus(String s,int pos) {
         RetString=s;NextCharPos=pos;
     }
+    public String toString() {
+        String ret=String.format("RetString=#%s#  NextCharPos=%d", RetString,NextCharPos);
+        return ret;
+    }
 }

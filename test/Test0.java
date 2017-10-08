@@ -127,12 +127,18 @@ public class Test0 {
         aaa=JspStatic.GetOneToken(str0,aaa.NextCharPos,CommentArea,ArrayArea,DQArea,SQArea);
         assertTrue(aaa.RetString.equals("AAA")); 
         
+       
         aaa=JspStatic.GetOneToken(str0,aaa.NextCharPos,CommentArea,ArrayArea,DQArea,SQArea);
-        assertTrue(aaa.RetString.equals("AAA"));       
+        assertTrue(aaa.RetString.equals("{"));
         
+        aaa=JspStatic.GetOneToken(str0,aaa.NextCharPos,CommentArea,ArrayArea,DQArea,SQArea);
+        assertTrue(aaa.RetString.equals(""));
+         /*
         aaa=JspStatic.GetOneToken(str0, 29, CommentArea, ArrayArea, DQArea, SQArea);
         System.out.println(aaa.RetString);
         assertTrue(aaa.RetString.equals("{"));
         assertTrue(aaa.NextCharPos==12);      
+        */
+        
     }
 }

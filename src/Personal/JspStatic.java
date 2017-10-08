@@ -700,15 +700,31 @@ public class JspStatic {
                     }else { 
                         return new Focus(text.substring(SQ.getStart(),SQ.getEnd()+1),SQ.getEnd()+1);
                     }                     
-                }else {
-                   retStr.append(that);                   
+                }else {                    
+                   retStr.append(that);
+                   final String Special_OneCharacter_Token="{}()[];=><+-*/%^~@,:!|";
+                   if (Special_OneCharacter_Token.contains(retStr.toString())) {
+                       return new Focus(retStr.toString(),i+1);
+                   }
                 }
             }
         }
         return null;
     }
-    public static String Uncomment(StringBuffer text,Pair p,Vector<Pair> commentArea) {
-        
+    public static String Uncomment(StringBuffer text,Pair P,Vector<Pair> commentArea) {
+        StringBuffer ret=new StringBuffer(text.substring(P.getStart(), P.getEnd()+1));
+        int t=P.getStart();
+        for (int i=commentArea.size()-1; i>=0; i--) {
+            Pair that=commentArea.get(i);
+            if (that.getStart()>=P.getStart() && that.getEnd()<=P.getEnd() ) {
+                String thatComment=text.substring(that.getStart(), that.getEnd()+1);
+                String corresponding=ret.substring(that.getStart()-t, that.getEnd()-t+1);
+                if (thatComment.equals(corresponding)) {
+                    ret.replace(that.getStart()-t, that.getEnd()-t+1, "");
+                }                
+            }
+        }
+        return ret.toString();
     }
     public static StringBuffer GetComment(StringBuffer text, int pos, Vector<Pair> CommentArea) {
         for (int i = 0; i < CommentArea.size(); i++) {

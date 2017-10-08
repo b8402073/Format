@@ -692,13 +692,13 @@ public class JspStatic {
                     if (retStr.length()>0) {
                         return new Focus(retStr.toString(),DQ.getStart());
                     }else { 
-                        return new Focus();
+                        return new Focus(text.substring(DQ.getStart(), DQ.getEnd()+1),DQ.getEnd()+1);
                     } 
                 }else if (SQHit) {
                     if (retStr.length()>0) {
                         return new Focus(retStr.toString(),SQ.getStart());
                     }else { 
-                        return new Focus();
+                        return new Focus(text.substring(SQ.getStart(),SQ.getEnd()+1),SQ.getEnd()+1);
                     }                     
                 }else {
                    retStr.append(that);                   

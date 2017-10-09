@@ -70,10 +70,11 @@ public class JspStatic {
         Build_SQ_Area(MyText, DQArea, SQArea);
         Build_Comment_Area(MyText, DQArea, SQArea, CommentArea);
         Fix_if_SQDQ_SLeft_SRight_SemiColon_in_CommentArea(MyText, SQArea, DQArea, CommentArea, SmallLeft, SmallRight);
-        Build_MyFocus();
-        Build_Header_Area(MyText, SmallLeft, SmallRight, FuncHeaderArea);
-        Build_Class_Area(MyText, ClassArea);
         Build_Array_Area(MyText,ArrayArea);
+        Build_MyFocus();                       
+        Build_Header_Area(MyText, SmallLeft, SmallRight, FuncHeaderArea);   /**以後要大改寫 */
+        Build_Class_Area(MyText, ClassArea);                                /**以後要大改寫 */
+
         System.out.println(Main.ToStr(ArrayArea, MyText));
         Make();
         

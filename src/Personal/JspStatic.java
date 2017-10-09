@@ -95,8 +95,8 @@ public class JspStatic {
         Vector<Focus> tmp2=OP_Replacement(tmp,op3);
         //到這裡把三個字元的運算子都替換掉        
         final String[] op2={"++","--","==","!=",">=","<=","<<",">>","&&","||","+=","-=","*=","/=","%=","&=","^=","|="};
-        MyFocus=OP_Replacement(tmp2,op2);
-        
+        Vector<Focus> tmp3=OP_Replacement(tmp2,op2);
+        MyFocus=FloatNUM_Replacement(tmp3);
     }
     public static Vector<Focus> OP_Replacement(Vector<Focus> origin,final String[] op) {
         for (int x=1; x<op.length; x++) {
@@ -134,7 +134,31 @@ public class JspStatic {
         }
         return ret;
     }
-    
+    public static Vector<Focus> FloatNUM_Replacement(Vector<Focus> origin) {
+        Vector<Focus> ret=new Vector<Focus>();
+        for (int i=0; i<origin.size()-1; i++) {
+            String that=origin.get(i).RetString;
+            if (that.equals(".")) {
+                Focus prev=origin.get(i-1);
+                Focus next=origin.get(i+1);  //選用條件
+                if (IsNumber(prev.RetString)) {
+                    if (prev.StartPos+ prev.RetString.length()==origin.get(i).StartPos) {
+                        if (IsNumber(next.RetString)) {
+                            ret.removeElementAt(ret.size()-1);
+                            ret.add(new Focus(prev.RetString+"."+next.RetString,prev.StartPos,next.NextCharPos));
+                            ++i;
+                        }else {
+                            ret.removeElementAt(ret.size()-1);
+                            ret.add(new Focus(prev.RetString+".0",prev.StartPos,origin.get(i).NextCharPos));
+                        }
+                    }                    
+                }
+            }else {
+                ret.add(origin.get(i));
+            }
+        }
+        return ret;
+    }
     
     public void Make() {
         Analysis = new Vector<Resolution>();
@@ -696,10 +720,7 @@ public class JspStatic {
         String my = buf.substring(C1 + 3, C2);
         return new StringBuffer(my);
     }
-    public static Focus GetPreviousOneToken(StringBuffer text,int from_pos,Vector<Focus> refMyFocus,
-                                                Vector<Pair> refCommentArea, Vector<Pair> refArrayArea, Vector<Pair> refDQArea, Vector<Pair> refSQArea) {
-        return null;
-    }
+
     public static Focus GetOneToken(StringBuffer text,int from_pos,Vector<Pair>CommentArea,Vector<Pair> ArrayArea, Vector<Pair> DQArea,Vector<Pair> SQArea) {
         final String WHITE=" \t\n\r\0";
         StringBuffer retStr=new StringBuffer();
@@ -946,13 +967,11 @@ public class JspStatic {
         }
         return (-1);
     }
-    public static boolean ThisDot_Is_PartOf_Number(StringBuffer text,int pos) {
-        if (text.charAt(pos)=='.') {
-            char prev=text.charAt(pos-1);
-            char next=text.charAt(pos+1);
-            if (NUMBER.indexOf(prev)>=0 && NUMBER.indexOf(next)>=0)
-                return true;
+    public static boolean IsNumber(String input) {
+        for (int i=0; i<input.length(); i++) {
+            if (NUMBER.indexOf(input.charAt(i))<0)
+                return false;
         }
-        return false;
+        return true;
     }
 }

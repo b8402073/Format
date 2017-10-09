@@ -118,7 +118,7 @@ public class JspStatic {
                         _all_equal=false;
                 }
                 if (_all_length_is_1 && _all_equal) {
-                    Focus tmpFocus=new Focus(op[j],origin.get(i+2).NextCharPos);
+                    Focus tmpFocus=new Focus(op[j],origin.get(i).StartPos,origin.get(i+op_length-1).NextCharPos);
                     ret.add(tmpFocus);
                     newElement=true;
                     i+= (op_length-1);
@@ -703,12 +703,13 @@ public class JspStatic {
     public static Focus GetOneToken(StringBuffer text,int from_pos,Vector<Pair>CommentArea,Vector<Pair> ArrayArea, Vector<Pair> DQArea,Vector<Pair> SQArea) {
         final String WHITE=" \t\n\r\0";
         StringBuffer retStr=new StringBuffer();
+        int _First_Alphabet_Position=(-1);
         for (int i=from_pos; i<text.length(); i++) {
-            Character that=text.charAt(i);
+            char that=text.charAt(i);
             //String sThat=new String(new char[]{that});
             if (WHITE.indexOf(that)>=0) {  
                 if (retStr.length()>=1) {
-                    return new Focus(retStr.toString(),i);
+                    return new Focus(retStr.toString(),_First_Alphabet_Position,i);
                 }
                 continue;
             }else {
@@ -722,49 +723,58 @@ public class JspStatic {
                 Pair array=GetPair(i,ArrayArea);
                 if (array!=null) {
                     ArrayHit=true;
+                    if (_First_Alphabet_Position<0)
+                        _First_Alphabet_Position=array.getStart();
                 }
                 boolean DQHit=false;        
                 Pair DQ=GetPair(i,DQArea);
                 if (DQ!=null) {
                     DQHit=true;
+                     if (_First_Alphabet_Position<0)
+                        _First_Alphabet_Position=DQ.getStart();
                 }
                 boolean SQHit=false;
                 Pair SQ=GetPair(i,SQArea);
                 if (SQ!=null) {
                     SQHit=true;
+                     if (_First_Alphabet_Position<0)
+                        _First_Alphabet_Position=SQ.getStart();
                 }
                 if (CommentHit) {
                     if (retStr.length()>0) {
-                        return new Focus(retStr.toString(),i+1);
+                        return new Focus(retStr.toString(),_First_Alphabet_Position,i+1);
                     }else { 
                         continue;                        
                     }
                 }else if (ArrayHit)  {
                     if (retStr.length()>0) {
-                        return new Focus(retStr.toString(),array.getStart());
+                        return new Focus(retStr.toString(),_First_Alphabet_Position,array.getStart());
                     }else { 
-                        return new Focus(Uncomment(text,array,CommentArea),array.getEnd()+1);
+                        return new Focus(Uncomment(text,array,CommentArea),_First_Alphabet_Position,array.getEnd()+1);
                     }                    
                 }else if (DQHit)  {
                     if (retStr.length()>0) {
-                        return new Focus(retStr.toString(),DQ.getStart());
+                        return new Focus(retStr.toString(),_First_Alphabet_Position,DQ.getStart());
                     }else { 
-                        return new Focus(text.substring(DQ.getStart(), DQ.getEnd()+1),DQ.getEnd()+1);
+                        return new Focus(text.substring(DQ.getStart(), DQ.getEnd()+1),_First_Alphabet_Position,DQ.getEnd()+1);
                     } 
                 }else if (SQHit) {
                     if (retStr.length()>0) {
-                        return new Focus(retStr.toString(),SQ.getStart());
+                        return new Focus(retStr.toString(),_First_Alphabet_Position,SQ.getStart());
                     }else { 
-                        return new Focus(text.substring(SQ.getStart(),SQ.getEnd()+1),SQ.getEnd()+1);
+                        return new Focus(text.substring(SQ.getStart(),SQ.getEnd()+1),_First_Alphabet_Position,SQ.getEnd()+1);
                     }                     
                 }else {                    
                    retStr.append(that);
+                   if (retStr.length()==1 && _First_Alphabet_Position<0) {
+                       _First_Alphabet_Position=i;
+                   }                   
                    final String Special_OneCharacter_Token="{}()[];=><+-*/%^~@,:!|.~?";
                    if (Special_OneCharacter_Token.contains(retStr.toString())) {
-                       return new Focus(retStr.toString(),i+1);
+                       return new Focus(retStr.toString(),_First_Alphabet_Position,i+1);
                    }else if (Special_OneCharacter_Token.indexOf(retStr.charAt(retStr.length()-1))>=0) {
                        int length=retStr.length();
-                       return new Focus(retStr.substring(0,length-1),i);//@@??
+                       return new Focus(retStr.substring(0,length-1),_First_Alphabet_Position,i);
                    }
                 }
             }

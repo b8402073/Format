@@ -10,13 +10,16 @@ package Personal;
  * @author easterday
  */
 public class Focus {
+    public final int    StartPos;
     public String RetString="";
-    public int    NextCharPos;
-    public Focus(String s,int pos) {
-        RetString=s;NextCharPos=pos;
+    public final int    NextCharPos;
+    public Focus(String s,int start,int pos) {
+        RetString=s;
+        StartPos=start;
+        NextCharPos=pos;
     }
     public String toString() {
-        String ret=String.format("RetString=#%s#  NextCharPos=%d", RetString,NextCharPos);
+        String ret=String.format("RetString=#%s#  S=%d NextCharPos=%d", RetString,StartPos,NextCharPos);
         return ret;
     }
 }

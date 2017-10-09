@@ -30,6 +30,7 @@ public class Test0 {
 "		static int B=FFF.init();	\n" +
 "		static int A;   \n" +
 "		double B;        \n" +
+"               char CH='ª¯'"+            
 "		public int add(int CCC)  \n" +
 "		{\n" +
 "			int D=A+1;\n" +

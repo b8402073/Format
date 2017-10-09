@@ -59,7 +59,8 @@ public class JspStatic {
     public Vector<Pair> FuncHeaderArea;
     public Vector<Pair> ClassArea;
     public Vector<Pair> ArrayArea;
-    public Vector<Resolution> Analysis;    
+    public Vector<Resolution> Analysis; 
+    public Vector<Focus> MyFocus;
     
     public JspStatic(StringBuffer Text) {
         MyText = GetMyText(Text);
@@ -69,6 +70,7 @@ public class JspStatic {
         Build_SQ_Area(MyText, DQArea, SQArea);
         Build_Comment_Area(MyText, DQArea, SQArea, CommentArea);
         Fix_if_SQDQ_SLeft_SRight_SemiColon_in_CommentArea(MyText, SQArea, DQArea, CommentArea, SmallLeft, SmallRight);
+        Build_MyFocus();
         Build_Header_Area(MyText, SmallLeft, SmallRight, FuncHeaderArea);
         Build_Class_Area(MyText, ClassArea);
         Build_Array_Area(MyText,ArrayArea);
@@ -82,7 +84,55 @@ public class JspStatic {
         
         Make2();
     }
-
+    public void Build_MyFocus() {
+        Vector<Focus> tmp=new Vector<Focus>();
+        Focus hand=JspStatic.GetOneToken(MyText, 0, CommentArea, ArrayArea, DQArea, SQArea); 
+        while(hand!=null) {
+            tmp.add(hand);
+            hand=JspStatic.GetOneToken(MyText, hand.NextCharPos, CommentArea, ArrayArea, DQArea, SQArea); 
+        }
+        final String[] op3={">>>","<<=",">>="};
+        Vector<Focus> tmp2=OP_Replacement(tmp,op3);
+        //到這裡把三個字元的運算子都替換掉        
+        final String[] op2={"++","--","==","!=",">=","<=","<<",">>","&&","||","+=","-=","*=","/=","%=","&=","^=","|="};
+        MyFocus=OP_Replacement(tmp2,op2);
+        
+    }
+    public static Vector<Focus> OP_Replacement(Vector<Focus> origin,final String[] op) {
+        for (int x=1; x<op.length; x++) {
+            if (op[0].length()!=op[x].length())
+                return null;
+        }
+        final int op_length=op[0].length();
+        Vector<Focus> ret=new Vector<Focus>();
+        for (int i=0; i<origin.size()-op_length+1; i++) {
+           boolean newElement=false;
+            for (int j=0; j<op.length; j++) {
+                String that=op[j];
+                if (origin.get(i).RetString.length()==1 && 
+                    origin.get(i+1).RetString.length()==1 &&
+                    origin.get(i+2).RetString.length()==1) {
+                    if (that.charAt(0)==origin.get(i).RetString.charAt(0) &&
+                        that.charAt(1)==origin.get(i+1).RetString.charAt(0) && 
+                        that.charAt(2)==origin.get(i+2).RetString.charAt(0)) {
+                        Focus tmpFocus=new Focus(op[j],origin.get(i+2).NextCharPos);
+                        ret.add(tmpFocus);
+                        newElement=true;
+                        break;
+                    }
+                }
+            }
+            if (!newElement) {
+                ret.add(origin.get(i));
+            }            
+        }
+        for (int i=origin.size()-op_length; i<origin.size(); i++) {
+            ret.add(origin.get(i));
+        }
+        return ret;
+    }
+    
+    
     public void Make() {
         Analysis = new Vector<Resolution>();
         for (int i = 0; i < MyText.length(); i++) {
@@ -703,7 +753,7 @@ public class JspStatic {
                     }                     
                 }else {                    
                    retStr.append(that);
-                   final String Special_OneCharacter_Token="{}()[];=><+-*/%^~@,:!|.~";
+                   final String Special_OneCharacter_Token="{}()[];=><+-*/%^~@,:!|.~?";
                    if (Special_OneCharacter_Token.contains(retStr.toString())) {
                        return new Focus(retStr.toString(),i+1);
                    }else if (Special_OneCharacter_Token.indexOf(retStr.charAt(retStr.length()-1))>=0) {

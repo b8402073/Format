@@ -10,7 +10,7 @@ package Personal;
  * @author easterday
  */
 public class Focus {
-    public String RetString;
+    public String RetString="";
     public int    NextCharPos;
     public Focus(String s,int pos) {
         RetString=s;NextCharPos=pos;

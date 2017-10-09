@@ -109,17 +109,20 @@ public class JspStatic {
            boolean newElement=false;
             for (int j=0; j<op.length; j++) {
                 String that=op[j];
-                if (origin.get(i).RetString.length()==1 && 
-                    origin.get(i+1).RetString.length()==1 &&
-                    origin.get(i+2).RetString.length()==1) {
-                    if (that.charAt(0)==origin.get(i).RetString.charAt(0) &&
-                        that.charAt(1)==origin.get(i+1).RetString.charAt(0) && 
-                        that.charAt(2)==origin.get(i+2).RetString.charAt(0)) {
-                        Focus tmpFocus=new Focus(op[j],origin.get(i+2).NextCharPos);
-                        ret.add(tmpFocus);
-                        newElement=true;
-                        break;
-                    }
+                boolean _all_length_is_1=true;
+                boolean _all_equal=true;
+                for (int k=0; k<op_length; k++) {
+                    if (origin.get(i+k).RetString.length()!=1)
+                        _all_length_is_1=false;
+                    if (origin.get(i+k).RetString.charAt(0)!=that.charAt(k))
+                        _all_equal=false;
+                }
+                if (_all_length_is_1 && _all_equal) {
+                    Focus tmpFocus=new Focus(op[j],origin.get(i+2).NextCharPos);
+                    ret.add(tmpFocus);
+                    newElement=true;
+                    i+= (op_length-1);
+                    break;
                 }
             }
             if (!newElement) {

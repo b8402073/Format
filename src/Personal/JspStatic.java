@@ -696,14 +696,17 @@ public class JspStatic {
         String my = buf.substring(C1 + 3, C2);
         return new StringBuffer(my);
     }
-
+    public static Focus GetPreviousOneToken(StringBuffer text,int from_pos,Vector<Focus> refMyFocus,
+                                                Vector<Pair> refCommentArea, Vector<Pair> refArrayArea, Vector<Pair> refDQArea, Vector<Pair> refSQArea) {
+        return null;
+    }
     public static Focus GetOneToken(StringBuffer text,int from_pos,Vector<Pair>CommentArea,Vector<Pair> ArrayArea, Vector<Pair> DQArea,Vector<Pair> SQArea) {
         final String WHITE=" \t\n\r\0";
         StringBuffer retStr=new StringBuffer();
         for (int i=from_pos; i<text.length(); i++) {
             Character that=text.charAt(i);
-            String sThat=new String(new char[]{that});
-            if (WHITE.contains(sThat)) {
+            //String sThat=new String(new char[]{that});
+            if (WHITE.indexOf(that)>=0) {  
                 if (retStr.length()>=1) {
                     return new Focus(retStr.toString(),i);
                 }

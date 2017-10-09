@@ -130,22 +130,10 @@ public class Test0 {
         
         while(aaa!=null) {
             aaa=JspStatic.GetOneToken(str0, aaa.NextCharPos, CommentArea, ArrayArea, DQArea, SQArea);
-            if (aaa.NextCharPos>=496) {
-                System.out.println("hello496");
-            }
-            System.out.println(aaa.toString());
+            if (aaa!=null)
+                System.out.println(aaa.toString());
         }
-        
-        aaa=JspStatic.GetOneToken(str0,500,CommentArea,ArrayArea,DQArea,SQArea);
-        aaa=JspStatic.GetOneToken(str0, aaa.NextCharPos, CommentArea, ArrayArea, DQArea, SQArea);
-        
-        
-         /*
-        aaa=JspStatic.GetOneToken(str0, 29, CommentArea, ArrayArea, DQArea, SQArea);
-        System.out.println(aaa.RetString);
-        assertTrue(aaa.RetString.equals("{"));
-        assertTrue(aaa.NextCharPos==12);      
-        */
+                
         
     }
 }

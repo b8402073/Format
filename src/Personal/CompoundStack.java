@@ -16,6 +16,7 @@ public class CompoundStack {
     private Vector< Stack<Integer> > Hand;
     public CompoundStack() {
         Stack<Integer> first=new Stack<Integer>();
+        Hand=new Vector<Stack<Integer> >();
         Hand.add(first);
     }
     public void meetLeft() {

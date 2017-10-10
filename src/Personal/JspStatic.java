@@ -73,8 +73,7 @@ public class JspStatic {
         Build_Array_Area(MyText,ArrayArea);             
         Build_MyFocus();     
         Build_Class_Area(ClassArea); 
-        Build_Header_Area(FuncHeaderArea);   /**以後要大改寫 */
-                                       /**以後要大改寫 */
+        Build_Header_Area(FuncHeaderArea);  
 
         System.out.println(Main.ToStr(ArrayArea, MyText));
         //建完Focus Tokens以後,如果有必要,要做  Focus-->Resolution的轉換 (也許沒有必要)

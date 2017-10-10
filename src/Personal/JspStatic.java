@@ -911,7 +911,7 @@ public class JspStatic {
             return ret.toString();
         }
         return "@@GGYY@@";
-    }
+    }   
     public static int FindSymmetric(StringBuffer text,int start,Vector<Pair> refCommentArea,Vector<Pair> refDQArea,Vector<Pair> refSQArea) {
         switch(text.charAt(start)) {
             case'{':
@@ -936,6 +936,28 @@ public class JspStatic {
         }
         return (-1);
     }
+    public static  FocusPair FindSymmetricBigBraceToken(int start,Vector<Focus> refMyFocus) {
+        int Level=0,retStart=(-1),retEnd=(-1);
+        if (refMyFocus.get(start).getString().equals("{")) {
+            Level+=1;
+            retStart=start;
+        }
+        for (int i=start+1; i<refMyFocus.size(); i++) {
+            if (refMyFocus.get(i).getString().equals("{")) {
+                if (retStart<0) {
+                    retStart=i;
+                }
+                ++Level;
+            }else if (refMyFocus.get(i).getString().equals("}")) {
+                --Level;
+                if (Level==0) {
+                    retEnd=i;
+                    return new FocusPair(retStart,retEnd);
+                }
+            }
+        }
+        return null;
+    }    
     public static int FindSymmetricSmallBrace(StringBuffer text,int start,Vector<Pair> refCommentArea,Vector<Pair> refDQArea,Vector<Pair> refSQArea) {
         int Level=1;
         for (int i=start+1; i<text.length(); i++) {
@@ -948,6 +970,28 @@ public class JspStatic {
             }                
         }
         return(-1);
+    }
+    public static  FocusPair FindSymmetricSmallBraceToken(int start,Vector<Focus> refMyFocus) {
+        int Level=0,retStart=(-1),retEnd=(-1);
+        if (refMyFocus.get(start).getString().equals("(")) {
+            Level+=1;
+            retStart=start;
+        }
+        for (int i=start+1; i<refMyFocus.size(); i++) {
+            if (refMyFocus.get(i).getString().equals("(")) {
+                if (retStart<0) {
+                    retStart=i;
+                }
+                ++Level;
+            }else if (refMyFocus.get(i).getString().equals(")")) {
+                --Level;
+                if (Level==0) {
+                    retEnd=i;
+                    return new FocusPair(retStart,retEnd);
+                }
+            }
+        }
+        return null;
     }
     public static int FindSymmetricMiddleBrace(StringBuffer text,int start,Vector<Pair> refCommentArea,Vector<Pair> refDQArea,Vector<Pair> refSQArea) {
         int Level=1;
@@ -972,20 +1016,20 @@ public class JspStatic {
     
     public int GetFuncBase(int pos) {
         for (int i=0; i<FuncHeaderArea.size(); i++) {
-            Pair that=FuncHeaderArea.get(i);
-            int start=GetFirstCharInCodeAfterPos(MyText,'{',that.getEnd(),DQArea,SQArea,CommentArea);
-            int end=FindSymmetric(MyText,start,CommentArea,DQArea,SQArea);
-            if (start<=pos && pos<=end)
+            FocusPair that=FuncHeaderArea.get(i);
+            int start=SearchForTokenPos(that.getEnd(),"{",MyFocus);
+            FocusPair ret=FindSymmetricBigBraceToken(start,MyFocus);
+            if (ret.getStart()<=pos  && pos<=ret.getEnd())
                 return start;
         }
         return (-1);
     }
     public int GetClassBase(int pos) {
         for (int i=ClassArea.size()-1; i>=0; i--) {
-            Pair that=ClassArea.get(i);
-            int start=GetFirstCharInCodeAfterPos(MyText,'{',that.getEnd(),DQArea,SQArea,CommentArea);
-            int end=FindSymmetric(MyText,start,CommentArea,DQArea,SQArea);
-            if (start<=pos && pos<=end) {
+            FocusPair that=ClassArea.get(i);
+            int start=SearchForTokenPos(that.getEnd(),"{",MyFocus);
+            FocusPair ret=FindSymmetricBigBraceToken(start,MyFocus);
+            if (ret.getStart()<=pos && pos<=ret.getEnd()) {
                 return start;
             }
         }

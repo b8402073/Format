@@ -26,15 +26,11 @@ public class CompoundStack {
         }
     }
     public void meetRight() {
-        for (int i=0; i<Hand.size(); i++) {
-            Stack<Integer> that=Hand.get(i);
-            that.pop();
+        if (Hand.get(Hand.size()-1).isEmpty()) {
+            Hand.removeElementAt(Hand.size()-1);
         }
-        for (int i=Hand.size()-1; i>0; i--) {
-            if (Hand.get(i).isEmpty()) {
-                Hand.removeElementAt(i);
-                break;
-            }
+        for (int i=0; i<Hand.size(); i++) {
+            Hand.get(i).pop();
         }
     }
     public void meetClassAndLeft() {
@@ -48,7 +44,14 @@ public class CompoundStack {
         }
         return false;
     }
-    
+    public String toString() {
+        StringBuffer ret=new StringBuffer("[");
+        for (int i=0; i<Hand.size(); i++) {
+            ret.append(Hand.get(i).size());
+            ret.append(' ');
+        }
+        return ret.toString();
+    }
     
     
 }

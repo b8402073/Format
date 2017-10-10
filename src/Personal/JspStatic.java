@@ -522,7 +522,7 @@ public class JspStatic {
                 classStart=i;
                 int j=i-1;
                 while(j>=0) {
-                    String hand=that.getString();
+                    String hand=MyFocus.get(j).getString();
                     boolean match=false;
                     for (int k=0; k<prev_accept.length; k++) {
                         if (hand.equals(prev_accept[k])) {
@@ -539,13 +539,18 @@ public class JspStatic {
                 }
                 //處理class之後的部分
                 // MyFocus.get(i+1)是class name
+                /*
                 for (j=i+2; j<MyFocus.size(); j++) {
                     if (MyFocus.get(j).getString().equals("{")) {
                         classEnd=j-1;
                         destClassArea.add(new FocusPair(classStart,classEnd));
                         break;
                     }
-                }                
+                }*/
+                
+                classEnd=SearchForTokenPos(i+1,"{",MyFocus);
+                destClassArea.add(new FocusPair(classStart,classEnd-1));
+                        
             }
         }
         
@@ -1044,9 +1049,11 @@ public class JspStatic {
     public static int SearchForStatementHeadPos(int pos,Vector<Focus> refMyFocus) {
         int i=pos-1;
         while(i>=0) {
-            if (refMyFocus.get(i).equals("}") || refMyFocus.get(i).equals(";")) {
+            String that=refMyFocus.get(i).getString();
+            if (that.equals("}") || that.equals(";")) {
                 return (i+1);
             }
+            --i;
         }
         return 0;
     }
@@ -1056,6 +1063,7 @@ public class JspStatic {
             if (refMyFocus.get(i).getString().equals(str)) {
                 return i;
             }
+            ++i;
         }
         return -1;
     }

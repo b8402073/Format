@@ -11,7 +11,7 @@ package Personal;
  */
 public class Focus {
     public final int    StartPos;
-    public String RetString="";
+    public final String RetString;
     public final int    NextCharPos;
     public Focus(String s,int start,int pos) {
         RetString=s;
@@ -22,4 +22,5 @@ public class Focus {
         String ret=String.format("RetString=#%s#  S=%d NextCharPos=%d", RetString,StartPos,NextCharPos);
         return ret;
     }
+    public String getString() {        return RetString;    }
 }

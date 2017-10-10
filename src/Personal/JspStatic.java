@@ -56,8 +56,8 @@ public class JspStatic {
     public Vector<Pair> SQArea;
     public Vector<Pair> DQArea;
     public Vector<Pair> CommentArea;
-    public Vector<Pair> FuncHeaderArea;
-    public Vector<Pair> ClassArea;
+    public Vector<FocusPair> FuncHeaderArea;
+    public Vector<FocusPair> ClassArea;
     public Vector<Pair> ArrayArea;
     public Vector<Resolution> Analysis; 
     public Vector<Focus> MyFocus;
@@ -70,21 +70,21 @@ public class JspStatic {
         Build_SQ_Area(MyText, DQArea, SQArea);
         Build_Comment_Area(MyText, DQArea, SQArea, CommentArea);
         Fix_if_SQDQ_SLeft_SRight_SemiColon_in_CommentArea(MyText, SQArea, DQArea, CommentArea, SmallLeft, SmallRight);
-        Build_Array_Area(MyText,ArrayArea);
+        Build_Array_Area(MyText,ArrayArea);             
         Build_MyFocus();                       
-        Build_Header_Area(MyText, SmallLeft, SmallRight, FuncHeaderArea);   /**以後要大改寫 */
+        Build_Header_Area(MyText, FuncHeaderArea);   /**以後要大改寫 */
         Build_Class_Area(MyText, ClassArea);                                /**以後要大改寫 */
 
         System.out.println(Main.ToStr(ArrayArea, MyText));
         //建完Focus Tokens以後,如果有必要,要做  Focus-->Resolution的轉換 (也許沒有必要)
-        Make();
+        //Make();
         
         for (int i = 0; i < Analysis.size(); i++) {
            System.out.println(Analysis.get(i).that.toString());
            System.out.println(Analysis.get(i).toString(MyText));
         }
         
-        Make2();
+        //Make2();
     }
     public void Build_MyFocus() {
         Vector<Focus> tmp=new Vector<Focus>();
@@ -114,9 +114,9 @@ public class JspStatic {
                 boolean _all_length_is_1=true;
                 boolean _all_equal=true;
                 for (int k=0; k<op_length; k++) {
-                    if (origin.get(i+k).RetString.length()!=1)
+                    if (origin.get(i+k).getString().length()!=1)
                         _all_length_is_1=false;
-                    if (origin.get(i+k).RetString.charAt(0)!=that.charAt(k))
+                    if (origin.get(i+k).getString().charAt(0)!=that.charAt(k))
                         _all_equal=false;
                 }
                 if (_all_length_is_1 && _all_equal) {
@@ -139,19 +139,19 @@ public class JspStatic {
     public static Vector<Focus> FloatNUM_Replacement(Vector<Focus> origin) {
         Vector<Focus> ret=new Vector<Focus>();
         for (int i=0; i<origin.size()-1; i++) {
-            String that=origin.get(i).RetString;
+            String that=origin.get(i).getString();
             if (that.equals(".")) {
                 Focus prev=origin.get(i-1);
                 Focus next=origin.get(i+1);  //選用條件
-                if (IsNumber(prev.RetString)) {
-                    if (prev.StartPos+ prev.RetString.length()==origin.get(i).StartPos) {
-                        if (IsNumber(next.RetString)) {
+                if (IsNumber(prev.getString())) {
+                    if (prev.StartPos+ prev.getString().length()==origin.get(i).StartPos) {
+                        if (IsNumber(next.getString())) {
                             ret.removeElementAt(ret.size()-1);
-                            ret.add(new Focus(prev.RetString+"."+next.RetString,prev.StartPos,next.NextCharPos));
+                            ret.add(new Focus(prev.getString()+"."+next.getString(),prev.StartPos,next.NextCharPos));
                             ++i;
                         }else {
                             ret.removeElementAt(ret.size()-1);
-                            ret.add(new Focus(prev.RetString+".0",prev.StartPos,origin.get(i).NextCharPos));
+                            ret.add(new Focus(prev.getString()+".0",prev.StartPos,origin.get(i).NextCharPos));
                         }
                     }                    
                 }
@@ -161,7 +161,7 @@ public class JspStatic {
         }
         return ret;
     }
-    
+    /*
     public void Make() {
         Analysis = new Vector<Resolution>();
         for (int i = 0; i < MyText.length(); i++) {
@@ -272,6 +272,8 @@ public class JspStatic {
             
         }
     }
+    */
+    /*
     public void Make2() {        
         Vector<String> List=new Vector<String>();
         for (int i=0; i<Analysis.size(); i++) {
@@ -286,6 +288,8 @@ public class JspStatic {
         }
         
     }
+    */
+    
     public static boolean isToken(StringBuffer text, int Pos, String str) {
         if (text.substring(Pos).startsWith(str)) {
             if (ALPHABET.indexOf(text.charAt(Pos - 1)) < 0 && ALPHABET.indexOf(text.charAt(Pos+str.length())) < 0) {
@@ -303,8 +307,8 @@ public class JspStatic {
         SQArea = new Vector<Pair>();
         DQArea = new Vector<Pair>();
         CommentArea = new Vector<Pair>();
-        FuncHeaderArea = new Vector<Pair>();
-        ClassArea = new Vector<Pair>();
+        FuncHeaderArea = new Vector<FocusPair>();
+        ClassArea = new Vector<FocusPair>();
         ArrayArea= new Vector<Pair>();
     }
 
@@ -519,23 +523,41 @@ public class JspStatic {
         }
     }
 
-    public void Build_Class_Area(StringBuffer text, Vector<Pair> dest) {     
-        /*
-        for(int i=0; i<text.length(); i++) {
-            String hand=GetOneToken(text,i,CommentArea);
-            if (hand.equals("class")) {
-                final String ClassName=GetOneToken(text,i+6,CommentArea);
-                String AfterName=GetOneToken(text, text.indexOf(ClassName)+ ClassName.length(),CommentArea);
-                if (AfterName.equals("extends")) {
-                    String afterClass=text.substring(i);
-                    
-                    String SuperClass=GetOneToken(text,afterClass.indexOf("extends"), text.indexOf())
-                }else if (AfterName.equals("implements")) {
-                    
+    public void Build_Class_Area(StringBuffer text, Vector<FocusPair> dest) {     
+        final String[] prev_accept={"private","protected","public","final","static","abstract"};
+        //final String[] next_accept={"extends","implements","<",">",","};
+        int retStart=(-1),retEnd=(-1);
+        for (int i=0; i<MyFocus.size(); i++) {
+            Focus that=MyFocus.get(i);
+            if (that.getString().equals("class") || that.getString().equals("interface")) {
+                //處理class之前的部分
+                retStart=i;
+                int j=i-1;
+                while(j>=0) {
+                    String hand=that.getString();
+                    boolean match=false;
+                    for (int k=0; k<prev_accept.length; k++) {
+                        if (hand.equals(prev_accept[k])) {
+                            match=true;
+                            break;
+                        }
+                    }
+                    if (match) {
+                        retStart=j;
+                        --j;continue;
+                    }else {
+                       break; 
+                    }
                 }
+                //處理class之後的部分
+                // MyFocus.get(i+1)是class name
+                for (j=i+2; j<MyFocus.size(); j++) {
+                    if (MyFocus.get(j).getString().equals("{"))
+                        retEnd=j-1;
+                }                
+                dest.add(new FocusPair(retStart,retEnd));
             }
         }
-        */
         
         
         /*

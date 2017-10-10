@@ -100,6 +100,21 @@ public class JspStatic {
         Vector<Focus> tmp3=OP_Replacement(tmp2,op2);
         MyFocus=FloatNUM_Replacement(tmp3);
     }
+    public void BuildingAll() {
+        boolean isClass=true;
+        int Level=0;
+        for (int i=0; i<MyFocus.size(); i++) {
+            Focus that=MyFocus.get(i);
+            if (that.getString().equals("{")) {
+                Level+=1;
+                isClass=false;
+            }else if (that.getString().equals("}")) {
+                Level-=1;                
+            }else if (that.getString().equals("(")) {
+                
+            }
+        }
+    }
     public static Vector<Focus> OP_Replacement(Vector<Focus> origin,final String[] op) {
         for (int x=1; x<op.length; x++) {
             if (op[0].length()!=op[x].length())

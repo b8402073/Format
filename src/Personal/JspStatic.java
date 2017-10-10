@@ -523,15 +523,15 @@ public class JspStatic {
         }
     }
 
-    public void Build_Class_Area(StringBuffer text, Vector<FocusPair> dest) {     
+    public void Build_Class_Area(Vector<FocusPair> destClassArea) {     
         final String[] prev_accept={"private","protected","public","final","static","abstract"};
         //final String[] next_accept={"extends","implements","<",">",","};
-        int retStart=(-1),retEnd=(-1);
+        int classStart=(-1),classEnd=(-1);
         for (int i=0; i<MyFocus.size(); i++) {
             Focus that=MyFocus.get(i);
             if (that.getString().equals("class") || that.getString().equals("interface")) {
                 //處理class之前的部分
-                retStart=i;
+                classStart=i;
                 int j=i-1;
                 while(j>=0) {
                     String hand=that.getString();
@@ -543,7 +543,7 @@ public class JspStatic {
                         }
                     }
                     if (match) {
-                        retStart=j;
+                        classStart=j;
                         --j;continue;
                     }else {
                        break; 
@@ -552,10 +552,12 @@ public class JspStatic {
                 //處理class之後的部分
                 // MyFocus.get(i+1)是class name
                 for (j=i+2; j<MyFocus.size(); j++) {
-                    if (MyFocus.get(j).getString().equals("{"))
-                        retEnd=j-1;
+                    if (MyFocus.get(j).getString().equals("{")) {
+                        classEnd=j-1;
+                        destClassArea.add(new FocusPair(classStart,classEnd));
+                        break;
+                    }
                 }                
-                dest.add(new FocusPair(retStart,retEnd));
             }
         }
         

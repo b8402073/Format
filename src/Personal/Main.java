@@ -135,7 +135,17 @@ public class Main {
 		}
 		return false;
 	}
-
+        
+        public static boolean In(int inn, Vector<FocusPair> that) {
+            if (inn>=0) {
+                for (FocusPair p: that) {
+                    if (inn>=p.getStart() && inn<=p.getEnd())
+                        return true;
+                }
+            }
+            return false;
+        }
+        
 	/*
 	 */
 	// NEED TEST:

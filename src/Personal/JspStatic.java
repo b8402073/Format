@@ -71,9 +71,10 @@ public class JspStatic {
         Build_Comment_Area(MyText, DQArea, SQArea, CommentArea);
         Fix_if_SQDQ_SLeft_SRight_SemiColon_in_CommentArea(MyText, SQArea, DQArea, CommentArea, SmallLeft, SmallRight);
         Build_Array_Area(MyText,ArrayArea);             
-        Build_MyFocus();                       
-        Build_Header_Area(MyText, FuncHeaderArea);   /**以後要大改寫 */
-        Build_Class_Area(MyText, ClassArea);                                /**以後要大改寫 */
+        Build_MyFocus();     
+        Build_Class_Area(ClassArea); 
+        Build_Header_Area(FuncHeaderArea);   /**以後要大改寫 */
+                                       /**以後要大改寫 */
 
         System.out.println(Main.ToStr(ArrayArea, MyText));
         //建完Focus Tokens以後,如果有必要,要做  Focus-->Resolution的轉換 (也許沒有必要)
@@ -100,21 +101,7 @@ public class JspStatic {
         Vector<Focus> tmp3=OP_Replacement(tmp2,op2);
         MyFocus=FloatNUM_Replacement(tmp3);
     }
-    public void BuildingAll() {
-        boolean isClass=true;
-        int Level=0;
-        for (int i=0; i<MyFocus.size(); i++) {
-            Focus that=MyFocus.get(i);
-            if (that.getString().equals("{")) {
-                Level+=1;
-                isClass=false;
-            }else if (that.getString().equals("}")) {
-                Level-=1;                
-            }else if (that.getString().equals("(")) {
-                
-            }
-        }
-    }
+
     public static Vector<Focus> OP_Replacement(Vector<Focus> origin,final String[] op) {
         for (int x=1; x<op.length; x++) {
             if (op[0].length()!=op[x].length())
@@ -494,46 +481,33 @@ public class JspStatic {
             DQArea.add(new Pair(ALLDQ.get(i), ALLDQ.get(i + 1)));
         }
     }
-    /***
-     * 建構Function Header的東西...
-     * @param text
-     * @param refSmallLeft
-     * @param refSmallRight
-     * @param dest 
-     */
-    public  void Build_Header_Area(StringBuffer text, Vector<Integer> refSmallLeft, Vector<Integer> refSmallRight, Vector<Pair> dest) {
-        if (refSmallLeft.size() != refSmallRight.size()) {
-            throw new RuntimeException("小括號不對稱");
-        }
-        for (int i = 0; i < refSmallLeft.size(); i++) {
-            int RightEnd = refSmallRight.get(i);
-            int LeftEnd = refSmallLeft.get(i);
-            int t = GetLineHead(text, LeftEnd);   //t is the left-end of new  HeaderArea;
-            t = GetFirstAlphabetAfterPos(text, t);
-            while (Main.In(t, CommentArea)) {
-                t++;
-                if (t == text.length()) {
-                    throw new RuntimeException("We meet the end of text...t=" + t);
+
+    public void Build_Header_Area(Vector<FocusPair> destHeaderArea) {
+        CompoundStack S=new CompoundStack();
+        for (int i=0; i<MyFocus.size(); i++) {
+            Focus that=MyFocus.get(i);
+            FocusPair F=GetPair(i,ClassArea);
+            if (F!=null) {
+                i=F.getEnd()+1;
+                S.meetClassAndLeft();
+            }else if (that.getString().equals("{")) {
+                S.meetLeft();
+            }else if (that.getString().equals("}")) {
+                S.meetRight();
+            }else if (that.getString().equals("(")) {
+                if (!S.OK_for_FunctionHeader()) {
+                    continue;
+                }else {
+                    //有可能可以接受FunctionHeader以後要判定這個statement有沒有等號
+                    int headpos=SearchForStatementHeadPos(i,MyFocus);
+                    boolean _found_equal_symbol=false;
+                    int nearest_eq= SearchForTokenPos(headpos,"=",MyFocus);
+                    if (nearest_eq>i || nearest_eq==-1) {
+                        int right_brace_pos=SearchForTokenPos(i,")",MyFocus);
+                        destHeaderArea.add(new FocusPair(headpos,right_brace_pos));
+                        i=right_brace_pos;
+                    }
                 }
-            }
-            int q = RightEnd + 1;		//q is the right-end of new Header Area;
-            int q2= GetFirstCharInCodeAfterPos(text,'{',q,DQArea,SQArea,CommentArea);
-            /*
-			while(text.charAt(q)!='{'||Main.In(q, refCommentArea)) {
-				q++;
-				if (q==text.length())
-					throw new RuntimeException("We meet the end of text...q="+q);
-			}
-             */
-            
-            if (t >= 0 && q2 >= 0) {
-                String thatString= text.substring(t,q);
-                if (thatString.indexOf("=")>=0)
-                    return;                        //含有等號就不是FuncArea,應該當成stmt處理
-                else
-                    dest.add(new Pair(t, q2-1));
-            } else {
-                throw new RuntimeException("Build_Header_Area Wrong: i=" + i + "  t=" + t);
             }
         }
     }
@@ -876,6 +850,14 @@ public class JspStatic {
         }
         return null;
     }
+    public static FocusPair GetPair(Integer pos,Vector<FocusPair> src) {
+        for (FocusPair F:src) {
+            if (F.getStart()<= pos && pos<=F.getEnd() ) {
+                return F;
+            }
+        }
+        return null;
+    }
 
     public static StringBuffer TrimLeft(StringBuffer inn) {
         while (inn.length() >= 1 && EMPTY.contains(String.valueOf(inn.charAt(0)))) {
@@ -987,7 +969,8 @@ public class JspStatic {
             return t2;
         return t3;
     }
-    public  int GetFuncBase(int pos) {
+    
+    public int GetFuncBase(int pos) {
         for (int i=0; i<FuncHeaderArea.size(); i++) {
             Pair that=FuncHeaderArea.get(i);
             int start=GetFirstCharInCodeAfterPos(MyText,'{',that.getEnd(),DQArea,SQArea,CommentArea);
@@ -1014,5 +997,23 @@ public class JspStatic {
                 return false;
         }
         return true;
+    }
+    public static int SearchForStatementHeadPos(int pos,Vector<Focus> refMyFocus) {
+        int i=pos-1;
+        while(i>=0) {
+            if (refMyFocus.get(i).equals("}") || refMyFocus.get(i).equals(";")) {
+                return (i+1);
+            }
+        }
+        return 0;
+    }
+    public static int SearchForTokenPos(int pos,String str,Vector<Focus> refMyFocus) {
+        int i=pos+1;
+        while(i<refMyFocus.size()) {
+            if (refMyFocus.get(i).getString().equals(str)) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

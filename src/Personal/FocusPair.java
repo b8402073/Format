@@ -19,7 +19,7 @@ public final class FocusPair {
     public Integer getStart() {
         return i_start;
     }
-    public Integer getend() {
+    public Integer getEnd() {
         return i_end;
     }
     public String toString(Vector<Focus> focus) {

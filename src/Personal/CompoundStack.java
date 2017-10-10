@@ -50,6 +50,7 @@ public class CompoundStack {
             ret.append(Hand.get(i).size());
             ret.append(' ');
         }
+        ret.append(']');
         return ret.toString();
     }
     

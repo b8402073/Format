@@ -137,4 +137,18 @@ public class Test0 {
                 
         
     }
+    
+    @Test
+    public void Test2() {
+         StringBuffer Q=new StringBuffer("<%! int D=3>>>1+5; int E +=15; int F= ++E; %>");
+         
+         JspStatic obj=new JspStatic(Q);
+         System.out.println("obj.MyFocus.size()="+obj.MyFocus.size());
+         assertTrue(obj.MyFocus.size()==20);
+         final String[] arr={"int","D","=","3",">>>","1","+","5",";","int","E","+=","15",";","int","F","=","++","E",";"};
+         for (int i=0; i<obj.MyFocus.size(); i++) {
+             System.out.println(arr[i]);
+             assertTrue(arr[i].equals(obj.MyFocus.get(i).RetString));
+         }
+    }
 }

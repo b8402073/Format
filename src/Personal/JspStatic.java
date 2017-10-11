@@ -185,9 +185,13 @@ public class JspStatic {
                 ret.append(line);                
             }else {
                 //基本上當成一個Statement處理
+                System.out.println("i="+i);
+                if (i==170)
+                    System.out.println("hello");
                 int HeadPos=SearchForStatementHeadPos(i,MyFocus);
                 int FuncBase=GetFuncBase(i);
-                int StartPos=Math.max(HeadPos,FuncBase);
+                int ClassBase=GetClassBase(i);
+                int StartPos=maxx(HeadPos,ClassBase+1,FuncBase+1);
                 int EndPos=SearchForTokenPos(i,";",MyFocus);
                 FocusPair tmp=new FocusPair(StartPos,EndPos);
                 line=sHead+GetString(sLv,Level)+ tmp.toString(MyFocus);
@@ -209,7 +213,8 @@ public class JspStatic {
         //到這裡把三個字元的運算子都替換掉        
         final String[] op2={"++","--","==","!=",">=","<=","<<",">>","&&","||","+=","-=","*=","/=","%=","&=","^=","|="};
         Vector<Focus> tmp3=OP_Replacement(tmp2,op2);
-        MyFocus=FloatNUM_Replacement(tmp3);
+        //MyFocus=FloatNUM_Replacement(tmp3);  //怪怪的,暫時不跑
+        MyFocus=tmp3;
     }
 
     public static Vector<Focus> OP_Replacement(Vector<Focus> origin,final String[] op) {
@@ -243,7 +248,7 @@ public class JspStatic {
                 ret.add(origin.get(i));
             }            
         }
-        for (int i=origin.size()-op_length; i<origin.size(); i++) {
+        for (int i=origin.size()-op_length+1; i<origin.size(); i++) {
             ret.add(origin.get(i));
         }
         return ret;
@@ -1073,5 +1078,13 @@ public class JspStatic {
             ++i;
         }
         return -1;
+    }
+    public static int maxx(int a,int b,int c) {
+        if (a>=b && a>=c)
+            return a;
+        else if (b>=a && b>=c)
+            return b;
+        else
+            return c;
     }
 }

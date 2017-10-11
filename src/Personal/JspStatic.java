@@ -181,6 +181,13 @@ public class JspStatic {
             }else if (that.equals("finally")) {
                 line=sHead+GetString(sLv,Level)+" finally ";
                 ret.append(line);                
+            }else {
+                //基本上當成一個Statement處理
+                int HeadPos=SearchForStatementHeadPos(i,MyFocus);
+                int EndPos=SearchForTokenPos(i,";",MyFocus);
+                FocusPair tmp=new FocusPair(HeadPos,EndPos);
+                line=sHead+GetString(sLv,Level)+ tmp.toString(MyFocus);
+                ret.append(line+"\n");
             }
         }
         return ret;

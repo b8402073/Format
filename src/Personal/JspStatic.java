@@ -821,6 +821,29 @@ public class JspStatic {
         }
         return null;
     }
+    public static Vector<Pair> GetAllComment(FocusPair F,Vector<Focus> refMyFocus,Vector<Pair> refCommentArea) {
+        int start=refMyFocus.get(F.getStart()).StartPos;
+        int end=refMyFocus.get(F.getEnd()).StartPos;
+        Vector<Pair> ret=new Vector<Pair>();
+        for (int i=0; i<refCommentArea.size(); i++) {
+            Pair P=refCommentArea.get(i);
+            if (start<= P.getStart() && P.getEnd()<= end) {
+                ret.add(P);
+            }
+        }
+        return ret;        
+    }
+    public static String Comments_Into_String1(Vector<Pair> comments,StringBuffer refMyText) {
+        StringBuffer ret=new StringBuffer();
+        Pair P;
+        for (int i=0; i<comments.size()-1; i++) {
+            P=comments.get(i);
+            ret.append(refMyText.substring(P.getStart(),P.getEnd()+1)+"\n");
+        }
+        P=comments.get(comments.size()-1);
+        ret.append(refMyText.substring(P.getStart(),P.getEnd()+1));
+        return ret.toString();
+    }
     public static String Uncomment(StringBuffer text,Pair P,Vector<Pair> commentArea) {
         StringBuffer ret=new StringBuffer(text.substring(P.getStart(), P.getEnd()+1));
         int t=P.getStart();

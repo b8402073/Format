@@ -30,5 +30,16 @@ public final class FocusPair {
         ret.append(focus.get(i_end).getString());
         return ret.toString();
     }
+    public String toCatchString(Vector<Focus> focus) {
+        if (i_end- i_start==3) {
+            if ("(".equals(focus.get(i_start).getString())  &&
+                ")".equals(focus.get(i_end).getString()) ) {
+                String Element1=focus.get(i_start+1).getString();
+                String Element2=focus.get(i_start+2).getString();
+                return("("+Element1+" "+Element2+")");
+            }            
+        }
+        return null;
+    }
     
 }

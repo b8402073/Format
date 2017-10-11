@@ -1,7 +1,7 @@
 package Personal;
 
-import java.util.Collections;
 import java.util.Comparator;
+import java.util.Stack;
 import java.util.Vector;
 
 /*
@@ -34,7 +34,7 @@ public class JspStatic {
                 return 0;
         }
     }
-    
+    public enum  LineType { AFTER_LINE, NEXT_LINE};
     public final static PairSort PairSortObj=new PairSort();
     public final static String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     public final static String EMPTY = " \t\r\n\0";
@@ -75,16 +75,115 @@ public class JspStatic {
         Build_Class_Area(ClassArea); 
         Build_Header_Area(FuncHeaderArea);  
 
-        System.out.println(Main.ToStr(ArrayArea, MyText));
         //建完Focus Tokens以後,如果有必要,要做  Focus-->Resolution的轉換 (也許沒有必要)
-        //Make();
         
-        for (int i = 0; i < Analysis.size(); i++) {
-           System.out.println(Analysis.get(i).that.toString());
-           System.out.println(Analysis.get(i).toString(MyText));
+        StringBuffer output=Make0(LineType.AFTER_LINE);
+    }
+    
+    /***
+     * 輸出一份完全沒有註釋的程式碼,全部AFTER_LINE or NEXT_LINE  as much as possible,結尾是\n
+     */
+    public StringBuffer Make0(LineType lt) {       
+        Stack<Integer> _do=new Stack<Integer>();       
+        final String sHead="#####";
+        final char sLv='\t';
+        int Level=0;
+        String line;
+        StringBuffer ret=new StringBuffer();
+        for (int i=0; i<MyFocus.size(); i++) {
+            FocusPair F=GetPair(i,ClassArea);
+            if (F!=null) {
+                //確認進入ClassArea
+                line=sHead+GetString(sLv,Level)+F.toString(MyFocus);
+                ret.append(line);
+                i=F.getEnd(); 
+                continue;
+            }
+            F=GetPair(i,FuncHeaderArea);
+            if (F!=null) {
+                //確認進入FuncHeaderArea
+                line=sHead+GetString(sLv,Level)+F.toString(MyFocus);
+                ret.append(line);
+                i=F.getEnd();
+                continue;
+            }
+            String that=MyFocus.get(i).getString();
+            if (that.equals("{")) {
+                switch(lt) {
+                    case AFTER_LINE:
+                        ret.append(" {"+"\n");
+                        Level+=1;
+                        break;
+                    case NEXT_LINE:
+                        ret.append("\n");
+                        line=sHead+GetString(sLv,Level)+"{"+"\n";
+                        Level+=1;
+                        ret.append(line);
+                        break;
+                }
+                continue;
+            }
+            if (that.equals("}")) {                
+                //被do攔截
+                if (_do.peek()==i) {
+                    _do.pop();
+                    line=sHead+GetString(sLv,Level)+"}";
+                    ret.append(line);
+                    FocusPair Brace=FindSymmetricSmallBraceToken(i,MyFocus);
+                    ret.append(" "+Brace.toString(MyFocus));
+                    ret.append(";\n");
+                    i=Brace.getEnd()+1;
+                    continue;
+                }
+                //預設的狀況
+                line=sHead+GetString(sLv,Level)+"}"+"\n";
+                Level-=1;
+                ret.append(line);
+                continue;
+            }
+            if (that.equals("do"))  {
+                line=sHead+GetString(sLv,Level)+"do ";
+                ret.append(line);
+                FocusPair Block=FindSymmetricBigBraceToken(i,MyFocus);
+                _do.push(Block.getEnd());                
+            }else if (that.equals("for")) {
+                line=sHead+GetString(sLv,Level)+"for ";
+                ret.append(line);
+                FocusPair Brace=FindSymmetricSmallBraceToken(i,MyFocus);
+                ret.append(Brace.toString(MyFocus));
+                i=Brace.getEnd();
+                continue;
+            }else if (that.equals("while")) {
+                line=sHead+GetString(sLv,Level)+"while ";
+                ret.append(line);
+                FocusPair Brace=FindSymmetricSmallBraceToken(i,MyFocus);
+                ret.append(Brace.toString(MyFocus));
+                i=Brace.getEnd();
+                continue;
+            }else if (that.equals("if")) {
+                line=sHead+GetString(sLv,Level)+"if ";
+                ret.append(line);
+                FocusPair Brace=FindSymmetricSmallBraceToken(i,MyFocus);
+                ret.append(Brace.toString(MyFocus));
+                i=Brace.getEnd();
+                continue;
+            }else if (that.equals("else")) {
+                line=sHead+GetString(sLv,Level)+"else ";
+                ret.append(line);
+            }else if (that.equals("try")) {
+                line=sHead+GetString(sLv,Level)+"try ";
+                ret.append(line);
+            }else if (that.equals("catch")) {
+                line=sHead+GetString(sLv,Level)+" catch ";
+                ret.append(line);
+                FocusPair Brace=FindSymmetricSmallBraceToken(i,MyFocus);
+                ret.append(Brace.toCatchString(MyFocus));
+            }else if (that.equals("finally")) {
+                line=sHead+GetString(sLv,Level)+" finally ";
+                ret.append(line);                
+            }
         }
-        
-        //Make2();
+        return ret;
     }
     public void Build_MyFocus() {
         Vector<Focus> tmp=new Vector<Focus>();

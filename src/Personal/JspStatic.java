@@ -78,6 +78,7 @@ public class JspStatic {
         //建完Focus Tokens以後,如果有必要,要做  Focus-->Resolution的轉換 (也許沒有必要)
         
         StringBuffer output=Make0(LineType.AFTER_LINE);
+        System.out.println(output.toString());
     }
     
     /***
@@ -125,7 +126,7 @@ public class JspStatic {
             }
             if (that.equals("}")) {                
                 //被do攔截
-                if (_do.peek()==i) {
+                if (_do.size()>0 && _do.peek()==i) {
                     _do.pop();
                     line=sHead+GetString(sLv,Level)+"}";
                     ret.append(line);
@@ -178,16 +179,20 @@ public class JspStatic {
                 ret.append(line);
                 FocusPair Brace=FindSymmetricSmallBraceToken(i,MyFocus);
                 ret.append(Brace.toCatchString(MyFocus));
+                i=Brace.getEnd();
             }else if (that.equals("finally")) {
                 line=sHead+GetString(sLv,Level)+" finally ";
                 ret.append(line);                
             }else {
                 //基本上當成一個Statement處理
                 int HeadPos=SearchForStatementHeadPos(i,MyFocus);
+                int FuncBase=GetFuncBase(i);
+                int StartPos=Math.max(HeadPos,FuncBase);
                 int EndPos=SearchForTokenPos(i,";",MyFocus);
-                FocusPair tmp=new FocusPair(HeadPos,EndPos);
+                FocusPair tmp=new FocusPair(StartPos,EndPos);
                 line=sHead+GetString(sLv,Level)+ tmp.toString(MyFocus);
                 ret.append(line+"\n");
+                i=EndPos;
             }
         }
         return ret;

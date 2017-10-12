@@ -47,6 +47,13 @@ public class JspStatic {
         }
         return ret.toString();
     }
+    public static String GetString(String space,int count) {
+        StringBuffer ret=new StringBuffer();
+        for (int i=0; i<count; i++) {
+            ret.append(space);
+        }
+        return ret.toString();
+    }
 
     public static StringBuffer MyText, OutputText;
     
@@ -87,7 +94,7 @@ public class JspStatic {
     public StringBuffer Make0(LineType lt) {       
         Stack<Integer> _do=new Stack<Integer>();       
         final String sHead="#####";
-        final char sLv='\t';
+        final String sLv="   ";
         int Level=0;
         String line;
         StringBuffer ret=new StringBuffer();
@@ -185,9 +192,6 @@ public class JspStatic {
                 ret.append(line);                
             }else {
                 //基本上當成一個Statement處理
-                System.out.println("i="+i);
-                if (i==170)
-                    System.out.println("hello");
                 int HeadPos=SearchForStatementHeadPos(i,MyFocus);
                 int FuncBase=GetFuncBase(i);
                 int ClassBase=GetClassBase(i);
@@ -213,8 +217,8 @@ public class JspStatic {
         //到這裡把三個字元的運算子都替換掉        
         final String[] op2={"++","--","==","!=",">=","<=","<<",">>","&&","||","+=","-=","*=","/=","%=","&=","^=","|="};
         Vector<Focus> tmp3=OP_Replacement(tmp2,op2);
-        MyFocus=FloatNUM_Replacement(tmp3);  //怪怪的,暫時不跑
-        //MyFocus=tmp3;
+        MyFocus=FloatNUM_Replacement(tmp3);  //已經修正了可以用
+       
     }
 
     public static Vector<Focus> OP_Replacement(Vector<Focus> origin,final String[] op) {

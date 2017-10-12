@@ -56,8 +56,8 @@ public class JspStatic {
     }
     public static StringBuffer MyText, OutputText;
     
-    public Vector<Integer> SmallLeft; // Record the position of '('
-    public Vector<Integer> SmallRight;// Record the position of ')'
+    //public Vector<Integer> SmallLeft; // Record the position of '('
+    //public Vector<Integer> SmallRight;// Record the position of ')'
 
     public Vector<Pair> SQArea;
     public Vector<Pair> DQArea;
@@ -77,7 +77,7 @@ public class JspStatic {
         Build_DQ_Area(MyText, DQArea);
         Build_SQ_Area(MyText, DQArea, SQArea);
         Build_Comment_Area(MyText, DQArea, SQArea, CommentArea);
-        Fix_if_SQDQ_SLeft_SRight_SemiColon_in_CommentArea(MyText, SQArea, DQArea, CommentArea, SmallLeft, SmallRight);
+        Fix_if_SQDQ_SLeft_SRight_SemiColon_in_CommentArea(MyText, SQArea, DQArea, CommentArea);
         Build_Array_Area(MyText,ArrayArea);             
         Build_MyFocus();     
         Build_Class_Area(ClassArea); 
@@ -320,8 +320,6 @@ public class JspStatic {
      */
     public void init() {
         OutputText = new StringBuffer();
-        SmallLeft = new Vector<Integer>();
-        SmallRight =    new Vector<Integer>();
 
         SQArea = new Vector<Pair>();
         DQArea = new Vector<Pair>();
@@ -419,7 +417,7 @@ public class JspStatic {
     }
 
     public static void Fix_if_SQDQ_SLeft_SRight_SemiColon_in_CommentArea(StringBuffer text, Vector<Pair> SQArea,
-            Vector<Pair> DQArea, Vector<Pair> CommentArea, Vector<Integer> SmallLeft, Vector<Integer> SmallRight) {
+            Vector<Pair> DQArea, Vector<Pair> CommentArea) {
         Vector<Integer> ALLSQ = new Vector<Integer>();
         Vector<Integer> ALLDQ = new Vector<Integer>();
         for (Pair SQ : SQArea) {
@@ -442,18 +440,6 @@ public class JspStatic {
                 int that = ALLDQ.get(i);
                 if (Comment.getStart() <= that && that <= Comment.getEnd()) {
                     ALLDQ.removeElementAt(i);
-                }
-            }
-            for (int i = SmallLeft.size() - 1; i >= 0; i--) {
-                int that = SmallLeft.get(i);
-                if (Comment.getStart() <= that && that <= Comment.getEnd()) {
-                    SmallLeft.removeElementAt(i);
-                }
-            }
-            for (int i = SmallRight.size() - 1; i >= 0; i--) {
-                int that = SmallRight.get(i);
-                if (Comment.getStart() <= that && that <= Comment.getEnd()) {
-                    SmallRight.removeElementAt(i);
                 }
             }
         }

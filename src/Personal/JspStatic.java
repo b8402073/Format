@@ -328,7 +328,21 @@ public class JspStatic {
         ClassArea = new Vector<FocusPair>();
         ArrayArea= new Vector<Pair>();
     }
-
+    /****
+     * DQ=Double Quote
+     * 初步建立DQArea,但是這樣建立一定會有錯(因為註解裡面也有可能有DQ符號)
+     * 之後再修正
+     * 基本上DQArea和CommentArea有可能會有"雞生蛋蛋生雞"的邏輯狀況出現
+     * 所以現在跑的碼面對在註解區域裡落單的DQ符號可能會有問題
+     * 例如  String,S,=,DQ,A,B,C,DQ,;    //    DQ    /n
+     *       String,T,=,DQ,C,D,E,DQ,;
+     * 所以要求使用者在CommentArea如果用DQ符號一定要成雙
+     * 例如  String,S,=,DQ,A,B,C,DQ,;    //    (DQ)(DQ)    /n
+     *       String,T,=,DQ,C,D,E,DQ,;
+     * 
+     * @param text          解析的本文(不含"<!%","%>")
+     * @param dest          放DQArea的地方
+     */
     public static void Build_DQ_Area(StringBuffer text, Vector<Pair> dest) {
         int startDQ = (-1);
         for (int i = 0; i < text.length(); i++) {
@@ -347,7 +361,22 @@ public class JspStatic {
             }
         }
     }
-
+    /****
+     * SQ=Single Quote
+     * 建立SQArea
+     * 初步建立SQArea,但是這樣建立一定會有錯(因為註解裡面也有可能有SQ符號)
+     * 之後再修正
+     * 基本上SQArea和CommentArea有可能會有"雞生蛋蛋生雞"的邏輯狀況出現
+     * 所以現在跑的碼面對在註解區域裡落單的SQ符號可能會有問題
+     * 例如  String,S,=,SQ,A,SQ,;    //    SQ    /n
+     *       String,T,=,SQ,C,SQ,;
+     * 所以要求使用者在CommentArea如果用DQ符號一定要成雙
+     * 例如  String,S,=,SQ,A,SQ,;    //    (SQ)(SQ)    /n
+     *       String,T,=,SQ,C,SQ,;
+     * @param text              解析的本文(不含"<!%","%>")
+     * @param RefDQArea         參考的DQArea資訊
+     * @param dest              放SQArea的地方  
+     */
     public static void Build_SQ_Area(StringBuffer text, Vector<Pair> RefDQArea, Vector<Pair> dest) {
         int startSQ = (-1);
         for (int i = 0; i < text.length(); i++) {
@@ -369,7 +398,13 @@ public class JspStatic {
             }
         }
     }
-
+    /****
+     * 建立CommentArea
+     * @param text              參考的本文
+     * @param RefDQArea         參考的DQArea
+     * @param RefSQArea         參考的SQArea
+     * @param dest              放置CommentArea的地方
+     */
     public static void Build_Comment_Area(StringBuffer text, Vector<Pair> RefDQArea, Vector<Pair> RefSQArea,
             Vector<Pair> dest) {
         int start = (-1);

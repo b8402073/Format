@@ -8,11 +8,19 @@ package Personal;
 import java.util.Vector;
 
 /**
- *
+ * FocusPair就是把兩個Focus的位置放在一起
  * @author easterday
  */
 public final class FocusPair {
+    /***
+     * 開始位置/結束位置
+     */
     public final Integer i_start,i_end;
+    /***
+     * 建構子
+     * @param start
+     * @param end 
+     */
     public FocusPair(Integer start,Integer end) {
         i_start=start; i_end=end;
     }
@@ -22,6 +30,11 @@ public final class FocusPair {
     public Integer getEnd() {
         return i_end;
     }
+    /****
+     * 字串表現式
+     * @param focus     全部的Focus串列
+     * @return          把字串以空白串接串起來 ex. "int","A","=","5",";" --> "int A = 5 ;"
+     */
     public String toString(Vector<Focus> focus) {
         StringBuffer ret=new StringBuffer();
         for (int i=i_start; i<=i_end-1; i++) {
@@ -30,6 +43,11 @@ public final class FocusPair {
         ret.append(focus.get(i_end).getString());
         return ret.toString();
     }
+    /***
+     * 專用於catch關鍵字的字串處理
+     * @param focus     全部的字串串列
+     * @return          "("+Element1+" "+Element2+")"
+     */
     public String toCatchString(Vector<Focus> focus) {
         if (i_end- i_start==3) {
             if ("(".equals(focus.get(i_start).getString())  &&

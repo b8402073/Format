@@ -59,13 +59,35 @@ public class JspStatic {
     //public Vector<Integer> SmallLeft; // Record the position of '('
     //public Vector<Integer> SmallRight;// Record the position of ')'
 
+    /***
+     * 單引號區域=SQArea SQ=Single Quote
+     */
     public Vector<Pair> SQArea;
+    /***
+     * 雙引號區域=DQArea DQ=Double Quote
+     */
     public Vector<Pair> DQArea;
+    /***
+     * CommentArea=註解區域
+     */
     public Vector<Pair> CommentArea;
+    /***
+     * FuncHeaderArea=函式區域
+     */
     public Vector<FocusPair> FuncHeaderArea;
+    /***
+     * ClassArea=Class宣告區域
+     */
     public Vector<FocusPair> ClassArea;
+    /***
+     * ArrayArea=陣列區域
+     */
     public Vector<Pair> ArrayArea;
-    public Vector<Resolution> Analysis; 
+    
+    //public Vector<Resolution> Analysis; 
+    /***
+     * 用一串Focus代表一群有用程式碼的Token
+     */
     public Vector<Focus> MyFocus;
     /****
      * 建構子
@@ -202,7 +224,7 @@ public class JspStatic {
                 int HeadPos=SearchForStatementHeadPos(i,MyFocus);
                 int FuncBase=GetFuncBase(i);
                 int ClassBase=GetClassBase(i);
-                int StartPos=maxx(HeadPos,ClassBase+1,FuncBase+1);
+                int StartPos=max(HeadPos,ClassBase+1,FuncBase+1);
                 int EndPos=SearchForTokenPos(i,";",MyFocus);
                 FocusPair tmp=new FocusPair(StartPos,EndPos);
                 line=sHead+GetString(sLv,Level)+ tmp.toString(MyFocus);
@@ -499,6 +521,10 @@ public class JspStatic {
             DQArea.add(new Pair(ALLDQ.get(i), ALLDQ.get(i + 1)));
         }
     }
+    /****
+     * 用MyFocus建立HeaderArea
+     * @param destHeaderArea        放置HeaderArea的地方
+     */
     public void Build_Header_Area(Vector<FocusPair> destHeaderArea) {
         CompoundStack S=new CompoundStack();
         for (int i=0; i<MyFocus.size(); i++) {
@@ -528,7 +554,10 @@ public class JspStatic {
             }
         }
     }
-    
+    /***
+     * 用MyFocus建立ClassArea 
+     * @param destClassArea         放置ClassArea的地方
+     */
     public void Build_Class_Area(Vector<FocusPair> destClassArea) {     
         final String[] prev_accept={"private","protected","public","final","static","abstract"};
         //final String[] next_accept={"extends","implements","<",">",","};
@@ -562,6 +591,11 @@ public class JspStatic {
             }
         }        
     }
+    /****
+     * 用本文試著建立ArrayArea;雖然這個結果有可能不太正確
+     * @param text      參考的本文
+     * @param dest      放置ArrayArea的地方
+     */
     public  void Build_Array_Area(StringBuffer text,Vector<Pair> dest) {
         for (int i=0; i<text.length(); i++) {
             if ((text.charAt(i)=='=' || text.substring(i).startsWith("new"))
@@ -616,7 +650,7 @@ public class JspStatic {
         }
         return (-1);
     }
-
+    //這個要
     public static int GetFirstCharInCodeAfterPos(StringBuffer text, char inn, int pos,
             Vector<Pair> refDQArea, Vector<Pair> refSQArea, Vector<Pair> refCommentArea) {
         int i = pos + 1;
@@ -633,49 +667,6 @@ public class JspStatic {
         }
         return (-1);
     }
-
-    public static int GetFirstCharAfterPos(StringBuffer text, char c, int pos) {
-        pos++;
-        while (pos < text.length()) {
-            if (text.charAt(pos) == c) {
-                return pos;
-            }
-            pos++;
-        }
-        return (-1);
-    }
-
-    public static int GetFirstCharAfterPos(StringBuffer text, char c, int pos, int end) {
-        int e = Math.min(end, text.length());
-        for (int i = pos; i <= e; i++) {
-            if (text.charAt(i) == c) {
-                return i;
-            }
-        }
-        return (-1);
-    }
-
-    public static int GetFirstCharBeforePos(StringBuffer text, char c, int pos) {
-        int i = pos;
-        while (i >= 0) {
-            if (text.charAt(i) == c) {
-                return i;
-            }
-            i--;
-        }
-        return (-1);
-    }
-
-    public static int GetFirstCharBeforePosAfterStartLimit(StringBuffer text, char c, int pos, int StartLimit) {
-        int i = pos;
-        while (i >= StartLimit) {
-            if (text.charAt(i) == c) {
-                return i;
-            }
-            i--;
-        }
-        return (-1);
-    }
     
     public static StringBuffer GetMyText(StringBuffer buf) {
         int C1 = buf.indexOf("<%!");
@@ -683,6 +674,7 @@ public class JspStatic {
         String my = buf.substring(C1 + 3, C2);
         return new StringBuffer(my);
     }
+    
     public static Focus GetOneToken(StringBuffer text,int from_pos,Vector<Pair>CommentArea,Vector<Pair> ArrayArea, Vector<Pair> DQArea,Vector<Pair> SQArea) {
         final String WHITE=" \t\n\r\0";
         StringBuffer retStr=new StringBuffer();
@@ -801,6 +793,14 @@ public class JspStatic {
         ret.append(refMyText.substring(P.getStart(),P.getEnd()+1));
         return ret.toString();
     }
+    /****
+     * 把P區域的本文,如果包含註解,全部拿掉
+     * 注意移除註解的動作要由文末往文前動作才會正確
+     * @param text              本文
+     * @param P                 範圍
+     * @param commentArea       註解
+     * @return                  傳回值
+     */
     public static String Uncomment(StringBuffer text,Pair P,Vector<Pair> commentArea) {
         StringBuffer ret=new StringBuffer(text.substring(P.getStart(), P.getEnd()+1));
         int t=P.getStart();
@@ -816,16 +816,13 @@ public class JspStatic {
         }
         return ret.toString();
     }
-    public static StringBuffer GetComment(StringBuffer text, int pos, Vector<Pair> CommentArea) {
-        for (int i = 0; i < CommentArea.size(); i++) {
-            Pair that = CommentArea.get(i);
-            if (that.getStart() <= pos && pos <= that.getEnd()) {
-                return new StringBuffer(text.substring(that.getStart(), that.getEnd() + 1));
-            }
-        }
-        return null;
-    }
 
+    /****
+     * 由一群Pair中找pos所在的Pair,然後傳回
+     * @param pos               某個文本位置
+     * @param src               某個Pair串列
+     * @return                  傳回一個Pair
+     */
     public static Pair GetPair(int pos, Vector<Pair> src) {
         for (Pair p : src) {
             if (p.getStart() <= pos && pos <= p.getEnd()) {
@@ -834,6 +831,12 @@ public class JspStatic {
         }
         return null;
     }
+    /****
+     * 由一群FocusPair找pos所在的FocusPair,然後傳回
+     * @param pos               某個位置
+     * @param src               某個FocusPair串列
+     * @return                  傳回一個FocusPair
+     */
     public static FocusPair GetPair(Integer pos,Vector<FocusPair> src) {
         for (FocusPair F:src) {
             if (F.getStart()<= pos && pos<=F.getEnd() ) {
@@ -843,41 +846,10 @@ public class JspStatic {
         return null;
     }
 
-    public static StringBuffer TrimLeft(StringBuffer inn) {
-        while (inn.length() >= 1 && EMPTY.contains(String.valueOf(inn.charAt(0)))) {
-            inn.deleteCharAt(0);
-        }
-        return inn;
-    }
-
-    public static String TrimLeft(String str) {
-        StringBuffer that = new StringBuffer(str);
-        while (EMPTY.contains(String.valueOf(that.charAt(0)))) {
-            that.deleteCharAt(0);
-        }
-        return that.toString();
-    }
 
 
 
-    public static int QuickSearchAfterPos(Vector<Integer> src, char c, int pos) {
-        for (int i = 0; i < src.size() - 1; i++) {
-            if (src.get(i) <= pos && pos < src.get(i + 1)) {
-                return src.get(i + 1);
-            }
-        }
-        return (-1);
-    }
 
-
-    public int QuickSearchIndexAfterPos(Vector<Integer> src, char c, int pos) {
-        for (int i = 0; i < src.size(); i++) {
-            if (src.get(i) <= pos && pos < src.get(i + 1)) {
-                return (i + 1);
-            }
-        }
-        return (-1);
-    }
     /***
      * 也許以後用得到
      * @param that 
@@ -888,7 +860,12 @@ public class JspStatic {
         }
         that.deleteCharAt(that.length() - 1);
     }
-
+    /****
+     * 找start位置後的對稱的大括號
+     * @param start             搜尋起始位置
+     * @param refMyFocus        傳入要搜尋的Focus串列        
+     * @return              傳回一對對稱的大括號位置,以FocusPair的形式
+     */
     public static  FocusPair FindSymmetricBigBraceToken(int start,Vector<Focus> refMyFocus) {
         int Level=0,retStart=(-1),retEnd=(-1);
         if (refMyFocus.get(start).getString().equals("{")) {
@@ -910,7 +887,13 @@ public class JspStatic {
             }
         }
         return null;
-    }    
+    }
+    /****
+     * 由起始位置搜尋對稱的小括號
+     * @param start         搜尋起始位置
+     * @param refMyFocus    搜尋的Focus串列    
+     * @return              傳回一對小括號,以FocusPair的形式
+     */
     public static  FocusPair FindSymmetricSmallBraceToken(int start,Vector<Focus> refMyFocus) {
         int Level=0,retStart=(-1),retEnd=(-1);
         if (refMyFocus.get(start).getString().equals("(")) {
@@ -933,7 +916,13 @@ public class JspStatic {
         }
         return null;
     }
-
+    /***
+     * 找最大值
+     * @param t1
+     * @param t2
+     * @param t3
+     * @return 
+     */
     public static int max(int t1,int t2,int t3) {
         if (t1>=t2 &&  t1>=t3)
             return t1;
@@ -972,6 +961,11 @@ public class JspStatic {
         }
         return (-1);
     }
+    /***
+     * 檢查某字串是否全為數字
+     * @param input     輸入字串
+     * @return          true/false
+     */
     public static boolean IsNumber(String input) {
         for (int i=0; i<input.length(); i++) {
             if (NUMBER.indexOf(input.charAt(i))<0)
@@ -979,6 +973,13 @@ public class JspStatic {
         }
         return true;
     }
+    /****
+     * 由某個位置找可能是本敘述(statement)的頭的位置
+     * 方法是往前找"{","}",";"三個符號,如果找到應該就是了(不過還不確定是不是Statement head,所以要用GetClassBase/GetFuncBase來輔佐)
+     * @param pos               開始往前尋找的位置
+     * @param refMyFocus        尋找的Focus串列
+     * @return                  傳回的位置
+     */
     public static int SearchForStatementHeadPos(int pos,Vector<Focus> refMyFocus) {
         int i=pos-1;
         while(i>=0) {
@@ -994,6 +995,13 @@ public class JspStatic {
         }
         return 0;
     }
+    /****
+     * 用某個字串符號,往後搜尋某個位置
+     * @param pos       
+     * @param str
+     * @param refMyFocus
+     * @return 
+     */
     public static int SearchForTokenPos(int pos,String str,Vector<Focus> refMyFocus) {
         int i=pos+1;
         while(i<refMyFocus.size()) {
@@ -1003,13 +1011,5 @@ public class JspStatic {
             ++i;
         }
         return -1;
-    }
-    public static int maxx(int a,int b,int c) {
-        if (a>=b && a>=c)
-            return a;
-        else if (b>=a && b>=c)
-            return b;
-        else
-            return c;
     }
 }

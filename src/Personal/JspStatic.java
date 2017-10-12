@@ -82,7 +82,7 @@ public class JspStatic {
     /***
      * ArrayArea=陣列區域
      */
-    public Vector<Pair> ArrayArea;
+    public Vector<FocusPair> ArrayArea;
     
     //public Vector<Resolution> Analysis; 
     /***
@@ -100,11 +100,12 @@ public class JspStatic {
         Build_SQ_Area(MyText, DQArea, SQArea);
         Build_Comment_Area(MyText, DQArea, SQArea, CommentArea);
         Fix_if_SQDQ_SLeft_SRight_SemiColon_in_CommentArea(MyText, SQArea, DQArea, CommentArea);
-        Build_Array_Area(MyText,ArrayArea);             
-        Build_MyFocus();     
+                    
+        Build_MyFocus(); 
+        
         Build_Class_Area(ClassArea); 
         Build_Header_Area(FuncHeaderArea);  
-
+        Build_Array_Area(ArrayArea); 
         //建完Focus Tokens以後,如果有必要,要做  Focus-->Resolution的轉換 (也許沒有必要)
         
         StringBuffer output=Make0(LineType.NEXT_LINE);
@@ -240,10 +241,10 @@ public class JspStatic {
      */
     public void Build_MyFocus() {
         Vector<Focus> tmp=new Vector<Focus>();
-        Focus hand=JspStatic.GetOneToken(MyText, 0, CommentArea, ArrayArea, DQArea, SQArea); 
+        Focus hand=JspStatic.GetOneToken(MyText, 0, CommentArea,  DQArea, SQArea); 
         while(hand!=null) {
             tmp.add(hand);
-            hand=JspStatic.GetOneToken(MyText, hand.NextCharPos, CommentArea, ArrayArea, DQArea, SQArea); 
+            hand=JspStatic.GetOneToken(MyText, hand.NextCharPos, CommentArea, DQArea, SQArea); 
         }
         final String[] op3={">>>","<<=",">>="};
         Vector<Focus> tmp2=OP_Replacement(tmp,op3);
@@ -349,7 +350,7 @@ public class JspStatic {
         CommentArea = new Vector<Pair>();
         FuncHeaderArea = new Vector<FocusPair>();
         ClassArea = new Vector<FocusPair>();
-        ArrayArea= new Vector<Pair>();
+        ArrayArea= new Vector<FocusPair>();
     }
     /****
      * DQ=Double Quote
@@ -592,34 +593,31 @@ public class JspStatic {
         }        
     }
     /****
-     * 用本文試著建立ArrayArea;雖然這個結果有可能不太正確
-     * @param text      參考的本文
-     * @param dest      放置ArrayArea的地方
+     * 要重寫
+     *
      */
-    public  void Build_Array_Area(StringBuffer text,Vector<Pair> dest) {
-        for (int i=0; i<text.length(); i++) {
-            if ((text.charAt(i)=='=' || text.substring(i).startsWith("new"))
-                 && !Main.In(i,SQArea) && !Main.In(i,DQArea) && !Main.In(i, CommentArea)) {
-                int start=i;
-                int end=GetFirstCharInCodeAfterPos(text,';',i,DQArea,SQArea,CommentArea);
-                int pairStart=(-1),pairEnd;
-                boolean hasComma=false;
-                for (int j=i+1; j<end; j++ ) {
-                    if (text.charAt(j)=='{' && !Main.In(j,SQArea) && !Main.In(j, DQArea) && !Main.In(j, CommentArea)) {
-                        pairStart=j;
-                    }else if (text.charAt(j)==',' && !Main.In(j, SQArea) && !Main.In(j,DQArea) && !Main.In(j,CommentArea)) {
-                        hasComma=true;
-                    }else if (text.charAt(j)=='}' && !Main.In(j, SQArea) && !Main.In(j, DQArea) && !Main.In(j,CommentArea)) {
-                        pairEnd=j;
-                        if (hasComma && pairStart>=0) {
-                            ArrayArea.add(new Pair(pairStart,pairEnd+1));
-                            i=pairEnd;
-                            break;
-                        }
-                    }
-                }                
+    public  void Build_Array_Area(Vector<FocusPair> destArrayArea) {
+        for (int i=0;i<MyFocus.size()-1; i++) {
+            int base=Math.max(GetClassBase(i),GetFuncBase(i));
+            if (base<0)
+                base=0;
+            FocusPair limit=FindSymmetricBigBraceToken(base,MyFocus);
+            Focus F=MyFocus.get(i);
+            Focus nx=MyFocus.get(i+1);
+            if (nx.getString().equals("{")) {
+                switch(F.getString()) {
+                    case"=":
+                    case"]":
+                        FocusPair after=FindSymmetricBigBraceToken(i,MyFocus);
+                        if (limit.getStart()< after.getStart() && after.getEnd()<limit.getEnd()) {
+                            destArrayArea.add(after);                            
+                        }                    
+                    default:
+                        continue;
+                }
             }
         }
+
     }
     /*好像用不到
     public static int GetLineHead(StringBuffer text, int pos) {
@@ -675,7 +673,7 @@ public class JspStatic {
         return new StringBuffer(my);
     }
     
-    public static Focus GetOneToken(StringBuffer text,int from_pos,Vector<Pair>CommentArea,Vector<Pair> ArrayArea, Vector<Pair> DQArea,Vector<Pair> SQArea) {
+    public static Focus GetOneToken(StringBuffer text,int from_pos,Vector<Pair>CommentArea, Vector<Pair> DQArea,Vector<Pair> SQArea) {
         final String WHITE=" \t\n\r\0";
         StringBuffer retStr=new StringBuffer();
         int _First_Alphabet_Position=(-1);
@@ -693,7 +691,8 @@ public class JspStatic {
                 if (comment!=null) {
                     i=comment.getEnd();
                     CommentHit=true;
-                }    
+                }
+                /*
                 boolean ArrayHit=false;
                 Pair array=GetPair(i,ArrayArea);
                 if (array!=null) {
@@ -701,6 +700,8 @@ public class JspStatic {
                     if (_First_Alphabet_Position<0)
                         _First_Alphabet_Position=array.getStart();
                 }
+                */
+                
                 boolean DQHit=false;        
                 Pair DQ=GetPair(i,DQArea);
                 if (DQ!=null) {
@@ -721,13 +722,13 @@ public class JspStatic {
                     }else { 
                         continue;                        
                     }
-                }else if (ArrayHit)  {
+                }/*else if (ArrayHit)  {
                     if (retStr.length()>0) {
                         return new Focus(retStr.toString(),_First_Alphabet_Position,array.getStart());
                     }else { 
                         return new Focus(Uncomment(text,array,CommentArea),_First_Alphabet_Position,array.getEnd()+1);
                     }                    
-                }else if (DQHit)  {
+                }*/ else if (DQHit)  {
                     if (retStr.length()>0) {
                         return new Focus(retStr.toString(),_First_Alphabet_Position,DQ.getStart());
                     }else { 
@@ -1012,4 +1013,6 @@ public class JspStatic {
         }
         return -1;
     }
+    
+    
 }

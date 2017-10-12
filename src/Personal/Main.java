@@ -443,6 +443,7 @@ public class Main {
 		//                                "Black.jsp"
 		try {
 		ReadFileIntoStringBuffer("c:/DB/ANN/CC1.jsp", buf);
+                //ReadFileIntoStringBuffer("c:/DB/ANN/CC2.jsp", buf);
 		refineStringBuffer(buf);   //把全部的\r\n都改成\n
 		}catch(Exception ex) {
 			ex.printStackTrace();

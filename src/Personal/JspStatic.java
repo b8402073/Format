@@ -40,13 +40,13 @@ public class JspStatic {
     public final static String EMPTY = " \t\r\n\0";
     public final static String NUMBER="0123456789";
 
-    public static String GetString(char c, int count) {
-        StringBuffer ret = new StringBuffer();
-        for (int i = 0; i < count; i++) {
-            ret.append(c);
-        }
-        return ret.toString();
-    }
+    /****
+     * 傳回一個字串,這個字串是重複字串space重複了count次
+     * 用在make系列函式的建構line變數
+     * @param space     要重複的母字串
+     * @param count     重複的次數
+     * @return          傳回的字串
+     */
     public static String GetString(String space,int count) {
         StringBuffer ret=new StringBuffer();
         for (int i=0; i<count; i++) {
@@ -54,7 +54,6 @@ public class JspStatic {
         }
         return ret.toString();
     }
-
     public static StringBuffer MyText, OutputText;
     
     public Vector<Integer> SmallLeft; // Record the position of '('
@@ -68,11 +67,13 @@ public class JspStatic {
     public Vector<Pair> ArrayArea;
     public Vector<Resolution> Analysis; 
     public Vector<Focus> MyFocus;
-    
+    /****
+     * 建構子
+     * @param Text 
+     */
     public JspStatic(StringBuffer Text) {
         MyText = GetMyText(Text);
         init();
-        Build(0,MyText.length());
         Build_DQ_Area(MyText, DQArea);
         Build_SQ_Area(MyText, DQArea, SQArea);
         Build_Comment_Area(MyText, DQArea, SQArea, CommentArea);
@@ -84,12 +85,17 @@ public class JspStatic {
 
         //建完Focus Tokens以後,如果有必要,要做  Focus-->Resolution的轉換 (也許沒有必要)
         
-        StringBuffer output=Make0(LineType.AFTER_LINE);
+        StringBuffer output=Make0(LineType.NEXT_LINE);
         System.out.println(output.toString());
     }
     
-    /***
+
+    /****
      * 輸出一份完全沒有註釋的程式碼,全部AFTER_LINE or NEXT_LINE  as much as possible,結尾是\n
+     * 
+     * 如果照目前的這樣子的架構,最複雜的部份就在這裡;未來要依工程原則把這個函式拆小...
+     * @param lt        表示格式的變數(AFTER_LINE or NEXT_LINE)  
+     * @return          輸出一份StringBuffer變數
      */
     public StringBuffer Make0(LineType lt) {       
         Stack<Integer> _do=new Stack<Integer>();       
@@ -205,6 +211,10 @@ public class JspStatic {
         }
         return ret;
     }
+
+    /****
+     * 建構Focus列表,然後依某些原則修正
+     */
     public void Build_MyFocus() {
         Vector<Focus> tmp=new Vector<Focus>();
         Focus hand=JspStatic.GetOneToken(MyText, 0, CommentArea, ArrayArea, DQArea, SQArea); 
@@ -220,7 +230,12 @@ public class JspStatic {
         MyFocus=FloatNUM_Replacement(tmp3);  //已經修正了可以用
        
     }
-
+    /****
+     * 把三個字或兩個字的運算元合併成一個運算元
+     * @param origin            來源的Focus列表,可能包含("+","+")這種東西
+     * @param op                三個字或兩個字的運算元
+     * @return                  要傳回的Focus列表( 化簡成("++") )
+     */
     public static Vector<Focus> OP_Replacement(Vector<Focus> origin,final String[] op) {
         for (int x=1; x<op.length; x++) {
             if (op[0].length()!=op[x].length())
@@ -257,6 +272,11 @@ public class JspStatic {
         }
         return ret;
     }
+    /****
+     * 把浮點數集中成一個Token的函式
+     * @param origin        來源的Focus列表(可能包含"3",".","1","4","1","5","9")
+     * @return              傳回的Focus列表(傳回"3.14159")
+     */
     public static Vector<Focus> FloatNUM_Replacement(Vector<Focus> origin) {
         Vector<Focus> ret=new Vector<Focus>();
         for (int i=0; i<origin.size()-1; i++) {
@@ -284,7 +304,7 @@ public class JspStatic {
         return ret;
     }
 
-
+    /*
     public static boolean isToken(StringBuffer text, int Pos, String str) {
         if (text.substring(Pos).startsWith(str)) {
             if (ALPHABET.indexOf(text.charAt(Pos - 1)) < 0 && ALPHABET.indexOf(text.charAt(Pos+str.length())) < 0) {
@@ -293,7 +313,11 @@ public class JspStatic {
         }
         return false;
     }
-
+    */
+    /***
+     * 基礎建設;
+     * 要建立正確的(CommentArea+DQArea+SQArea),所以
+     */
     public void init() {
         OutputText = new StringBuffer();
         SmallLeft = new Vector<Integer>();
@@ -305,30 +329,6 @@ public class JspStatic {
         FuncHeaderArea = new Vector<FocusPair>();
         ClassArea = new Vector<FocusPair>();
         ArrayArea= new Vector<Pair>();
-    }
-
-    public void Build(int start,int end) {
-        int Level = 0;
-        for (int i = start; i < end; i++) {
-            switch (MyText.charAt(i)) {
-                case '{':
-                    Level++;
-                    break;
-                case '}':
-                    Level--;
-                    break;
-                case '(':
-                    if (Level == 0) {
-                        SmallLeft.add(i);
-                    }
-                    break;
-                case ')':
-                    if (Level == 0) {
-                        SmallRight.add(i);
-                    }
-                    break;
-            }
-        }
     }
 
     public static void Build_DQ_Area(StringBuffer text, Vector<Pair> dest) {
@@ -639,17 +639,6 @@ public class JspStatic {
         return (0);
     }
 
-    public static int GetFirstAlphabetAfterPos(StringBuffer text, int pos) {
-        while (pos < text.length()) {
-            if (ALPHABET.indexOf(text.charAt(pos)) >= 0) {
-                return pos;
-            } else {
-                pos++;
-            }
-        }
-        return (-1);
-    }
-
     public static int GetFirstCharInCodeBeforePos(StringBuffer text, char inn, int pos,
              Vector<Pair> refDQArea, Vector<Pair> refSQArea, Vector<Pair> refCommentArea) {
         int i = pos - 1;
@@ -815,6 +804,13 @@ public class JspStatic {
         }
         return null;
     }
+    /****
+     * 把某段區間全部的註解都收集起來
+     * @param F                 表示區間的FocusPair
+     * @param refMyFocus        紀錄全部的Focus
+     * @param refCommentArea    傳入全部的CommentArea
+     * @return                  傳回一些相關的Pair物件
+     */
     public static Vector<Pair> GetAllComment(FocusPair F,Vector<Focus> refMyFocus,Vector<Pair> refCommentArea) {
         int start=refMyFocus.get(F.getStart()).StartPos;
         int end=refMyFocus.get(F.getEnd()).StartPos;
@@ -827,6 +823,13 @@ public class JspStatic {
         }
         return ret;        
     }
+    /****
+     * 某個一群註解轉成字串
+     * 這個函式是新寫的,不一定有用,但是代表一些想法
+     * @param comments          要輸出的註解群物件,型態是Vector<Pair>
+     * @param refMyText         參照的本文
+     * @return                  傳回的字串
+     */
     public static String Comments_Into_String1(Vector<Pair> comments,StringBuffer refMyText) {
         StringBuffer ret=new StringBuffer();
         Pair P;
@@ -915,7 +918,10 @@ public class JspStatic {
         }
         return (-1);
     }
-
+    /***
+     * 也許以後用得到
+     * @param that 
+     */
     public static void DeleteLastCr(StringBuffer that) {
         while (that.length() >= 0 && that.charAt(that.length() - 1) != '\n') {
             that.deleteCharAt(that.length() - 1);
@@ -923,40 +929,6 @@ public class JspStatic {
         that.deleteCharAt(that.length() - 1);
     }
 
-    public static String ConvertComment(StringBuffer text, Pair p) {
-        String that = text.substring(p.getStart(), p.getEnd());
-        if (that.startsWith("//") && that.endsWith("\n")) {
-            that = that.replace("\n", "*/");
-            StringBuffer ret = new StringBuffer(that);
-            ret.replace(1, 2, "*");
-            return ret.toString();
-        }
-        return "@@GGYY@@";
-    }   
-    public static int FindSymmetric(StringBuffer text,int start,Vector<Pair> refCommentArea,Vector<Pair> refDQArea,Vector<Pair> refSQArea) {
-        switch(text.charAt(start)) {
-            case'{':
-                return FindSymmetricBigBrace(text,start, refCommentArea, refDQArea, refSQArea);
-            case'(':
-                return FindSymmetricSmallBrace(text,start, refCommentArea,refDQArea,refSQArea);
-            case'[':
-                return FindSymmetricMiddleBrace(text,start,refCommentArea,refDQArea, refSQArea);
-        }
-        return(-1);
-    }
-    public static int FindSymmetricBigBrace(StringBuffer text,int start,Vector<Pair> refCommentArea,Vector<Pair> refDQArea,Vector<Pair> refSQArea) {
-        int Level=1;
-        for (int i=start+1; i<text.length(); i++) {
-            if (text.charAt(i)=='{' && !Main.In(i, refCommentArea) && !Main.In(i, refDQArea) && !Main.In(i, refSQArea))
-                ++Level;
-            else if (text.charAt(i)=='}'  && !Main.In(i, refCommentArea) && !Main.In(i, refDQArea) && !Main.In(i, refSQArea)) {
-                --Level;
-                if (Level==0)
-                    return i;
-            }
-        }
-        return (-1);
-    }
     public static  FocusPair FindSymmetricBigBraceToken(int start,Vector<Focus> refMyFocus) {
         int Level=0,retStart=(-1),retEnd=(-1);
         if (refMyFocus.get(start).getString().equals("{")) {
@@ -979,19 +951,6 @@ public class JspStatic {
         }
         return null;
     }    
-    public static int FindSymmetricSmallBrace(StringBuffer text,int start,Vector<Pair> refCommentArea,Vector<Pair> refDQArea,Vector<Pair> refSQArea) {
-        int Level=1;
-        for (int i=start+1; i<text.length(); i++) {
-            if (text.charAt(i)=='(' && !Main.In(i, refCommentArea) && !Main.In(i, refDQArea) && !Main.In(i, refSQArea))
-                ++Level;
-            else if (text.charAt(i)==')' &&  !Main.In(i, refCommentArea) && !Main.In(i, refDQArea) && !Main.In(i, refSQArea)) {
-                --Level;
-                if (Level==0)
-                    return i;
-            }                
-        }
-        return(-1);
-    }
     public static  FocusPair FindSymmetricSmallBraceToken(int start,Vector<Focus> refMyFocus) {
         int Level=0,retStart=(-1),retEnd=(-1);
         if (refMyFocus.get(start).getString().equals("(")) {
@@ -1014,19 +973,7 @@ public class JspStatic {
         }
         return null;
     }
-    public static int FindSymmetricMiddleBrace(StringBuffer text,int start,Vector<Pair> refCommentArea,Vector<Pair> refDQArea,Vector<Pair> refSQArea) {
-        int Level=1;
-        for(int i=start+1; i<text.length(); i++) {
-            if (text.charAt(i)=='[' &&  !Main.In(i, refCommentArea) && !Main.In(i, refDQArea) && !Main.In(i, refSQArea)) {
-                ++Level;
-            }else if (text.charAt(i)==']' &&  !Main.In(i, refCommentArea) && !Main.In(i, refDQArea) && !Main.In(i, refSQArea)) {
-                --Level;
-                if (Level==0)
-                    return i;
-            }
-        }
-        return(-1);
-    }
+
     public static int max(int t1,int t2,int t3) {
         if (t1>=t2 &&  t1>=t3)
             return t1;
@@ -1034,7 +981,11 @@ public class JspStatic {
             return t2;
         return t3;
     }
-    
+    /****
+     * 要計算現在這個位置,如果在某個Func裡面,相關的第一個左大括號在哪裡...
+     * @param pos           現在的位置
+     * @return              傳回某個左大括號的位置
+     */
     public int GetFuncBase(int pos) {
         for (int i=0; i<FuncHeaderArea.size(); i++) {
             FocusPair that=FuncHeaderArea.get(i);
@@ -1045,6 +996,11 @@ public class JspStatic {
         }
         return (-1);
     }
+    /***
+     * 要計算現在這個位置,如果在某個Class裡面,相關的第一個左大括號在哪裡
+     * @param pos           現在的位置
+     * @return              傳回某個左大括號的位置
+     */
     public int GetClassBase(int pos) {
         for (int i=ClassArea.size()-1; i>=0; i--) {
             FocusPair that=ClassArea.get(i);
@@ -1067,10 +1023,14 @@ public class JspStatic {
         int i=pos-1;
         while(i>=0) {
             String that=refMyFocus.get(i).getString();
-            if (that.equals("}") || that.equals(";")) {
-                return (i+1);
+            switch(that) {
+                case"}": 
+                case";": 
+                case"{":
+                    return i+1;
+                default:
+                    --i;
             }
-            --i;
         }
         return 0;
     }

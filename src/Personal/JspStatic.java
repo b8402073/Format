@@ -94,6 +94,7 @@ public class JspStatic {
      * 輸出一份完全沒有註釋的程式碼,全部AFTER_LINE or NEXT_LINE  as much as possible,結尾是\n
      * 
      * 如果照目前的這樣子的架構,最複雜的部份就在這裡;未來要依工程原則把這個函式拆小...
+     * 完成碼的漂亮程度與Make函式的複雜程度成正比
      * @param lt        表示格式的變數(AFTER_LINE or NEXT_LINE)  
      * @return          輸出一份StringBuffer變數
      */
@@ -451,6 +452,9 @@ public class JspStatic {
         }
     }
 
+    /****
+     *  基本上這個修正是錯的,但是錯得不明顯,暫時可以接受,就接受吧 
+     */    
     public static void Fix_if_SQDQ_SLeft_SRight_SemiColon_in_CommentArea(StringBuffer text, Vector<Pair> SQArea,
             Vector<Pair> DQArea, Vector<Pair> CommentArea) {
         Vector<Integer> ALLSQ = new Vector<Integer>();
@@ -495,7 +499,6 @@ public class JspStatic {
             DQArea.add(new Pair(ALLDQ.get(i), ALLDQ.get(i + 1)));
         }
     }
-
     public void Build_Header_Area(Vector<FocusPair> destHeaderArea) {
         CompoundStack S=new CompoundStack();
         for (int i=0; i<MyFocus.size(); i++) {
@@ -525,7 +528,7 @@ public class JspStatic {
             }
         }
     }
-
+    
     public void Build_Class_Area(Vector<FocusPair> destClassArea) {     
         final String[] prev_accept={"private","protected","public","final","static","abstract"};
         //final String[] next_accept={"extends","implements","<",">",","};
@@ -552,77 +555,12 @@ public class JspStatic {
                        break; 
                     }
                 }
-                //處理class之後的部分
-                // MyFocus.get(i+1)是class name
-                /*
-                for (j=i+2; j<MyFocus.size(); j++) {
-                    if (MyFocus.get(j).getString().equals("{")) {
-                        classEnd=j-1;
-                        destClassArea.add(new FocusPair(classStart,classEnd));
-                        break;
-                    }
-                }*/
-                
+                //處理class之後的部分                
                 classEnd=SearchForTokenPos(i+1,"{",MyFocus);
                 destClassArea.add(new FocusPair(classStart,classEnd-1));
                         
             }
-        }
-        
-        
-        /*
-        for (int i = 0; i < text.length(); i++) {
-            if (isToken(text, i, "class")) {
-                if (!Main.In(i, DQArea) && !Main.In(i, CommentArea)) {
-                    int t = GetLineHead(text, i);   //t is the left-end of new  HeaderArea;
-                    t = GetFirstAlphabetAfterPos(text, t);
-                    while (Main.In(t, CommentArea)) {
-                        t++;
-                        if (t == text.length()) {
-                            throw new RuntimeException("We meet the end of text...t=" + t);
-                        }
-                    }
-                    int q = text.indexOf("{", i + 5);
-                    while (Main.In(q, CommentArea)) {
-                        q = text.indexOf("{", q + 1);
-                        if (q == text.length()) {
-                            throw new RuntimeException("Wee meet the end of text...q=" + q);
-                        }
-                    }
-                   StringBuffer tmpLine=new StringBuffer(text.substring(t,q));
-                   for (int x=0; x<CommentArea.size(); x++) {
-                       Pair that=CommentArea.get(x);
-                       if (that.i_start>=t && that.i_end<=q) {
-                           String thatComment=text.substring(that.i_start,that.i_end+1);
-                           String corresponding=tmpLine.substring(that.i_start-t,that.i_end-t+1);
-                           if (thatComment.equals(corresponding)) {
-                               tmpLine.replace(that.i_start-t, that.i_end-t+1, "");  
-                               //System.out.println(tmpLine.toString()); 
-                           }
-                       }
-                   }
-                   //tmpLine就是經過替換後的classArea(沒有註釋),但是這邊後來通通要改掉
-                   //下面是Old Running code.. 
-                    
-                    
-                    
-                   
-                    
-                    if (t >= 0 && q >= 0) {
-                        dest.add(new Pair(t, q-1));
-                    } else {
-                        throw new RuntimeException("Class_Area Wrong: i=" + i + "  t=" + t);
-                    }
-                    int r=FindSymmetric(text,q,CommentArea,DQArea,SQArea);
-                    SmallLeft.clear(); SmallRight.clear();                    
-                    Build(q+1,r);
-                    Build_Header_Area(text, SmallLeft, SmallRight,FuncHeaderArea);   
-                    Collections.sort(FuncHeaderArea,PairSortObj);
-                }
-            }
-        }
-        */
-        
+        }        
     }
     public  void Build_Array_Area(StringBuffer text,Vector<Pair> dest) {
         for (int i=0; i<text.length(); i++) {
@@ -649,6 +587,7 @@ public class JspStatic {
             }
         }
     }
+    /*好像用不到
     public static int GetLineHead(StringBuffer text, int pos) {
         while (pos >= 0) {
             if (text.charAt(pos) != '\n') {
@@ -659,7 +598,8 @@ public class JspStatic {
         }
         return (0);
     }
-
+    */
+    
     public static int GetFirstCharInCodeBeforePos(StringBuffer text, char inn, int pos,
              Vector<Pair> refDQArea, Vector<Pair> refSQArea, Vector<Pair> refCommentArea) {
         int i = pos - 1;
@@ -736,14 +676,13 @@ public class JspStatic {
         }
         return (-1);
     }
-
+    
     public static StringBuffer GetMyText(StringBuffer buf) {
         int C1 = buf.indexOf("<%!");
         int C2 = buf.lastIndexOf("%>");
         String my = buf.substring(C1 + 3, C2);
         return new StringBuffer(my);
     }
-
     public static Focus GetOneToken(StringBuffer text,int from_pos,Vector<Pair>CommentArea,Vector<Pair> ArrayArea, Vector<Pair> DQArea,Vector<Pair> SQArea) {
         final String WHITE=" \t\n\r\0";
         StringBuffer retStr=new StringBuffer();

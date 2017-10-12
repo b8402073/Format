@@ -213,8 +213,8 @@ public class JspStatic {
         //到這裡把三個字元的運算子都替換掉        
         final String[] op2={"++","--","==","!=",">=","<=","<<",">>","&&","||","+=","-=","*=","/=","%=","&=","^=","|="};
         Vector<Focus> tmp3=OP_Replacement(tmp2,op2);
-        //MyFocus=FloatNUM_Replacement(tmp3);  //怪怪的,暫時不跑
-        MyFocus=tmp3;
+        MyFocus=FloatNUM_Replacement(tmp3);  //怪怪的,暫時不跑
+        //MyFocus=tmp3;
     }
 
     public static Vector<Focus> OP_Replacement(Vector<Focus> origin,final String[] op) {
@@ -276,6 +276,7 @@ public class JspStatic {
                 ret.add(origin.get(i));
             }
         }
+        ret.add(origin.get(origin.size()-1));
         return ret;
     }
 

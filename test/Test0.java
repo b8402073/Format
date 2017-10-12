@@ -151,4 +151,26 @@ public class Test0 {
              assertTrue(arr[i].equals(obj.MyFocus.get(i).RetString));
          }
     }
+    
+    @Test
+    public void Test3() {
+        StringBuffer Q=new StringBuffer("int A=1.00+2.00+3.00; int B=5.0+8.0; ");
+        CommentArea=new Vector<Pair>();
+        ArrayArea=new Vector<Pair>();
+        DQArea=new Vector<Pair>();
+        SQArea=new Vector<Pair>();
+        Vector<Focus> tmp=new Vector<Focus>();
+        Focus hand=JspStatic.GetOneToken(Q,0,CommentArea,ArrayArea,DQArea,SQArea);
+        while(hand!=null) {
+            tmp.add(hand);
+            hand=JspStatic.GetOneToken(Q, hand.NextCharPos, CommentArea, ArrayArea, DQArea, SQArea);
+        }
+        Vector<Focus> afterFloat=JspStatic.FloatNUM_Replacement(tmp);
+        final String[] arr={"int","A","=","1.00","+","2.00","+","3.00",";","int","B","=","5.0","+","8.0",";"};
+        for (int i=0; i<afterFloat.size(); i++) {
+            System.out.println(arr[i]);
+            assertTrue(arr[i].equals(afterFloat.get(i).getString()));
+        }
+        
+    }
 }

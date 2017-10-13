@@ -35,6 +35,9 @@ public class JspStatic {
         }
     }
     public enum  LineType { AFTER_LINE, NEXT_LINE};
+    public final static String sHead="#####";
+    public final static String sLv="   ";
+    
     public final static PairSort PairSortObj=new PairSort();
     public final static String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     public final static String EMPTY = " \t\r\n\0";
@@ -111,6 +114,10 @@ public class JspStatic {
         Build_Array_Area(ArrayArea); 
         //建完Focus Tokens以後,如果有必要,要做  Focus-->Resolution的轉換 (也許沒有必要)
         
+        OutputText=Make0(LineType.AFTER_LINE);
+        System.out.println(OutputText.toString());
+        System.out.println("*Next_LINE*****************************************************************");
+        OutputText=new StringBuffer();
         OutputText=Make0(LineType.NEXT_LINE);
         System.out.println(OutputText.toString());
     }
@@ -127,8 +134,7 @@ public class JspStatic {
         Stack<TextLevel> _do=new Stack<TextLevel>(); 
         Stack<TextLevel> _class=new Stack<TextLevel>();
         Stack<TextLevel> _func=new Stack<TextLevel>();
-        final String sHead="#####";
-        final String sLv="   ";
+
         int Level=0;
         String line;
         StringBuffer ret=new StringBuffer();
@@ -138,7 +144,9 @@ public class JspStatic {
                 //確認進入ClassArea
                 line=sHead+GetString(sLv,Level)+F.toString(MyFocus);
                 ret.append(line);
-                i=F.getEnd();                
+                i=F.getEnd();
+                FocusPair block=FindSymmetricBigBraceToken(i,MyFocus);
+                _class.push(new TextLevel(block.getEnd(),Level));
                 continue;
             }
             F=GetPair(i,FuncHeaderArea);
@@ -147,6 +155,8 @@ public class JspStatic {
                 line=sHead+GetString(sLv,Level)+F.toString(MyFocus);
                 ret.append(line);
                 i=F.getEnd();
+                FocusPair block=FindSymmetricBigBraceToken(i,MyFocus);
+                _func.push(new TextLevel(block.getEnd(),Level));
                 continue;
             }
             String that=MyFocus.get(i).getString();
@@ -176,6 +186,18 @@ public class JspStatic {
                     ret.append(" while "+Brace.toString(MyFocus));
                     ret.append(";\n");
                     i=Brace.getEnd()+1;
+                    continue;
+                }else if (_func.size()>0 && _func.peek().FocusPos==i) {
+                    Level=_func.peek().Level;
+                    _func.pop();
+                    line=sHead+GetString(sLv,Level)+"}"+"\n";
+                    ret.append(line);
+                    continue;
+                }else if (_class.size()>0 && _class.peek().FocusPos==i) {
+                    Level=_class.peek().Level;
+                    _class.pop();
+                    line=sHead+GetString(sLv,Level)+"}"+"\n";
+                    ret.append(line);
                     continue;
                 }
                 //預設的狀況
@@ -216,7 +238,10 @@ public class JspStatic {
                     int semicolon_pos=SearchForTokenPos(i+1,";",MyFocus);
                     FocusPair stmt=new FocusPair(Brace.getEnd()+1, semicolon_pos);
                     line=sHead+GetString(sLv,Level)+stmt.toString(MyFocus);
+                    ret.append(line+"\n");
                     Level-=1;
+                    i=stmt.getEnd();
+                    continue;
                 }                    
                 i=Brace.getEnd();
                 continue;
@@ -267,8 +292,25 @@ public class JspStatic {
         //到這裡把三個字元的運算子都替換掉        
         final String[] op2={"++","--","==","!=",">=","<=","<<",">>","&&","||","+=","-=","*=","/=","%=","&=","^=","|="};
         Vector<Focus> tmp3=OP_Replacement(tmp2,op2);
-        MyFocus=FloatNUM_Replacement(tmp3);  //已經修正了可以用
+        Vector<Focus> tmp4=ELSE_IF_Replacement(tmp3);
+        MyFocus=FloatNUM_Replacement(tmp4);  
        
+    }
+    public static Vector<Focus> ELSE_IF_Replacement(Vector<Focus> origin) {
+        Vector<Focus> ret=new Vector<Focus>();
+        for (int i=0; i<origin.size()-1; i++) {
+            Focus f1=origin.get(i);
+            Focus f2=origin.get(i+1);
+            if (f1.getString().equals("else")) {
+                if (f2.getString().equals("if")) {
+                    Focus F=new Focus("else if",f1.StartPos,f2.NextCharPos);
+                    ret.add(F);++i;
+                    continue;
+                }
+            }
+            ret.add(origin.get(i));
+        }
+        return ret;
     }
     /****
      * 把三個字或兩個字的運算元合併成一個運算元
@@ -330,15 +372,16 @@ public class JspStatic {
                             ret.removeElementAt(ret.size()-1);
                             ret.add(new Focus(prev.getString()+"."+next.getString(),prev.StartPos,next.NextCharPos));
                             ++i;
+                            continue;
                         }else {
                             ret.removeElementAt(ret.size()-1);
                             ret.add(new Focus(prev.getString()+".0",prev.StartPos,origin.get(i).NextCharPos));
+                            continue;
                         }
                     }                    
                 }
-            }else {
-                ret.add(origin.get(i));
             }
+            ret.add(origin.get(i));            
         }
         ret.add(origin.get(origin.size()-1));
         return ret;
@@ -613,12 +656,8 @@ public class JspStatic {
      *
      */
     public  void Build_Array_Area(Vector<FocusPair> destArrayArea) {
-        System.out.println("Building_Array_Area:");
         for (int i=0;i<MyFocus.size()-1; i++) {
-            int base=Math.max(GetClassBase(i),GetFuncBase(i));
-            if (base<0)
-                base=0;
-            FocusPair limit=FindSymmetricBigBraceToken(base,MyFocus);
+            FocusPair Outter=FindOutterBigBraceToken(i,MyFocus);
             Focus F=MyFocus.get(i);
             Focus nx=MyFocus.get(i+1);
             if (nx.getString().equals("{")) {
@@ -626,7 +665,7 @@ public class JspStatic {
                     case"=":
                     case"]":
                         FocusPair after=FindSymmetricBigBraceToken(i,MyFocus);
-                        if (limit.getStart()< after.getStart() && after.getEnd()<limit.getEnd()) {
+                        if (Outter==null || (Outter.getStart()< after.getStart() && after.getEnd()<Outter.getEnd())) {
                             destArrayArea.add(after);                            
                         }                    
                     default:
@@ -695,8 +734,7 @@ public class JspStatic {
         StringBuffer retStr=new StringBuffer();
         int _First_Alphabet_Position=(-1);
         for (int i=from_pos; i<text.length(); i++) {
-            char that=text.charAt(i);
-            //String sThat=new String(new char[]{that});
+            char that=text.charAt(i);           
             if (WHITE.indexOf(that)>=0) {  
                 if (retStr.length()>=1) {
                     return new Focus(retStr.toString(),_First_Alphabet_Position,i);
@@ -761,11 +799,12 @@ public class JspStatic {
                    retStr.append(that);
                    if (retStr.length()==1 && _First_Alphabet_Position<0) {
                        _First_Alphabet_Position=i;
-                   }                   
+                   } 
+
                    final String Special_OneCharacter_Token="{}()[];=><+-*/%^~@,:!|.~?";
-                   if (Special_OneCharacter_Token.contains(retStr.toString())) {
+                   if (retStr.length()==1 && Special_OneCharacter_Token.indexOf(retStr.charAt(0))>=0) {  //如果吃到單一的符號(例如'+')
                        return new Focus(retStr.toString(),_First_Alphabet_Position,i+1);
-                   }else if (Special_OneCharacter_Token.indexOf(retStr.charAt(retStr.length()-1))>=0) {
+                   }else if (Special_OneCharacter_Token.indexOf(retStr.charAt(retStr.length()-1))>=0) { //如果在英文後面吃到符號(例如'+')
                        int length=retStr.length();
                        return new Focus(retStr.substring(0,length-1),_First_Alphabet_Position,i);
                    }
@@ -877,6 +916,15 @@ public class JspStatic {
             that.deleteCharAt(that.length() - 1);
         }
         that.deleteCharAt(that.length() - 1);
+    }
+    public static FocusPair FindOutterBigBraceToken(int start,Vector<Focus> refMyFocus) {
+        int f=SearchForTokenBeforePos(start,"{",refMyFocus);
+        if (f<0) {
+            return null;
+        }else {
+            FocusPair ret=FindSymmetricBigBraceToken(f,refMyFocus);
+            return ret;
+        }
     }
     /****
      * 找start位置後的對稱的大括號
@@ -1027,6 +1075,16 @@ public class JspStatic {
                 return i;
             }
             ++i;
+        }
+        return -1;
+    }
+    public static int SearchForTokenBeforePos(int pos,String str,Vector<Focus> refMyFocus) {
+        int i=pos-1;
+        while(i>=0) {
+            if (refMyFocus.get(i).getString().equals(str)) {
+                return i;
+            }
+            --i;
         }
         return -1;
     }

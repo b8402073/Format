@@ -143,6 +143,7 @@ public class Test0 {
          StringBuffer Q=new StringBuffer("<%! int D=3>>>1+5; int E +=15; int F= ++E; %>");
          
          JspStatic obj=new JspStatic(Q);
+         obj.go();
          System.out.println("obj.MyFocus.size()="+obj.MyFocus.size());
          assertTrue(obj.MyFocus.size()==20);
          final String[] arr={"int","D","=","3",">>>","1","+","5",";","int","E","+=","15",";","int","F","=","++","E",";"};
@@ -170,7 +171,25 @@ public class Test0 {
         for (int i=0; i<afterFloat.size(); i++) {
             System.out.println(arr[i]);
             assertTrue(arr[i].equals(afterFloat.get(i).getString()));
+        }        
+    }
+    @Test
+    public void Test4() {
+        StringBuffer Q=new StringBuffer(" AAA.BBB+=3; ");
+        CommentArea=new Vector<Pair>();
+        ArrayArea=new Vector<Pair>();
+        DQArea=new Vector<Pair>();
+        SQArea=new Vector<Pair>();
+        Vector<Focus> tmp=new Vector<Focus>();
+        Focus hand=JspStatic.GetOneToken(Q,0,CommentArea,DQArea,SQArea);
+        while(hand!=null) {
+            tmp.add(hand);
+            hand=JspStatic.GetOneToken(Q, hand.NextCharPos, CommentArea,  DQArea, SQArea);
         }
-        
+        final String[] arr={"AAA",".","BBB","+","=","3",";"};
+        for (int i=0; i<tmp.size(); i++) {
+            System.out.println(arr[i]);
+            assertTrue(arr[i].equals(tmp.get(i).getString()));
+        }
     }
 }

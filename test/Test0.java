@@ -92,45 +92,45 @@ public class Test0 {
     @Test
     public void Test1() {
         //assertTrue(true==true);
-        Focus aaa=JspStatic.GetOneToken(str0, 0, CommentArea, ArrayArea, DQArea, SQArea);
+        Focus aaa=JspStatic.GetOneToken(str0, 0, CommentArea,  DQArea, SQArea);
         assertTrue(aaa.RetString.equals("public"));
         assertTrue(aaa.NextCharPos==6);
-        aaa=JspStatic.GetOneToken(str0, 1, CommentArea, ArrayArea, DQArea, SQArea); 
+        aaa=JspStatic.GetOneToken(str0, 1, CommentArea,  DQArea, SQArea); 
         assertTrue(aaa.RetString.equals("ublic"));
         assertTrue(aaa.NextCharPos==6);
 
-        aaa=JspStatic.GetOneToken(str0, 2, CommentArea, ArrayArea, DQArea, SQArea); 
+        aaa=JspStatic.GetOneToken(str0, 2, CommentArea,  DQArea, SQArea); 
         assertTrue(aaa.RetString.equals("blic"));
         assertTrue(aaa.NextCharPos==6);
 
-        aaa=JspStatic.GetOneToken(str0, 3, CommentArea, ArrayArea, DQArea, SQArea); 
+        aaa=JspStatic.GetOneToken(str0, 3, CommentArea,  DQArea, SQArea); 
         assertTrue(aaa.RetString.equals("lic"));
         assertTrue(aaa.NextCharPos==6);
 
-        aaa=JspStatic.GetOneToken(str0, 4, CommentArea, ArrayArea, DQArea, SQArea); 
+        aaa=JspStatic.GetOneToken(str0, 4, CommentArea,  DQArea, SQArea); 
         assertTrue(aaa.RetString.equals("ic"));
         assertTrue(aaa.NextCharPos==6);
   
-        aaa=JspStatic.GetOneToken(str0, 5, CommentArea, ArrayArea, DQArea, SQArea); 
+        aaa=JspStatic.GetOneToken(str0, 5, CommentArea,  DQArea, SQArea); 
         assertTrue(aaa.RetString.equals("c"));
         assertTrue(aaa.NextCharPos==6);
         
-        aaa=JspStatic.GetOneToken(str0, 6, CommentArea, ArrayArea, DQArea, SQArea); 
+        aaa=JspStatic.GetOneToken(str0, 6, CommentArea,  DQArea, SQArea); 
         assertTrue(aaa.RetString.equals("final"));
         assertTrue(aaa.NextCharPos==12);
         
-        aaa=JspStatic.GetOneToken(str0,aaa.NextCharPos,CommentArea,ArrayArea,DQArea,SQArea);
+        aaa=JspStatic.GetOneToken(str0,aaa.NextCharPos,CommentArea,DQArea,SQArea);
         assertTrue(aaa.RetString.equals("static"));
         
-        aaa=JspStatic.GetOneToken(str0,aaa.NextCharPos,CommentArea,ArrayArea,DQArea,SQArea);
+        aaa=JspStatic.GetOneToken(str0,aaa.NextCharPos,CommentArea,DQArea,SQArea);
         assertTrue(aaa.RetString.equals("class"));
         
-        aaa=JspStatic.GetOneToken(str0,aaa.NextCharPos,CommentArea,ArrayArea,DQArea,SQArea);
+        aaa=JspStatic.GetOneToken(str0,aaa.NextCharPos,CommentArea,DQArea,SQArea);
         assertTrue(aaa.RetString.equals("AAA")); 
         
         
         while(aaa!=null) {
-            aaa=JspStatic.GetOneToken(str0, aaa.NextCharPos, CommentArea, ArrayArea, DQArea, SQArea);
+            aaa=JspStatic.GetOneToken(str0, aaa.NextCharPos, CommentArea,  DQArea, SQArea);
             if (aaa!=null)
                 System.out.println(aaa.toString());
         }
@@ -160,10 +160,10 @@ public class Test0 {
         DQArea=new Vector<Pair>();
         SQArea=new Vector<Pair>();
         Vector<Focus> tmp=new Vector<Focus>();
-        Focus hand=JspStatic.GetOneToken(Q,0,CommentArea,ArrayArea,DQArea,SQArea);
+        Focus hand=JspStatic.GetOneToken(Q,0,CommentArea,DQArea,SQArea);
         while(hand!=null) {
             tmp.add(hand);
-            hand=JspStatic.GetOneToken(Q, hand.NextCharPos, CommentArea, ArrayArea, DQArea, SQArea);
+            hand=JspStatic.GetOneToken(Q, hand.NextCharPos, CommentArea,  DQArea, SQArea);
         }
         Vector<Focus> afterFloat=JspStatic.FloatNUM_Replacement(tmp);
         final String[] arr={"int","A","=","1.00","+","2.00","+","3.00",";","int","B","=","5.0","+","8.0",";"};

@@ -202,7 +202,10 @@ public class Main {
 				do {
 					R++;
 					hand = inn.substring(Left.get(L), Right.get(R) + 1);
-				} while (!hand.endsWith("%>") || In(R, DQArea) || In(R, SQArea) || In(R, CommentArea));
+                                        if (R==Right.size()-1) {
+                                            break;
+                                        }
+				} while  (!hand.endsWith("%>") || In(R, DQArea) || In(R, SQArea) || In(R, CommentArea));
 				if (hand.startsWith("<%!"))
 					ret.add("jsp_static:" + hand);
 				else if (hand.startsWith("<%"))
@@ -403,7 +406,7 @@ public class Main {
 		}
 		fr.close();
 		br.close();
-		String that=buf.toString();
+		//String that=buf.toString();
 	}
 	public static void refineStringBuffer(StringBuffer buf) {
 		for (int i=buf.length()-1; i>=0; i--) {
@@ -434,7 +437,7 @@ public class Main {
 	}
 	// NO TEST
 	public static void main(String[] args)  {
-		StringBuffer buf = new StringBuffer(30000);
+		StringBuffer buf = new StringBuffer(3000000);
 		
 		// FileReader fr=new FileReader("c:/test/aaa.jsp");
 		// FileReader fr=new FileReader("c:/test/bbb.jsp");
@@ -442,8 +445,8 @@ public class Main {
 		// FileReader fr = new FileReader("c:/test/xxx.jsp");
 		//                                "Black.jsp"
 		try {
-		//ReadFileIntoStringBuffer("c:/DB/ANN/CC1.jsp", buf);
-                ReadFileIntoStringBuffer("c:/DB/ANN/CC1.jsp", buf);
+		ReadFileIntoStringBuffer("c:/DB/ANN/CC1.jsp", buf);
+                //ReadFileIntoStringBuffer("c:/DB/ANN/CC2.jsp", buf);
 		refineStringBuffer(buf);   //把全部的\r\n都改成\n
 		}catch(Exception ex) {
 			ex.printStackTrace();
@@ -462,6 +465,7 @@ public class Main {
 
 				StringBuffer that=new StringBuffer(str);
 				JspStatic obj = new JspStatic(that);
+                                obj.go();
 				// System.out.println("SQArea:");
 				// System.out.println(ToStr(obj.SQArea,obj.MyText));
 				// System.out.println("DQArea:");

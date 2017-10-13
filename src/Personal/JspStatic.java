@@ -101,6 +101,9 @@ public class JspStatic {
         Build_Comment_Area(MyText, DQArea, SQArea, CommentArea);
         Fix_if_SQDQ_SLeft_SRight_SemiColon_in_CommentArea(MyText, SQArea, DQArea, CommentArea);
                     
+    }
+    public void go() {
+ 
         Build_MyFocus(); 
         
         Build_Class_Area(ClassArea); 
@@ -108,10 +111,9 @@ public class JspStatic {
         Build_Array_Area(ArrayArea); 
         //建完Focus Tokens以後,如果有必要,要做  Focus-->Resolution的轉換 (也許沒有必要)
         
-        StringBuffer output=Make0(LineType.NEXT_LINE);
-        System.out.println(output.toString());
+        OutputText=Make0(LineType.NEXT_LINE);
+        System.out.println(OutputText.toString());
     }
-    
 
     /****
      * 輸出一份完全沒有註釋的程式碼,全部AFTER_LINE or NEXT_LINE  as much as possible,結尾是\n
@@ -122,7 +124,8 @@ public class JspStatic {
      * @return          輸出一份StringBuffer變數
      */
     public StringBuffer Make0(LineType lt) {       
-        Stack<Integer> _do=new Stack<Integer>();       
+        Stack<Integer> _do=new Stack<Integer>(); 
+        
         final String sHead="#####";
         final String sLv="   ";
         int Level=0;
@@ -168,7 +171,7 @@ public class JspStatic {
                     line=sHead+GetString(sLv,Level)+"}";
                     ret.append(line);
                     FocusPair Brace=FindSymmetricSmallBraceToken(i,MyFocus);
-                    ret.append(" "+Brace.toString(MyFocus));
+                    ret.append(" while "+Brace.toString(MyFocus));
                     ret.append(";\n");
                     i=Brace.getEnd()+1;
                     continue;
@@ -203,6 +206,15 @@ public class JspStatic {
                 ret.append(line);
                 FocusPair Brace=FindSymmetricSmallBraceToken(i,MyFocus);
                 ret.append(Brace.toString(MyFocus));
+                Focus next=MyFocus.get(Brace.getEnd()+1);
+                if (!next.getString().equals("{")) {
+                    ret.append("\n");
+                    Level+=1;
+                    int semicolon_pos=SearchForTokenPos(i+1,";",MyFocus);
+                    FocusPair stmt=new FocusPair(Brace.getEnd()+1, semicolon_pos);
+                    line=sHead+GetString(sLv,Level)+stmt.toString(MyFocus);
+                    Level-=1;
+                }                    
                 i=Brace.getEnd();
                 continue;
             }else if (that.equals("else")) {
@@ -240,6 +252,7 @@ public class JspStatic {
      * 建構Focus列表,然後依某些原則修正
      */
     public void Build_MyFocus() {
+        
         Vector<Focus> tmp=new Vector<Focus>();
         Focus hand=JspStatic.GetOneToken(MyText, 0, CommentArea,  DQArea, SQArea); 
         while(hand!=null) {
@@ -597,6 +610,7 @@ public class JspStatic {
      *
      */
     public  void Build_Array_Area(Vector<FocusPair> destArrayArea) {
+        System.out.println("Building_Array_Area:");
         for (int i=0;i<MyFocus.size()-1; i++) {
             int base=Math.max(GetClassBase(i),GetFuncBase(i));
             if (base<0)

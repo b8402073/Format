@@ -124,8 +124,9 @@ public class JspStatic {
      * @return          輸出一份StringBuffer變數
      */
     public StringBuffer Make0(LineType lt) {       
-        Stack<Integer> _do=new Stack<Integer>(); 
-        
+        Stack<TextLevel> _do=new Stack<TextLevel>(); 
+        Stack<TextLevel> _class=new Stack<TextLevel>();
+        Stack<TextLevel> _func=new Stack<TextLevel>();
         final String sHead="#####";
         final String sLv="   ";
         int Level=0;
@@ -137,7 +138,7 @@ public class JspStatic {
                 //確認進入ClassArea
                 line=sHead+GetString(sLv,Level)+F.toString(MyFocus);
                 ret.append(line);
-                i=F.getEnd(); 
+                i=F.getEnd();                
                 continue;
             }
             F=GetPair(i,FuncHeaderArea);
@@ -166,7 +167,8 @@ public class JspStatic {
             }
             if (that.equals("}")) {                
                 //被do攔截
-                if (_do.size()>0 && _do.peek()==i) {
+                if (_do.size()>0 && _do.peek().FocusPos==i) {
+                    Level=_do.peek().Level;
                     _do.pop();
                     line=sHead+GetString(sLv,Level)+"}";
                     ret.append(line);
@@ -186,7 +188,8 @@ public class JspStatic {
                 line=sHead+GetString(sLv,Level)+"do ";
                 ret.append(line);
                 FocusPair Block=FindSymmetricBigBraceToken(i,MyFocus);
-                _do.push(Block.getEnd());                
+                TextLevel Tv=new TextLevel(Block.getEnd(),Level);
+                _do.push(Tv);                
             }else if (that.equals("for")) {
                 line=sHead+GetString(sLv,Level)+"for ";
                 ret.append(line);

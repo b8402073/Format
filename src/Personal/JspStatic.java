@@ -106,7 +106,23 @@ public class JspStatic {
         Fix_if_SQDQ_SLeft_SRight_SemiColon_in_CommentArea(MyText, SQArea, DQArea, CommentArea);
                     
     }
+    public String warning() {
+        StringBuffer ret=new StringBuffer();
+        for (Pair P:CommentArea) {
+            String thatComment=Main.ToStr(P,MyText);
+            int count=0;
+            for (int i=0; i<thatComment.length(); i++) {
+                if (thatComment.charAt(i)=='\"') ++count;
+            }
+            if (count%2!=0)  {
+                //throw new Exception("註解裡面不可以雙引號不成雙!:"+thatComment);            
+                ret.append( new String("註解裡面不可以雙引號不成雙!:"+thatComment)+"\n");
+            }
+        }
+        return ret.toString();
+    }
     public void go() {
+        System.out.println(warning());
         Build_MyFocus();         
         Build_Class_Area(ClassArea); 
         Build_Header_Area(FuncHeaderArea);  

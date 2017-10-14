@@ -42,7 +42,8 @@ public class JspStatic {
     public final static String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     public final static String EMPTY = " \t\r\n\0";
     public final static String NUMBER="0123456789";
-
+    public final static String[] op2={"++","--","==","!=",">=","<=","<<",">>","&&","||","+=","-=","*=","/=","%=","&=","^=","|="};
+    public final static String[] op3={">>>","<<=",">>="};
     /****
      * 傳回一個字串,這個字串是重複字串space重複了count次
      * 用在make系列函式的建構line變數
@@ -106,9 +107,7 @@ public class JspStatic {
                     
     }
     public void go() {
- 
-        Build_MyFocus(); 
-        
+        Build_MyFocus();         
         Build_Class_Area(ClassArea); 
         Build_Header_Area(FuncHeaderArea);  
         Build_Array_Area(ArrayArea); 
@@ -130,7 +129,7 @@ public class JspStatic {
      * @param lt        表示格式的變數(AFTER_LINE or NEXT_LINE)  
      * @return          輸出一份StringBuffer變數
      */
-    public StringBuffer Make0(LineType lt) {       
+    public StringBuffer Make0(LineType lt) {  
         Stack<TextLevel> _do=new Stack<TextLevel>(); 
         Stack<TextLevel> _class=new Stack<TextLevel>();
         Stack<TextLevel> _func=new Stack<TextLevel>();
@@ -222,12 +221,37 @@ public class JspStatic {
             }else if (that.equals("while")) {
                 line=sHead+GetString(sLv,Level)+"while ";
                 ret.append(line);
-                FocusPair Brace=FindSymmetricSmallBraceToken(i,MyFocus);
+                FocusPair Brace=FindSymmetricSmallBraceToken(i,MyFocus);                
                 ret.append(Brace.toString(MyFocus));
-                i=Brace.getEnd();
+                if (MyFocus.get(Brace.getEnd()+1).getString().equals(";")) {
+                    ret.append(";\n");
+                    i=Brace.getEnd()+1;
+                }else {
+                    i=Brace.getEnd();
+                }                  
                 continue;
             }else if (that.equals("if")) {
                 line=sHead+GetString(sLv,Level)+"if ";
+                ret.append(line);
+                FocusPair Brace=FindSymmetricSmallBraceToken(i,MyFocus);
+                ret.append(Brace.toString(MyFocus));
+                Focus next=MyFocus.get(Brace.getEnd()+1);
+                if (!next.getString().equals("{")) {
+                    ret.append("\n");
+                    Level+=1;
+                    int semicolon_pos=SearchForTokenPos(i+1,";",MyFocus);
+                    FocusPair stmt=new FocusPair(Brace.getEnd()+1, semicolon_pos);
+                    line=sHead+GetString(sLv,Level)+stmt.toString(MyFocus);
+                    ret.append(line+"\n");
+                    Level-=1;
+                    i=stmt.getEnd();
+                    continue;
+                }                    
+                i=Brace.getEnd();
+                continue;
+            }else if (that.equals("else if")) {
+                //幾乎是跟if做同樣的事...所以暫時用剪貼的
+                line=sHead+GetString(sLv,Level)+"else if ";
                 ret.append(line);
                 FocusPair Brace=FindSymmetricSmallBraceToken(i,MyFocus);
                 ret.append(Brace.toString(MyFocus));
@@ -260,6 +284,8 @@ public class JspStatic {
             }else if (that.equals("finally")) {
                 line=sHead+GetString(sLv,Level)+" finally ";
                 ret.append(line);                
+            }else if (that.equals(";")) {
+                ret.append(";\n");  //@@?隨便寫寫...
             }else {
                 //基本上當成一個Statement處理
                 int HeadPos=SearchForStatementHeadPos(i,MyFocus);
@@ -287,11 +313,11 @@ public class JspStatic {
             tmp.add(hand);
             hand=JspStatic.GetOneToken(MyText, hand.NextCharPos, CommentArea, DQArea, SQArea); 
         }
-        final String[] op3={">>>","<<=",">>="};
-        Vector<Focus> tmp2=OP_Replacement(tmp,op3);
+        //final String[] op3={">>>","<<=",">>="};
+        Vector<Focus> tmp2=OP_Replacement(tmp,JspStatic.op3);
         //到這裡把三個字元的運算子都替換掉        
-        final String[] op2={"++","--","==","!=",">=","<=","<<",">>","&&","||","+=","-=","*=","/=","%=","&=","^=","|="};
-        Vector<Focus> tmp3=OP_Replacement(tmp2,op2);
+        //final String[] op2={"++","--","==","!=",">=","<=","<<",">>","&&","||","+=","-=","*=","/=","%=","&=","^=","|="};
+        Vector<Focus> tmp3=OP_Replacement(tmp2,JspStatic.op2);
         Vector<Focus> tmp4=ELSE_IF_Replacement(tmp3);
         MyFocus=FloatNUM_Replacement(tmp4);  
        
@@ -310,6 +336,8 @@ public class JspStatic {
             }
             ret.add(origin.get(i));
         }
+        Focus last=origin.get(origin.size()-1);
+        ret.add(last);
         return ret;
     }
     /****
@@ -1006,7 +1034,9 @@ public class JspStatic {
             FocusPair that=FuncHeaderArea.get(i);
             int start=SearchForTokenPos(that.getEnd(),"{",MyFocus);
             FocusPair ret=FindSymmetricBigBraceToken(start,MyFocus);
-            if (ret.getStart()<=pos  && pos<=ret.getEnd())
+            if (ret==null)
+                return 0;
+            else if (ret.getStart()<=pos  && pos<=ret.getEnd())
                 return start;
         }
         return (-1);
@@ -1021,7 +1051,9 @@ public class JspStatic {
             FocusPair that=ClassArea.get(i);
             int start=SearchForTokenPos(that.getEnd(),"{",MyFocus);
             FocusPair ret=FindSymmetricBigBraceToken(start,MyFocus);
-            if (ret.getStart()<=pos && pos<=ret.getEnd()) {
+            if (ret==null) {
+                return 0;
+            }else if (ret.getStart()<=pos && pos<=ret.getEnd()) {
                 return start;
             }
         }

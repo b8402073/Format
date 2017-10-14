@@ -5,6 +5,7 @@
  */
 
 import Personal.Focus;
+import Personal.FocusPair;
 import Personal.JspStatic;
 import Personal.Pair;
 import java.util.Vector;
@@ -56,10 +57,13 @@ public class Test0 {
 "                   System.out.println(\"ok¤pª¯\");\n" +
 "		}	\n" +
 "	}  ");
-    Vector<Pair> DQArea=new Vector<Pair>();
-    Vector<Pair> SQArea=new Vector<Pair>();
-    Vector<Pair> CommentArea=new Vector<Pair>();
-    Vector<Pair> ArrayArea=new Vector<Pair>();
+
+    static Vector<Pair> DQArea=new Vector<Pair>();
+    static Vector<Pair> SQArea=new Vector<Pair>();
+    static Vector<Pair> CommentArea=new Vector<Pair>();
+    static Vector<FocusPair> ArrayArea=new Vector<FocusPair>();
+    static Vector<FocusPair> FuncHeaderArea=new Vector<FocusPair>();
+    static Vector<FocusPair> ClassArea=new Vector<FocusPair>();
     public Test0() {
         JspStatic.Build_DQ_Area(str0,DQArea);
         JspStatic.Build_SQ_Area(str0,DQArea,SQArea);
@@ -78,6 +82,8 @@ public class Test0 {
     
     @Before
     public void setUp() {
+        DQArea=new Vector<Pair>();SQArea=new Vector<Pair>();CommentArea=new Vector<Pair>();
+        ArrayArea=new Vector<FocusPair>(); FuncHeaderArea=new Vector<FocusPair>(); ClassArea=new Vector<FocusPair>();
     }
     
     @After
@@ -139,7 +145,7 @@ public class Test0 {
     }
     
     @Test
-    public void Test2() {
+    public void Test_Before_Writing() {
          StringBuffer Q=new StringBuffer("<%! int D=3>>>1+5; int E +=15; int F= ++E; %>");
          
          JspStatic obj=new JspStatic(Q);
@@ -154,12 +160,73 @@ public class Test0 {
     }
     
     @Test
+    public void Test_Build_MyFocus(){
+         StringBuffer str=new StringBuffer(" int D=3>>>1+5; int E +=15; int F= ++E;");         
+         final String[] arr={"int","D","=","3",">",">",">","1","+","5",";","int","E","+","=","15",";","int","F","=","+","+","E",";"};
+         Vector<Focus> tmp=new Vector<Focus>();
+         Focus hand=JspStatic.GetOneToken(str, 0, CommentArea,  DQArea, SQArea); 
+         while(hand!=null) {
+            tmp.add(hand);
+            hand=JspStatic.GetOneToken(str, hand.NextCharPos, CommentArea, DQArea, SQArea); 
+        }
+         assertTrue(tmp.size()==arr.length );
+         
+         for (int i=0; i<tmp.size(); i++) {
+             assertTrue(arr[i].equals(tmp.get(i).RetString));
+         }
+         //final String[] op3={">>>","<<=",">>="};
+         Vector<Focus> tmp2=JspStatic.OP_Replacement(tmp,JspStatic.op3);
+         final String[] arr2={"int","D","=","3",">>>","1","+","5",";","int","E","+","=","15",";","int","F","=","+","+","E",";" };         
+         assertTrue(tmp2.size()==arr2.length);
+         for (int i=0; i<tmp2.size(); i++) {
+             assertTrue(arr2[i].equals(tmp2.get(i).RetString));
+         }
+         
+         //final String[] op2={"++","--","==","!=",">=","<=","<<",">>","&&","||","+=","-=","*=","/=","%=","&=","^=","|="};
+         Vector<Focus> tmp3=JspStatic.OP_Replacement(tmp2, JspStatic.op2);
+         final String[] arr3={"int","D","=","3",">>>","1","+","5",";","int","E","+=","15",";","int","F","=","++","E",";"};
+         assertTrue(tmp3.size()==arr3.length);
+         for (int i=0; i<tmp3.size(); i++) {
+             assertTrue(arr3[i].equals(tmp3.get(i).RetString));
+         }
+         Vector<Focus> tmp4=JspStatic.ELSE_IF_Replacement(tmp3);
+         assertTrue(tmp4.size()==arr3.length);
+         for (int i=0; i<tmp4.size(); i++) {
+             assertTrue(arr3[i].equals(tmp4.get(i).RetString));
+         }
+         Vector<Focus> _myfocus=JspStatic.FloatNUM_Replacement(tmp4);
+         assertTrue(_myfocus.size()==arr3.length);
+         for (int i=0; i< _myfocus.size(); i++) {
+             assertTrue(arr3[i].equals(_myfocus.get(i).RetString));
+         }
+        
+    }
+    @Test
+    public void Test_Build_ClassArea(){
+         StringBuffer Q=new StringBuffer("<%! int D=3>>>1+5; int E +=15; int F= ++E; %>");         
+         final String[] arr3={"int","D","=","3",">>>","1","+","5",";","int","E","+=","15",";","int","F","=","++","E",";"};
+         JspStatic obj=new JspStatic(Q);
+         obj.Build_MyFocus();
+         obj.Build_Class_Area(ClassArea);
+         assertTrue(obj.MyFocus.size()==arr3.length );         
+         for (int i=0; i<obj.MyFocus.size(); i++) {
+             System.out.println(arr3[i]);
+             assertTrue(arr3[i].equals(obj.MyFocus.get(i).RetString));
+         }
+        
+    }   
+    
+    
+    @Test
     public void Test3() {
         StringBuffer Q=new StringBuffer("int A=1.00+2.00+3.00; int B=5.0+8.0; ");
+        /*
         CommentArea=new Vector<Pair>();
-        ArrayArea=new Vector<Pair>();
+        ArrayArea=new Vector<FocusPair>();
         DQArea=new Vector<Pair>();
         SQArea=new Vector<Pair>();
+        */
+        
         Vector<Focus> tmp=new Vector<Focus>();
         Focus hand=JspStatic.GetOneToken(Q,0,CommentArea,DQArea,SQArea);
         while(hand!=null) {
@@ -176,10 +243,13 @@ public class Test0 {
     @Test
     public void Test4() {
         StringBuffer Q=new StringBuffer(" AAA.BBB+=3; ");
+        /*
         CommentArea=new Vector<Pair>();
         ArrayArea=new Vector<Pair>();
         DQArea=new Vector<Pair>();
         SQArea=new Vector<Pair>();
+        */
+        
         Vector<Focus> tmp=new Vector<Focus>();
         Focus hand=JspStatic.GetOneToken(Q,0,CommentArea,DQArea,SQArea);
         while(hand!=null) {
@@ -192,4 +262,7 @@ public class Test0 {
             assertTrue(arr[i].equals(tmp.get(i).getString()));
         }
     }
+    
+    
+    
 }

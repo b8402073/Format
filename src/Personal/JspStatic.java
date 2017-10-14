@@ -288,6 +288,14 @@ public class JspStatic {
             }else if (that.equals("else")) {
                 line=sHead+GetString(sLv,Level)+"else ";
                 ret.append(line);
+                if (!MyFocus.get(i+1).RetString.equals("{")) {
+                    ret.append("\n"); Level+=1; int semicolon_pos=SearchForTokenPos(i+1,";",MyFocus); FocusPair stmt=new FocusPair(i+1,semicolon_pos);
+                    line=sHead+GetString(sLv,Level)+stmt.toString(MyFocus);
+                    ret.append(line+"\n");
+                    Level-=1;
+                    i=stmt.getEnd();
+                    continue;
+                }
             }else if (that.equals("try")) {
                 line=sHead+GetString(sLv,Level)+"try ";
                 ret.append(line);

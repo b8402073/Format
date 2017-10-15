@@ -20,7 +20,7 @@ import org.junit.Test;
  *
  * @author easterday
  */
-public class Test0 {
+public class TestArbitary {
     final static StringBuffer str0=new StringBuffer("public final static class AAA    //this is class AAA\n" +
                                                 /////01234567890123456789012345678901234567890
 "	{\n" +
@@ -64,7 +64,7 @@ public class Test0 {
     static Vector<FocusPair> ArrayArea=new Vector<FocusPair>();
     static Vector<FocusPair> FuncHeaderArea=new Vector<FocusPair>();
     static Vector<FocusPair> ClassArea=new Vector<FocusPair>();
-    public Test0() {
+    public TestArbitary() {
         JspStatic.Build_DQ_Area(str0,DQArea);
         JspStatic.Build_SQ_Area(str0,DQArea,SQArea);
         JspStatic.Build_Comment_Area(str0,DQArea,SQArea,CommentArea);

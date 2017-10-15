@@ -108,17 +108,7 @@ public class JspStatic {
     }
     public String warning() {
         StringBuffer ret=new StringBuffer();
-        for (Pair P:CommentArea) {
-            String thatComment=Main.ToStr(P,MyText);
-            int count=0;
-            for (int i=0; i<thatComment.length(); i++) {
-                if (thatComment.charAt(i)=='\"') ++count;
-            }
-            if (count%2!=0)  {
-                //throw new Exception("註解裡面不可以雙引號不成雙!:"+thatComment);            
-                ret.append( new String("註解裡面不可以雙引號不成雙!:"+thatComment)+"\n");
-            }
-        }
+        for (Pair P:CommentArea) 
         return ret.toString();
     }
     public void go() {
@@ -146,12 +136,11 @@ public class JspStatic {
      * @return          輸出一份StringBuffer變數
      */
     public StringBuffer Make0(LineType lt) {  
-        Stack<TextLevel> _do=new Stack<TextLevel>(); 
-        Stack<TextLevel> _class=new Stack<TextLevel>();
-        Stack<TextLevel> _func=new Stack<TextLevel>();
-
+        Stack<TextLevel> Complex=new Stack<TextLevel>();
+        Complex.push(new TextLevel("class",FocusPair.MotherFocusPair,0));
         int Level=0;
         String line;
+        TextLevel newTL;
         StringBuffer ret=new StringBuffer();
         for (int i=0; i<MyFocus.size(); i++) {
             FocusPair F=GetPair(i,ClassArea);
@@ -161,7 +150,8 @@ public class JspStatic {
                 ret.append(line);
                 i=F.getEnd();
                 FocusPair block=FindSymmetricBigBraceToken(i,MyFocus);
-                _class.push(new TextLevel(block.getEnd(),Level));
+                // old code:  _class.push(new TextLevel(block.getEnd(),Level));
+                newTL=new TextLevel("class",block,Level); Complex.push(newTL);
                 continue;
             }
             F=GetPair(i,FuncHeaderArea);
@@ -171,7 +161,8 @@ public class JspStatic {
                 ret.append(line);
                 i=F.getEnd();
                 FocusPair block=FindSymmetricBigBraceToken(i,MyFocus);
-                _func.push(new TextLevel(block.getEnd(),Level));
+                // old code: _func.push(new TextLevel(block.getEnd(),Level));
+                newTL=new TextLevel("func",block,Level); Complex.push(newTL);
                 continue;
             }
             String that=MyFocus.get(i).getString();
@@ -192,17 +183,35 @@ public class JspStatic {
             }
             if (that.equals("}")) {                
                 //被do攔截
-                if (_do.size()>0 && _do.peek().FocusPos==i) {
-                    Level=_do.peek().Level;
-                    _do.pop();
-                    line=sHead+GetString(sLv,Level)+"}";
-                    ret.append(line);
-                    FocusPair Brace=FindSymmetricSmallBraceToken(i,MyFocus);
-                    ret.append(" while "+Brace.toString(MyFocus));
-                    ret.append(";\n");
-                    i=Brace.getEnd()+1;
-                    continue;
-                }else if (_func.size()>0 && _func.peek().FocusPos==i) {
+                TextLevel Top=Complex.peek();
+                if (Top.StartToEnd.getEnd()==i) {
+                    switch(Top.Type) {
+                        case"func": 
+                            break;
+                        case"class":
+                            break;
+                        case"if": case"elseif": case"else": case"while": case"for":                            
+                            break;
+                        case"try": case"catch": case"finally":                            
+                            break;
+                        case"do":
+                            if (MyFocus.get(i+1).getString().equals("while")) {
+                                newTL=Complex.pop();  Level=newTL.Level;
+                                FocusPair Brace=FindSymmetricSmallBraceToken(i,MyFocus);
+                                line=sHead+GetString(sLv,Level)+"} while"+Brace.toString(MyFocus)+";\n";
+                                ret.append(line);
+                                i=Brace.getEnd()+1;
+                                continue;
+                            }else {
+                               ret.append("compiling error at i="+i);
+                               return ret;
+                            }                                                        
+                        default:
+                            ret.append("something wrong at i="+i);
+                            return ret;
+                    }
+                }
+                if (_func.size()>0 && _func.peek().FocusPos==i) {
                     Level=_func.peek().Level;
                     _func.pop();
                     line=sHead+GetString(sLv,Level)+"}"+"\n";
@@ -225,12 +234,13 @@ public class JspStatic {
                 line=sHead+GetString(sLv,Level)+"do ";
                 ret.append(line);
                 FocusPair Block=FindSymmetricBigBraceToken(i,MyFocus);
-                TextLevel Tv=new TextLevel(Block.getEnd(),Level);
-                _do.push(Tv);                
+                newTL=new TextLevel("do",Block,Level); Complex.push(newTL);
             }else if (that.equals("for")) {
                 line=sHead+GetString(sLv,Level)+"for ";
                 ret.append(line);
                 FocusPair Brace=FindSymmetricSmallBraceToken(i,MyFocus);
+                FocusPair Block=FindSymmetricBigBraceToken(Brace.getEnd()+1,MyFocus);
+                newTL=new TextLevel("for",Block,Level); Complex.push(newTL);
                 ret.append(Brace.toString(MyFocus));
                 i=Brace.getEnd();
                 continue;
@@ -242,7 +252,16 @@ public class JspStatic {
                 if (MyFocus.get(Brace.getEnd()+1).getString().equals(";")) {
                     ret.append(";\n");
                     i=Brace.getEnd()+1;
+                }else if (!MyFocus.get(Brace.getEnd()+1).getString().equals("{")) {
+                    ret.append("\n"); Level+=1; int semicolon_pos=SearchForTokenPos(i+1,";",MyFocus); FocusPair stmt=new FocusPair(i+1,semicolon_pos);
+                    line=sHead+GetString(sLv,Level)+stmt.toString(MyFocus);
+                    ret.append(line+"\n");
+                    Level-=1;
+                    i=stmt.getEnd();
+                    continue;
                 }else {
+                    FocusPair Block=FindSymmetricBigBraceToken(Brace.getEnd(),MyFocus);
+                    newTL=new TextLevel("while",Block,Level); Complex.push(newTL);
                     i=Brace.getEnd();
                 }                  
                 continue;
@@ -262,6 +281,9 @@ public class JspStatic {
                     Level-=1;
                     i=stmt.getEnd();
                     continue;
+                }else {
+                    FocusPair Block=FindSymmetricBigBraceToken(Brace.getEnd(),MyFocus);
+                    newTL=new TextLevel("if",Block,Level); Complex.push(newTL);
                 }                    
                 i=Brace.getEnd();
                 continue;
@@ -282,6 +304,9 @@ public class JspStatic {
                     Level-=1;
                     i=stmt.getEnd();
                     continue;
+                }else {
+                    FocusPair Block=FindSymmetricBigBraceToken(Brace.getEnd(),MyFocus);
+                    newTL=new TextLevel("elseif",Block,Level); Complex.push(newTL);
                 }                    
                 i=Brace.getEnd();
                 continue;
@@ -295,19 +320,28 @@ public class JspStatic {
                     Level-=1;
                     i=stmt.getEnd();
                     continue;
+                }else {
+                    FocusPair Block=FindSymmetricBigBraceToken(i,MyFocus);
+                    newTL=new TextLevel("else",Block,Level); Complex.push(newTL);
                 }
             }else if (that.equals("try")) {
                 line=sHead+GetString(sLv,Level)+"try ";
                 ret.append(line);
+                FocusPair Block=FindSymmetricBigBraceToken(i,MyFocus);
+                newTL=new TextLevel("try",Block,Level); Complex.push(newTL);
             }else if (that.equals("catch")) {
                 line=sHead+GetString(sLv,Level)+" catch ";
                 ret.append(line);
                 FocusPair Brace=FindSymmetricSmallBraceToken(i,MyFocus);
                 ret.append(Brace.toCatchString(MyFocus));
+                FocusPair Block=FindSymmetricBigBraceToken(i,MyFocus);
+                newTL=new TextLevel("catch",Block,Level); Complex.push(newTL);                
                 i=Brace.getEnd();
             }else if (that.equals("finally")) {
                 line=sHead+GetString(sLv,Level)+" finally ";
-                ret.append(line);                
+                ret.append(line);
+                FocusPair Block=FindSymmetricBigBraceToken(i,MyFocus);
+                newTL=new TextLevel("finally",Block,Level); Complex.push(newTL);                
             }else if (that.equals(";")) {
                 ret.append(";\n");  //@@?隨便寫寫...
             }else {

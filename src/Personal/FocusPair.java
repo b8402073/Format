@@ -5,6 +5,7 @@
  */
 package Personal;
 
+import java.util.Optional;
 import java.util.Vector;
 
 /**
@@ -37,7 +38,13 @@ public final class FocusPair {
      */
     public String toString(Vector<Focus> focus) {
         StringBuffer ret=new StringBuffer();
-        for (int i=i_start; i<=i_end-1; i++) {
+        int StartPos,EndPos;
+        if (!isMother())  {
+            StartPos=i_start; EndPos=i_end;
+        }else {
+            StartPos=0; EndPos=focus.size()-1;
+        }        
+        for (int i=StartPos; i<=EndPos; i++) {
             ret.append(focus.get(i).getString()+" ");
         }
         ret.append(focus.get(i_end).getString());
@@ -48,16 +55,23 @@ public final class FocusPair {
      * @param focus     全部的字串串列
      * @return          "("+Element1+" "+Element2+")"
      */
-    public String toCatchString(Vector<Focus> focus) {
+    public Optional<String> toCatchString(Vector<Focus> focus) {
         if (i_end- i_start==3) {
             if ("(".equals(focus.get(i_start).getString())  &&
                 ")".equals(focus.get(i_end).getString()) ) {
                 String Element1=focus.get(i_start+1).getString();
                 String Element2=focus.get(i_start+2).getString();
-                return("("+Element1+" "+Element2+")");
+                return Optional.of("("+Element1+" "+Element2+")");
             }            
         }
-        return null;
+        return Optional.empty();
+    }
+    public final static FocusPair MotherFocusPair=new FocusPair(0,-1);   //表示最根本的一個範圍
+    public boolean isMother() {
+        if (this==MotherFocusPair) {
+            return true;
+        }
+        return false;
     }
     
 }

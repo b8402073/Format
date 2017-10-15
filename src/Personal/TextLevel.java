@@ -10,9 +10,10 @@ package Personal;
  * @author easterday
  */
 public class TextLevel {
-    public final int FocusPos;          
+    public final String     Type;
+    public final FocusPair  StartToEnd;
     public final int Level;
-    public TextLevel(int focus_pos,int level) {
-        FocusPos=focus_pos; Level=level;
+    public TextLevel(String type,FocusPair that,int level) {
+        Type=type;StartToEnd=that; Level=level;
     }
 }

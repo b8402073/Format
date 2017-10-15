@@ -44,7 +44,7 @@ public final class FocusPair {
         }else {
             StartPos=0; EndPos=focus.size()-1;
         }        
-        for (int i=StartPos; i<=EndPos; i++) {
+        for (int i=StartPos; i<=EndPos-1; i++) {
             ret.append(focus.get(i).getString()+" ");
         }
         ret.append(focus.get(i_end).getString());
@@ -73,5 +73,7 @@ public final class FocusPair {
         }
         return false;
     }
-    
+    public String toString() {
+        return String.format("[%d,%d]", i_start,i_end);
+    }
 }

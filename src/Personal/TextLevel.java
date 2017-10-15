@@ -16,4 +16,8 @@ public class TextLevel {
     public TextLevel(String type,FocusPair that,int level) {
         Type=type;StartToEnd=that; Level=level;
     }
+    public String toString() {
+        String ret=Type+"# Level="+Level+StartToEnd.toString();
+        return ret;
+    }
 }

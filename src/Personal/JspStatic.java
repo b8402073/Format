@@ -140,12 +140,15 @@ public class JspStatic {
         Build_Array_Area(ArrayArea);
         //建完Focus Tokens以後,如果有必要,要做  Focus-->Resolution的轉換 (也許沒有必要)
 
+        /*
         OutputText = Make0(LineType.AFTER_LINE);
         System.out.println(OutputText.toString());
         System.out.println("*Next_LINE*****************************************************************");
         OutputText = new StringBuffer();
         OutputText = Make0(LineType.NEXT_LINE);
         System.out.println(OutputText.toString());
+        */
+        
     }
 
     /**
@@ -219,6 +222,8 @@ public class JspStatic {
                                 Level = newTL.Level;
                                 line = sHead + GetString(sLv, Level) + "}" + "\n";
                                 ret.append(line);
+                                if (i==MyFocus.size()-1)
+                                    return ret;
                                 break;
                             case "if":
                             case "elseif":
@@ -251,6 +256,7 @@ public class JspStatic {
                                 ret.append("something wrong at i=" + i);
                                 return ret;
                         }
+                        continue;
                     }
                 }
 

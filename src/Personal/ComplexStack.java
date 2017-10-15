@@ -42,20 +42,14 @@ public class ComplexStack {
      * 沒有例外
      */
     public void meetRight() {
-        if (Hand.get(Hand.size()-1).isEmpty()) {
-            Hand.removeElementAt(Hand.size()-1);
-        }
-        for (int i=0; i<Hand.size(); i++) {
-            Hand.get(i).pop();
-        }
+
     }
     /***
      * 遇到帶有Class的左括號,要先把現有堆疊都Push一個0
      * 然後再多一個空堆疊(這樣才能強迫現在的地方可以放入Function)
      */
     public void meetClassAndLeft(TextLevel newTL) {
-        Hand.add(new Stack<TextLevel>());
-        meetLeft(newTL);
+
     }
     /***
      * 如果最後的堆疊為空,則可以加入Function,傳回true
@@ -63,10 +57,7 @@ public class ComplexStack {
      * @return      true or false
      */
     public boolean OK_for_NewFunctionHeader() {
-        for (int i=Hand.size()-1; i>=0; i--) {
-            if (Hand.get(i).size()==1);
-                return true;
-        }
+
         return false;
     }
     /***
@@ -74,13 +65,7 @@ public class ComplexStack {
      * @return      顯示各個小堆疊的0的個數
      */
     public String toString() {
-        StringBuffer ret=new StringBuffer("[");
-        for (int i=0; i<Hand.size(); i++) {
-            ret.append(Hand.get(i).size());
-            ret.append(' ');
-        }
-        ret.append(']');
-        return ret.toString();
+        return "";
     }
     
     

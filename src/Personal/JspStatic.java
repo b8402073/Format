@@ -3,7 +3,7 @@ package Personal;
 import java.util.Comparator;
 import java.util.Stack;
 import java.util.Vector;
-
+//2017_1015_2200;
 /*
  * I've been having this problem for a few months now. 
  * I'd be debugging a java app and every time I'd hit a constructor, 
@@ -108,7 +108,9 @@ public class JspStatic {
     }
     public String warning() {
         StringBuffer ret=new StringBuffer();
-        for (Pair P:CommentArea) 
+        for (Pair P:CommentArea) {
+            
+        }
         return ret.toString();
     }
     public void go() {
@@ -186,13 +188,17 @@ public class JspStatic {
                 TextLevel Top=Complex.peek();
                 if (Top.StartToEnd.getEnd()==i) {
                     switch(Top.Type) {
-                        case"func": 
-                            break;
-                        case"class":
+                        case"func": case"class":
+                            newTL=Complex.pop(); Level=newTL.Level;
+                            line=sHead+GetString(sLv,Level)+"}"+"\n";
+                            ret.append(line);                            
                             break;
                         case"if": case"elseif": case"else": case"while": case"for":                            
-                            break;
-                        case"try": case"catch": case"finally":                            
+                        case"try": case"catch": case"finally": 
+                            //預設的狀況
+                            newTL=Complex.pop(); Level=newTL.Level;
+                            line=sHead+GetString(sLv,Level)+"}"+"\n";
+                            ret.append(line);
                             break;
                         case"do":
                             if (MyFocus.get(i+1).getString().equals("while")) {
@@ -211,25 +217,8 @@ public class JspStatic {
                             return ret;
                     }
                 }
-                if (_func.size()>0 && _func.peek().FocusPos==i) {
-                    Level=_func.peek().Level;
-                    _func.pop();
-                    line=sHead+GetString(sLv,Level)+"}"+"\n";
-                    ret.append(line);
-                    continue;
-                }else if (_class.size()>0 && _class.peek().FocusPos==i) {
-                    Level=_class.peek().Level;
-                    _class.pop();
-                    line=sHead+GetString(sLv,Level)+"}"+"\n";
-                    ret.append(line);
-                    continue;
-                }
-                //預設的狀況
-                line=sHead+GetString(sLv,Level)+"}"+"\n";
-                Level-=1;
-                ret.append(line);
-                continue;
             }
+
             if (that.equals("do"))  {
                 line=sHead+GetString(sLv,Level)+"do ";
                 ret.append(line);

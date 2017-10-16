@@ -127,7 +127,15 @@ public class JspStatic {
     public String warning() {
         StringBuffer ret = new StringBuffer();
         for (Pair P : CommentArea) {
-
+            String that=Main.ToStr(P,MyText);
+            int _SQ_count=0, _DQ_count=0;
+            for (int i=0; i<that.length(); i++) {
+                if (that.charAt(i)=='\'')  _SQ_count++;
+                if (that.charAt(i)=='\"')  _DQ_count++;
+            }
+            if (_SQ_count%2>0 || _DQ_count%2>0) {
+                ret.append("SQ_DQ_¤£¹ïºÙ:"+that+"\n");
+            }
         }
         return ret.toString();
     }
@@ -377,7 +385,7 @@ public class JspStatic {
                     line = sHead + GetString(sLv, Level) + " catch ";
                     ret.append(line);
                     FocusPair Brace = FindSymmetricSmallBraceToken(i, MyFocus);
-                    ret.append(Brace.toCatchString(MyFocus));
+                    ret.append(Brace.toCatchString(MyFocus).get());
                     FocusPair Block = FindSymmetricBigBraceToken(i, MyFocus);
                     newTL = new TextLevel("catch", Block, Level);
                     Complex.push(newTL);

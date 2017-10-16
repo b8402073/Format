@@ -159,4 +159,38 @@ public class Test_JspStatic {
         assertTrue(obj2.Make0(JspStatic.LineType.AFTER_LINE).toString().trim().equals(after2.trim()));       
                 
     }
+    @Test
+    public void try_catch_finally_test() {
+        StringBuffer S=new StringBuffer("<%! public int a(){ int t=0; try { t/=2; } catch(Exception ex) {out.println(ex);} catch(Throwable t) {out.println(t);} finally { return t; } } %>");
+        JspStatic obj1=new JspStatic(S);
+        assertTrue(obj1.warning().equals(""));
+        obj1.go();
+        String next1="#####public int a ( )\n" +"#####{\n" +"#####   int t = 0 ;\n" +"#####   try \n" +"#####   {\n" +"#####      t /= 2 ;\n" +"#####   }\n" +"#####    catch (Exception ex)\n" +"#####   {\n" +"#####      out . println ( ex ) ;\n" +"#####   }\n" +"#####    catch (Throwable t)\n" +"#####   {\n" +"#####      out . println ( t ) ;\n" +"#####   }\n" +"#####    finally \n" +"#####   {\n" +"#####      return t ;\n" +"#####   }\n" +"#####}";
+        String after1="#####public int a ( ) {\n" +"#####   int t = 0 ;\n" +"#####   try  {\n" +"#####      t /= 2 ;\n" +"#####   }\n" +"#####    catch (Exception ex) {\n" +"#####      out . println ( ex ) ;\n" +"#####   }\n" +"#####    catch (Throwable t) {\n" +"#####      out . println ( t ) ;\n" +"#####   }\n" +"#####    finally  {\n" +"#####      return t ;\n" +"#####   }\n" +"#####}";
+        System.out.println(obj1.Make0(JspStatic.LineType.NEXT_LINE)); 
+        System.out.println(obj1.Make0(JspStatic.LineType.AFTER_LINE));
+        assertTrue(obj1.Make0(JspStatic.LineType.NEXT_LINE).toString().trim().equals(next1.trim()));
+        assertTrue(obj1.Make0(JspStatic.LineType.AFTER_LINE).toString().trim().equals(after1.trim()));        
+    }
+    @Test 
+    public void warning_Test1() {
+        StringBuffer S=new StringBuffer("<%! // \"abc  \n %>");
+        JspStatic obj1=new JspStatic(S);
+        String what1="SQ_DQ_不對稱:[1,10]=// \"abc  ";
+        assertTrue(what1.trim().equals(obj1.warning().trim()));
+        S=new StringBuffer("<%! // \'abc  \n %>");
+        JspStatic obj2=new JspStatic(S);
+        String what2="SQ_DQ_不對稱:[1,10]=// \'abc  ";
+        assertTrue(what2.trim().equals(obj2.warning().trim()));
+        S=new StringBuffer("<%! // \"abc\"  \n %>");
+        JspStatic obj3=new JspStatic(S);
+        String what3="";
+        assertTrue(what3.trim().equals(obj3.warning().trim()));
+        S=new StringBuffer("<%! // \"abc'\"  \n %>");
+        JspStatic obj4=new JspStatic(S);
+        String what4="SQ_DQ_不對稱:[1,12]=// \"abc'\"  ";
+        System.out.println(obj4.warning());
+        assertTrue(what4.trim().equals(obj4.warning().trim()));        
+        
+    }
 }

@@ -1,6 +1,7 @@
 package Personal;
 
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.Stack;
 import java.util.Vector;
 //2017_1015_2200;
@@ -41,8 +42,8 @@ public class JspStatic {
     public enum LineType {
         AFTER_LINE, NEXT_LINE
     };
-    public final static String sHead = "#####";
-    public final static String sLv = "   ";
+    public static String sHead = "#####";
+    public static String sLv = "   ";
 
     public final static PairSort PairSortObj = new PairSort();
     public final static String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -401,9 +402,10 @@ public class JspStatic {
                 } else {
                     //基本上當成一個Statement處理
                     int HeadPos = SearchForStatementHeadPos(i, MyFocus);
-                    int FuncBase = GetFuncBase(i);
-                    int ClassBase = GetClassBase(i);
-                    int StartPos = max(HeadPos, ClassBase + 1, FuncBase + 1);
+                    Optional<FocusPair> FuncBase = GetFuncBase(i,Complex);
+                    FocusPair Limit= FuncBase.orElse(GetClassBase(i,Complex).get()); 
+                    //但是這裡怎麼處理mother?
+                    int StartPos = Math.max(HeadPos,Limit.getStart()+1);
                     int EndPos = SearchForTokenPos(i, ";", MyFocus);
                     FocusPair tmp = new FocusPair(StartPos, EndPos);
                     line = sHead + GetString(sLv, Level) + tmp.toString(MyFocus);
@@ -1188,42 +1190,34 @@ public class JspStatic {
      * **
      * 要計算現在這個位置,如果在某個Func裡面,相關的第一個左大括號在哪裡...
      *
-     * @param pos 現在的位置
+     * @param pos               現在的位置
+     * @param refComplex        參考的Complex Stack
      * @return 傳回某個左大括號的位置
      */
-    public int GetFuncBase(int pos) {
-        for (int i = 0; i < FuncHeaderArea.size(); i++) {
-            FocusPair that = FuncHeaderArea.get(i);
-            int start = SearchForTokenPos(that.getEnd(), "{", MyFocus);
-            FocusPair ret = FindSymmetricBigBraceToken(start, MyFocus);
-            if (ret == null) {
-                return 0;
-            } else if (ret.getStart() <= pos && pos <= ret.getEnd()) {
-                return start;
+    public static Optional<FocusPair> GetFuncBase(int pos,Stack<TextLevel> refComplex) {
+        return SearchComplexStackFromTop(pos,"func",refComplex);
+    }
+    public static Optional<FocusPair> SearchComplexStackFromTop(int pos,String type,Stack<TextLevel> refComplex) {
+        if (!refComplex.empty()) {
+            for (int i=refComplex.size()-1; i>=0; i--) {
+                TextLevel TL=refComplex.get(i);
+                if (type.equals(TL.Type))
+                    return Optional.of(TL.StartToEnd);                            
             }
         }
-        return (-1);
+        return Optional.empty();
     }
 
     /**
      * *
      * 要計算現在這個位置,如果在某個Class裡面,相關的第一個左大括號在哪裡
      *
-     * @param pos 現在的位置
+     * @param pos               現在的位置
+     * @param refComplex        參考的Complex Stack
      * @return 傳回某個左大括號的位置
      */
-    public int GetClassBase(int pos) {
-        for (int i = ClassArea.size() - 1; i >= 0; i--) {
-            FocusPair that = ClassArea.get(i);
-            int start = SearchForTokenPos(that.getEnd(), "{", MyFocus);
-            FocusPair ret = FindSymmetricBigBraceToken(start, MyFocus);
-            if (ret == null) {
-                return 0;
-            } else if (ret.getStart() <= pos && pos <= ret.getEnd()) {
-                return start;
-            }
-        }
-        return (-1);
+    public static Optional<FocusPair> GetClassBase(int pos,Stack<TextLevel> refComplex) {        
+        return SearchComplexStackFromTop(pos,"class",refComplex);
     }
 
     /**

@@ -466,6 +466,7 @@ public class Main {
 				StringBuffer that=new StringBuffer(str);
 				JspStatic obj = new JspStatic(that);
                                 obj.go();
+                                
 				// System.out.println("SQArea:");
 				// System.out.println(ToStr(obj.SQArea,obj.MyText));
 				// System.out.println("DQArea:");
@@ -475,6 +476,8 @@ public class Main {
 				// System.out.println("HeaderArea:");
 				// System.out.println(ToStr(obj.HeaderArea,obj.MyText));
 				System.out.println("OutputText:");
+                                System.out.println(obj.Make0(JspStatic.LineType.NEXT_LINE));
+                                System.out.println(obj.Make0(JspStatic.LineType.AFTER_LINE));
 				System.out.println(obj.OutputText);
 			}
 		}

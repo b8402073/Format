@@ -66,7 +66,7 @@ public final class FocusPair {
         }
         return Optional.empty();
     }
-    public final static FocusPair MotherFocusPair=new FocusPair(0,-1);   //表示最根本的一個範圍
+    public final static FocusPair MotherFocusPair=new FocusPair(-1,Integer.MAX_VALUE);   //表示最根本的一個範圍
     public boolean isMother() {
         if (this==MotherFocusPair) {
             return true;
@@ -75,5 +75,14 @@ public final class FocusPair {
     }
     public String toString() {
         return String.format("[%d,%d]", i_start,i_end);
+    }
+    public boolean contains(FocusPair that) {
+        if (!isMother()) {
+            if (getStart()<= that.getStart() && that.getEnd()<= getEnd())
+                return true;
+            else
+                return false;
+        }
+        return true;    
     }
 }

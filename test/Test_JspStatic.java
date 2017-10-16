@@ -91,8 +91,7 @@ public class Test_JspStatic {
         System.out.println(obj2.Make0(JspStatic.LineType.AFTER_LINE));
         
     }
-    
-    //TODO: 要加入兩種變化
+        
     @Test
     public void while_test_1() {
         StringBuffer S=new StringBuffer("<%! public int a(){ int i=100; while(i>0){ i--;} } %>");
@@ -108,5 +107,56 @@ public class Test_JspStatic {
         assertTrue(obj.Make0(JspStatic.LineType.NEXT_LINE).toString().trim().equals(next.trim()));
         assertTrue(obj.Make0(JspStatic.LineType.AFTER_LINE).toString().trim().equals(after.trim()));
         
-        }
+        S=new StringBuffer("<%! public int a() { int i=100; while(i>=0) i--; } %>");
+        JspStatic obj2=new JspStatic(S);
+        assertTrue(obj.warning().equals(""));
+        obj2.go();
+        System.out.println(obj2.Make0(JspStatic.LineType.NEXT_LINE)); 
+        System.out.println(obj2.Make0(JspStatic.LineType.AFTER_LINE));
+        String next2="#####public int a ( )\n" +"#####{\n" +"#####   int i = 100 ;\n" +"#####   while ( i >= 0 )\n" +"#####      i -- ;\n" +"#####}";
+        String after2="#####public int a ( ) {\n" +"#####   int i = 100 ;\n" +"#####   while ( i >= 0 )\n" +"#####      i -- ;\n" +"#####}";
+        assertTrue(obj2.Make0(JspStatic.LineType.NEXT_LINE).toString().trim().equals(next2.trim()));
+        assertTrue(obj2.Make0(JspStatic.LineType.AFTER_LINE).toString().trim().equals(after2.trim()));
+        
+        S=new StringBuffer("<%! public int() { int i=100; while(--i>0);  }%>");
+        JspStatic obj3=new JspStatic(S);
+        assertTrue(obj.warning().equals(""));
+        obj3.go();
+        System.out.println(obj3.Make0(JspStatic.LineType.NEXT_LINE)); 
+        System.out.println(obj3.Make0(JspStatic.LineType.AFTER_LINE));
+        String next3="#####public int ( )\n" +"#####{\n" +"#####   int i = 100 ;\n" +"#####   while ( -- i > 0 );\n" +"#####}";
+        String after3="#####public int ( ) {\n" +"#####   int i = 100 ;\n" +"#####   while ( -- i > 0 );\n" +"#####}";
+        
+        assertTrue(obj3.Make0(JspStatic.LineType.NEXT_LINE).toString().trim().equals(next3.trim()));
+        assertTrue(obj3.Make0(JspStatic.LineType.AFTER_LINE).toString().trim().equals(after3.trim()));
+    }
+    
+    @Test
+    public void else_if_test1() {
+        StringBuffer S=new StringBuffer("<%! public void a(){ int a=10; if (a>=1) a--; else if (a==0) a++; else return; }%>");
+        
+        JspStatic obj1=new JspStatic(S);
+        assertTrue(obj1.warning().equals(""));
+        obj1.go();
+        System.out.println(obj1.Make0(JspStatic.LineType.NEXT_LINE)); 
+        System.out.println(obj1.Make0(JspStatic.LineType.AFTER_LINE));
+        String next1="#####public void a ( )\n" +"#####{\n" +"#####   int a = 10 ;\n" +"#####   if ( a >= 1 )\n" +"#####      a -- ;\n" +"#####   else if ( a == 0 )\n" +"#####      a ++ ;\n" +"#####   else \n" +"#####      return ;\n" +"#####}";
+        String after1="#####public void a ( ) {\n" +"#####   int a = 10 ;\n" +"#####   if ( a >= 1 )\n" +"#####      a -- ;\n" +"#####   else if ( a == 0 )\n" +"#####      a ++ ;\n" +"#####   else \n" +"#####      return ;\n" +"#####}";
+        assertTrue(obj1.Make0(JspStatic.LineType.NEXT_LINE).toString().trim().equals(next1.trim()));
+        assertTrue(obj1.Make0(JspStatic.LineType.AFTER_LINE).toString().trim().equals(after1.trim()));
+        
+        S=new StringBuffer("<%! public void a(){ int a=10; if (a>=1) {a--;a++;} else if (a==0) { ++a; --a;} else { a+=3; return;} } %>");
+        JspStatic obj2=new JspStatic(S);
+        assertTrue(obj2.warning().equals(""));
+        obj2.go();
+        System.out.println(obj2.Make0(JspStatic.LineType.NEXT_LINE)); 
+        System.out.println(obj2.Make0(JspStatic.LineType.AFTER_LINE));
+        String next2="#####public void a ( )\n" +"#####{\n" +"#####   int a = 10 ;\n" +"#####   if ( a >= 1 )\n" +"#####   {\n" +"#####      a -- ;\n" +"#####      a ++ ;\n" +"#####   }\n" +"#####   else if ( a == 0 )\n" +"#####   {\n" +"#####      ++ a ;\n" +"#####      -- a ;\n" +"#####   }\n" +"#####   else \n" +"#####   {\n" +"#####      a += 3 ;\n" +"#####      return ;\n" +"#####   }\n" +"#####}";
+        String after2="#####public void a ( ) {\n" +"#####   int a = 10 ;\n" +"#####   if ( a >= 1 ) {\n" +"#####      a -- ;\n" +"#####      a ++ ;\n" +"#####   }\n" +"#####   else if ( a == 0 ) {\n" +"#####      ++ a ;\n" +"#####      -- a ;\n" +"#####   }\n" +"#####   else  {\n" +"#####      a += 3 ;\n" +"#####      return ;\n" +"#####   }\n" +"#####}";
+        String nx=obj2.Make0(JspStatic.LineType.NEXT_LINE).toString();
+        String af=obj2.Make0(JspStatic.LineType.AFTER_LINE).toString();
+        assertTrue(obj2.Make0(JspStatic.LineType.NEXT_LINE).toString().trim().equals(next2.trim()));
+        assertTrue(obj2.Make0(JspStatic.LineType.AFTER_LINE).toString().trim().equals(after2.trim()));       
+                
+    }
 }

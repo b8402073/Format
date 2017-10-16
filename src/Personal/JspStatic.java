@@ -226,7 +226,7 @@ public class JspStatic {
                                     return ret;
                                 break;
                             case "if":
-                            case "elseif":
+                            case "else if":
                             case "else":
                             case "while":
                             case "for":
@@ -287,8 +287,8 @@ public class JspStatic {
                     } else if (!MyFocus.get(Brace.getEnd() + 1).getString().equals("{")) {
                         ret.append("\n");
                         Level += 1;
-                        int semicolon_pos = SearchForTokenPos(i + 1, ";", MyFocus);
-                        FocusPair stmt = new FocusPair(i + 1, semicolon_pos);
+                        int semicolon_pos = SearchForTokenPos(Brace.getEnd()+1, ";", MyFocus);
+                        FocusPair stmt = new FocusPair(Brace.getEnd()+1, semicolon_pos);
                         line = sHead + GetString(sLv, Level) + stmt.toString(MyFocus);
                         ret.append(line + "\n");
                         Level -= 1;
@@ -343,7 +343,7 @@ public class JspStatic {
                         continue;
                     } else {
                         FocusPair Block = FindSymmetricBigBraceToken(Brace.getEnd(), MyFocus);
-                        newTL = new TextLevel("elseif", Block, Level);
+                        newTL = new TextLevel("else if", Block, Level);
                         Complex.push(newTL);
                     }
                     i = Brace.getEnd();
@@ -365,6 +365,7 @@ public class JspStatic {
                         FocusPair Block = FindSymmetricBigBraceToken(i, MyFocus);
                         newTL = new TextLevel("else", Block, Level);
                         Complex.push(newTL);
+                        
                     }
                 } else if (that.equals("try")) {
                     line = sHead + GetString(sLv, Level) + "try ";

@@ -6,7 +6,7 @@
 package Personal;
 
 import java.util.Stack;
-
+import java.util.Optional;
 /**
  *
  * @author easterday
@@ -31,11 +31,13 @@ public class JspStatic3 extends JspStatic {
            for (i=0; i<MyFocus.size(); i++) {
                FocusPair F=GetPair(i,ClassArea);
                if (F!=null) {
-                   i=MakeClassArea(ret,Level,F,FindSymmetricBigBraceToken(i,MyFocus),Complex);
+                   i=Make_Class_Function_Area(ret,Level,F,FindSymmetricBigBraceToken(i,MyFocus),Complex,"class");
+                   continue;
                }
                F=GetPair(i,FuncHeaderArea);
                if (F!=null) {
-                   i=MakeFuncHeaderArea(ret,Level,F,FindSymmetricBigBraceToken(i,MyFocus),Complex);
+                   i=Make_Class_Function_Area(ret,Level,F,FindSymmetricBigBraceToken(i,MyFocus),Complex,"func");
+                   continue;
                }
                switch(MyFocus.get(i).getString()) {
                    case"{":
@@ -63,7 +65,7 @@ public class JspStatic3 extends JspStatic {
                        i=i=Make_Finally_Else(ret,i,Level,Complex,"else");
                        break;
                    case"catch":                       
-                       i=MakeCatch(ret,i,Level,FindSymmetricBigBraceToken(i,MyFocus),Complex);
+                       i=MakeCatch(ret,i,Level,FindSymmetricSmallBraceToken(i,MyFocus),Complex);
                        break;
                    case"try":  //try後面一定有Block
                        i=MakeTry(ret,i,Level,FindSymmetricBigBraceToken(i,MyFocus),Complex);
@@ -136,26 +138,33 @@ public class JspStatic3 extends JspStatic {
     public FocusPair GetSmallBrace(int i) {
         return FindSymmetricSmallBraceToken(i, MyFocus);
     }    
-    public int MakeCatch(StringBuffer refRet,int NowPos,int level,FocusPair Block,Stack<TextLevel> refComplex) {
+    public int MakeCatch(StringBuffer refRet,int NowPos,int level,FocusPair Brace,Stack<TextLevel> refComplex) {
         String line=sHead+GetString(sLv,level)+"catch";
         refRet.append(line);
-        TextLevel newTL=new TextLevel("catch",Block,level);
-        refComplex.push(newTL);
-        return NowPos+1;
+        refRet.append(Brace.toCatchString(MyFocus).get());
+        switch(Next(NowPos)) {
+            case"{":
+                FocusPair Block=FindSymmetricBigBraceToken(NowPos, MyFocus);
+                TextLevel newTL=new TextLevel("catch",Block,level);
+                refComplex.push(newTL);
+                return NowPos+1;                
+            default:
+                return MakeStatement(refRet,NowPos,level+1,refComplex);
+        }
     }
     public int MakeDo(StringBuffer refRet,int NowPos,int level,FocusPair Block,Stack<TextLevel> refComplex) {
         String line=sHead+GetString(sLv,level)+"do";
         refRet.append(line);
         TextLevel newTL=new TextLevel("do",Block,level);
         refComplex.push(newTL);
-        return NowPos+1;        
+        return NowPos;        
     }
     public int MakeTry(StringBuffer refRet,int NowPos,int Level,FocusPair Block,Stack<TextLevel> refComplex) {
         String line=sHead+GetString(sLv,Level)+"try";
         refRet.append(line);
         TextLevel newTL=new TextLevel("try",Block,Level);
         refComplex.push(newTL);
-        return NowPos+1;
+        return NowPos;
     }
     public int Make_Finally_Else(StringBuffer refRet,int NowPos,int level,Stack<TextLevel> refComplex,String what) {
         switch(what) {
@@ -181,7 +190,12 @@ public class JspStatic3 extends JspStatic {
         return NowPos+1;
     }
     public int MakeStatement(StringBuffer refRet,int NowPos,int Level,Stack<TextLevel> refComplex) {
-        FocusPair Limit=GetFuncBase(NowPos,refComplex).orElse(GetClassBase(NowPos,refComplex).get());
+        //FocusPair Limit=GetFuncBase(NowPos,refComplex).orElse(GetClassBase(NowPos,refComplex).get());  //為什麼這樣跑不對...
+        Optional<FocusPair> L=GetFuncBase(NowPos,refComplex);
+        if (!L.isPresent())    {
+            L=GetClassBase(NowPos,refComplex);
+        }
+        FocusPair Limit=L.get();
         FocusPair Stmt=new FocusPair(SearchForStatementHeadPos(NowPos,MyFocus), SearchForTokenPos(NowPos,";",MyFocus));                       
         if (Limit.contains(Stmt)) {
             String line=sHead+GetString(sLv,Level)+Stmt.toString(MyFocus);
@@ -190,16 +204,19 @@ public class JspStatic3 extends JspStatic {
         }
         throw new NullPointerException("Bad ComplexStack: NowPos="+NowPos);                 
     }
-    public int MakeClassArea(StringBuffer refRet,int level,FocusPair f,FocusPair block,Stack<TextLevel> refComplex) {
+    public int Make_Class_Function_Area(StringBuffer refRet,int level,FocusPair f,FocusPair block,Stack<TextLevel> refComplex,String what) {
+        switch(what) {
+            case"class": case"func": break;
+            default:
+                throw new NullPointerException("Bad MakeClass_Function_Area");
+        }
         String line=sHead+GetString(sLv,level)+f.toString(MyFocus);
         refRet.append(line);
-        TextLevel newTL=new TextLevel("class",block,level);
+        TextLevel newTL=new TextLevel(what,block,level);
         refComplex.push(newTL);
         return  f.getEnd();
     }
-    public int MakeFuncHeaderArea(StringBuffer refRet,int level,FocusPair f,FocusPair block,Stack<TextLevel> refComplex) {
-        return MakeClassArea(refRet,level,f,block,refComplex);  //因為是完全一樣的動作
-    }
+
     public void MakeLeftBigBrace(StringBuffer refRet,int level,Stack<TextLevel> refComplex) {
         LineType use;
         TextLevel top=refComplex.peek();

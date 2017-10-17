@@ -3,61 +3,6 @@ package Personal;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Vector;
-/*
-首要目標是能夠成功解析以下的內容
-<%!
-   public final static class AAA   //this is a class
-   {
-	   static int A;
-	   double B;
-	   public int add(int CCC)
-	   {
-		   int D=A+1;
-		   return A+CCC+D;		   
-	   }
-	   int D=A;
-	   public class BBB
-	   {
-		   int X;
-	   }
-   }
-   public void BBB()      
-   {
-	   AAA.A=1;
-   }
-      
-%>
-
-成為 
-JSP_STATIC#
-		class#public final static class AAA
-		comment# //this is a class
-		{#
-		stmt#static int A;
-		stmt#double B;
-		function#public int add(int CCC)
-		{#
-		stmt#int D=A+1;
-		stmt#return A+CCC+D:
-		}#
-		stmt#int D=A;
-		class#public class BBB
-		{#
-		stmt#int x;
-	    }#
-    	}#
-    	function#void BBB()
-    	{#
-    	stmt#AAA.A=1;
-    	}#		
-  
-
-
-
-*/
-
-
-
 
 public class Main {
 
@@ -464,8 +409,13 @@ public class Main {
 			if (str.startsWith("jsp_static:")) {
 
 				StringBuffer that=new StringBuffer(str);
-				JspStatic obj = new JspStatic(that);
-                                obj.go();
+				//JspStatic obj = new JspStatic(that);
+                                //obj.go();
+                                
+                                JspStatic3 obj3=new JspStatic3(that);
+                                System.out.println(obj3.warning());
+                                obj3.go();
+                                
                                 
 				// System.out.println("SQArea:");
 				// System.out.println(ToStr(obj.SQArea,obj.MyText));
@@ -476,9 +426,10 @@ public class Main {
 				// System.out.println("HeaderArea:");
 				// System.out.println(ToStr(obj.HeaderArea,obj.MyText));
 				System.out.println("OutputText:");
-                                System.out.println(obj.Make0(JspStatic.LineType.NEXT_LINE));
-                                System.out.println(obj.Make0(JspStatic.LineType.AFTER_LINE));
-				System.out.println(obj.OutputText);
+                                //System.out.println(obj.Make0(JspStatic.LineType.NEXT_LINE));
+                                //System.out.println(obj.Make0(JspStatic.LineType.AFTER_LINE));
+                                System.out.println(obj3.Make3());
+				//System.out.println(obj.OutputText);
 			}
 		}
 		// System.out.println(ret);

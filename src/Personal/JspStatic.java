@@ -275,14 +275,28 @@ public class JspStatic {
                     FocusPair Block = FindSymmetricBigBraceToken(i, MyFocus);
                     newTL = new TextLevel("do", Block, Level);
                     Complex.push(newTL);
-                } else if (that.equals("for")) {
-                    line = sHead + GetString(sLv, Level) + "for ";
-                    ret.append(line);
+                } else if (that.equals("for")) {                    
                     FocusPair Brace = FindSymmetricSmallBraceToken(i, MyFocus);
+                    line = sHead + GetString(sLv, Level) + "for "+ Brace.toString(MyFocus);
+                    ret.append(line);                                        
+                    if (MyFocus.get(Brace.getEnd()+1).getString().equals(";")) {
+                        ret.append(";\n"); 
+                        i=Brace.getEnd()+1;
+                        continue;
+                    }else if (!MyFocus.get(Brace.getEnd()+1).getString().equals("{")) {
+                        ret.append("\n");
+                        Level += 1;
+                        int semicolon_pos = SearchForTokenPos(Brace.getEnd()+1, ";", MyFocus);
+                        FocusPair stmt = new FocusPair(Brace.getEnd()+1, semicolon_pos);
+                        line = sHead + GetString(sLv, Level) + stmt.toString(MyFocus);
+                        ret.append(line + "\n");
+                        Level -= 1;
+                        i = stmt.getEnd();
+                        continue;                        
+                    }                
                     FocusPair Block = FindSymmetricBigBraceToken(Brace.getEnd() + 1, MyFocus);
                     newTL = new TextLevel("for", Block, Level);
-                    Complex.push(newTL);
-                    ret.append(Brace.toString(MyFocus));
+                    Complex.push(newTL);                    
                     i = Brace.getEnd();
                     continue;
                 } else if (that.equals("while")) {

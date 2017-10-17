@@ -193,4 +193,40 @@ public class Test_JspStatic {
         assertTrue(what4.trim().equals(obj4.warning().trim()));        
         
     }
+    @Test
+    public void for_test_1() {
+        StringBuffer S=new StringBuffer("<%! public void a(){ int a=0; for (int i=0; i<10; i++) a++;  } %>");
+        JspStatic obj1=new JspStatic(S);
+        assertTrue(obj1.warning().equals(""));
+        obj1.go();
+        System.out.println(obj1.Make0(JspStatic.LineType.NEXT_LINE)); 
+        System.out.println(obj1.Make0(JspStatic.LineType.AFTER_LINE)); 
+        String next1="#####public void a ( )\n" +"#####{\n" +"#####   int a = 0 ;\n" +"#####   for ( int i = 0 ; i < 10 ; i ++ )\n" +"#####      a ++ ;\n" +"#####}";
+        String after1="#####public void a ( ) {\n" +"#####   int a = 0 ;\n" +"#####   for ( int i = 0 ; i < 10 ; i ++ )\n" +"#####      a ++ ;\n" +"#####}";
+        assertTrue(obj1.Make0(JspStatic.LineType.NEXT_LINE).toString().trim().equals(next1.trim()));
+        assertTrue(obj1.Make0(JspStatic.LineType.AFTER_LINE).toString().trim().equals(after1.trim())); 
+
+        S=new StringBuffer("<%! public void a(){ int a=0; for(int i=0; i<10; i++){a++;b++;} }%>");
+        JspStatic obj2=new JspStatic(S);
+        assertTrue(obj2.warning().equals(""));
+        obj2.go();
+        System.out.println(obj2.Make0(JspStatic.LineType.NEXT_LINE)); 
+        System.out.println(obj2.Make0(JspStatic.LineType.AFTER_LINE));  
+        String next2="#####public void a ( )\n" +"#####{\n" +"#####   int a = 0 ;\n" +"#####   for ( int i = 0 ; i < 10 ; i ++ )\n" +"#####   {\n" +"#####      a ++ ;\n" +"#####      b ++ ;\n" +"#####   }\n" +"#####}";
+        String after2="#####public void a ( ) {\n" +"#####   int a = 0 ;\n" +"#####   for ( int i = 0 ; i < 10 ; i ++ ) {\n" +"#####      a ++ ;\n" +"#####      b ++ ;\n" +"#####   }\n" +"#####}";
+        assertTrue(obj2.Make0(JspStatic.LineType.NEXT_LINE).toString().trim().equals(next2.trim()));
+        assertTrue(obj2.Make0(JspStatic.LineType.AFTER_LINE).toString().trim().equals(after2.trim())); 
+        
+        S=new StringBuffer("<%! public void a(){ int a=10; for (;a>=0; a--); } %>");
+        JspStatic obj3=new JspStatic(S);
+        assertTrue(obj3.warning().equals(""));
+        obj3.go();
+        System.out.println(obj3.Make0(JspStatic.LineType.NEXT_LINE)); 
+        System.out.println(obj3.Make0(JspStatic.LineType.AFTER_LINE)); 
+        String next3="#####public void a ( )\n" +"#####{\n" +"#####   int a = 10 ;\n" +"#####   for ( ; a >= 0 ; a -- );\n" +"#####}";
+        String after3="#####public void a ( ) {\n" +"#####   int a = 10 ;\n" +"#####   for ( ; a >= 0 ; a -- );\n" +"#####}";
+        assertTrue(obj3.Make0(JspStatic.LineType.NEXT_LINE).toString().trim().equals(next3.trim()));
+        assertTrue(obj3.Make0(JspStatic.LineType.AFTER_LINE).toString().trim().equals(after3.trim()));        
+        
+    }
 }

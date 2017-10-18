@@ -49,8 +49,13 @@ public class Test_JspStatic {
         assertTrue(obj.warning().equals(""));
         obj.go();
         
-        System.out.println(obj.Make0(JspStatic.LineType.NEXT_LINE)); 
-        System.out.println(obj.Make0(JspStatic.LineType.AFTER_LINE));        
+        //System.out.println(obj.Make0(JspStatic.LineType.NEXT_LINE)); 
+        //System.out.println(obj.Make0(JspStatic.LineType.AFTER_LINE));
+        String next="#####public int a ( )\n" +"#####{\n" +"#####   int i = 0 ;\n" +"#####   do \n" +"#####   {\n" +"#####      System . out . println ( i ) ;\n" +"#####      ++ i ;\n" +"#####   } while( i < 100 );\n" +"#####   return i ;\n" +"#####}";
+        String after="#####public int a ( ) {\n" +"#####   int i = 0 ;\n" +"#####   do  {\n" +"#####      System . out . println ( i ) ;\n" +"#####      ++ i ;\n" +"#####   } while( i < 100 );\n" +"#####   return i ;\n" +"#####}";
+        assertTrue(obj.Make0(JspStatic.LineType.NEXT_LINE).toString().trim().equals(next));
+        assertTrue(obj.Make0(JspStatic.LineType.AFTER_LINE).toString().trim().equals(after));
+        
 
     }
     
@@ -85,8 +90,7 @@ public class Test_JspStatic {
         String NextLine2="#####public int a ( )\n" +"#####{\n" +"#####   int a [ ] = { 1 , 2 , 3 } ;\n" +"#####   if ( a [ 0 ] < 100 )\n" +"#####   {\n" +"#####      a [ 1 ] += 1 ;\n" +"#####      a [ 2 ] ++ ;\n" +"#####   }\n" +"#####}";
         assertTrue(after2.trim().equals(AfterLine2.trim()));
         assertTrue(next2.trim().equals(NextLine2.trim()));
-        
-        
+                
         System.out.println(obj2.Make0(JspStatic.LineType.NEXT_LINE));
         System.out.println(obj2.Make0(JspStatic.LineType.AFTER_LINE));
         

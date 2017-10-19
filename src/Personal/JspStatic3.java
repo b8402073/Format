@@ -15,10 +15,15 @@ public class JspStatic3 extends JspStatic {
     public final static LineType ClassType=LineType.NEXT_LINE;
     public final static LineType FuncType=LineType.AFTER_LINE;
     public static LineType OtherType=LineType.AFTER_LINE;
+    public static LineType Catch_After_Try_Block=LineType.AFTER_LINE;
     public static String NexLine="\n";
     
     public JspStatic3 setOtherType(LineType lt) {
         OtherType=lt;
+        return this;
+    }
+    public JspStatic3 setCatchType(LineType lt) {
+        Catch_After_Try_Block=lt;
         return this;
     }
     
@@ -67,8 +72,8 @@ public class JspStatic3 extends JspStatic {
                    case"else if":                       
                        i=Make_If_ElseIf(ret,i,Level,Complex,"else if");
                        break;
-                   case"else":  //else跟finally行為一樣
-                       i=i=Make_Finally_Else(ret,i,Level,Complex,"else");
+                   case"else":  //else跟finally行為如果有Catch_after_Try就不一樣
+                       i=i=Make_Else(ret,i,Level,Complex);
                        break;
                    case"catch":                       
                        i=MakeCatch(ret,i,Level,FindSymmetricSmallBraceToken(i,MyFocus),Complex);
@@ -76,8 +81,8 @@ public class JspStatic3 extends JspStatic {
                    case"try":  //try後面一定有Block
                        i=MakeTry(ret,i,Level,FindSymmetricBigBraceToken(i,MyFocus),Complex);
                        break;                       
-                   case"finally"://else跟finally行為一樣
-                       i=Make_Finally_Else(ret,i,Level,Complex,"finally");
+                   case"finally"://else跟finally行為如果有Catch_after_Try就不一樣
+                       i=Make_Finally(ret,i,Level,Complex);
                        break;
                    case"@":
                        i=MakeAttribute(ret,i,Level);
@@ -147,15 +152,19 @@ public class JspStatic3 extends JspStatic {
         return FindSymmetricSmallBraceToken(i, MyFocus);
     }    
     public int MakeCatch(StringBuffer refRet,int NowPos,int level,FocusPair Brace,Stack<TextLevel> refComplex) {
-        String line=sHead+GetString(sLv,level)+"catch";
+        String line="<bad catch>";
+        if (Catch_After_Try_Block==LineType.NEXT_LINE)
+            line=sHead+GetString(sLv,level)+"catch";
+        else if (Catch_After_Try_Block==LineType.AFTER_LINE)
+            line="catch";        
         refRet.append(line);
         refRet.append(Brace.toCatchString(MyFocus).get());
-        switch(Next(NowPos)) {
+        switch(Next(Brace.getEnd())) {
             case"{":
                 FocusPair Block=FindSymmetricBigBraceToken(NowPos, MyFocus);
                 TextLevel newTL=new TextLevel("catch",Block,level);
                 refComplex.push(newTL);
-                return NowPos+1;                
+                return Brace.getEnd();                
             default:
                 refRet.append(NexLine);
                 return MakeStatement(refRet,NowPos,level+1,refComplex);
@@ -175,18 +184,32 @@ public class JspStatic3 extends JspStatic {
         refComplex.push(newTL);
         return NowPos;
     }
-    public int Make_Finally_Else(StringBuffer refRet,int NowPos,int level,Stack<TextLevel> refComplex,String what) {
-        switch(what) {
-            case"finally": case"else":                break;
-            default:
-                throw new NullPointerException("Bad Make_Finally_Else():   NowPos="+NowPos+" what="+what);
-        }        
-        String line=sHead+GetString(sLv,level)+what+" ";
+    public int Make_Else(StringBuffer refRet,int NowPos,int level,Stack<TextLevel> refComplex) {
+        String line=sHead+GetString(sLv,level)+"else";
         refRet.append(line);
         switch(Next(NowPos)) {
             case"{":
                 FocusPair Block=FindSymmetricBigBraceToken(NowPos,MyFocus);
-                refComplex.push(new TextLevel(what,Block,level));
+                refComplex.push(new TextLevel("else",Block,level));
+                return NowPos;
+            default:
+                //遇到stmt
+                refRet.append(NexLine);
+                return  MakeStatement(refRet,NowPos+1,level+1,refComplex);
+        }
+    }
+    public int Make_Finally(StringBuffer refRet,int NowPos,int level,Stack<TextLevel> refComplex) {
+        String line="<bad finally>";
+        if (Catch_After_Try_Block==LineType.AFTER_LINE)
+            line="finally"+" ";
+        else if (Catch_After_Try_Block==LineType.NEXT_LINE) {
+            line=sHead+GetString(sLv,level)+"finally"+" ";
+        }
+        refRet.append(line);
+        switch(Next(NowPos)) {
+            case"{":
+                FocusPair Block=FindSymmetricBigBraceToken(NowPos,MyFocus);
+                refComplex.push(new TextLevel("finally",Block,level));
                 return NowPos;
             default:
                 //遇到stmt
@@ -262,6 +285,15 @@ public class JspStatic3 extends JspStatic {
                    line=sHead+GetString(sLv,Level)+"} while"+ Brace.toString(MyFocus)+";\n";
                    refRet.append(line);
                    return Brace.getEnd()+1;
+                   
+                case"try":
+                case"catch":                    
+                    line=sHead+GetString(sLv,Level)+"}";
+                    refRet.append(line);
+                    if (Catch_After_Try_Block==LineType.NEXT_LINE) {
+                        refRet.append(NexLine);
+                    }
+                    return NowPos;                   
                 default:
                    //including "func","class","if","else if","else","while","for","try","catch","finally"
                    line=sHead+GetString(sLv,Level)+"}"+NexLine;

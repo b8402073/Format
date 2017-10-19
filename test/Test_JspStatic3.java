@@ -107,8 +107,8 @@ public class Test_JspStatic3 {
         String AfterLine=obj.Make3().toString().trim();
         System.out.println("Next:\n"+NextLine);
         System.out.println("After:\n"+AfterLine);
-        String next="public int a ( ) {\n" +"   int i = 100 ;\n" +"   while( i > 0 )\n" +"   {\n" +"      i -- ;\n" +"   }\n" +"}";
-        String after="public int a ( ) {\n" +"   int i = 100 ;\n" +"   while( i > 0 ) {\n" +"      i -- ;\n" +"   }\n" +"}";
+        String next="#####public int a ( ) {\n" +"#####   int i = 100 ;\n" +"#####   while( i > 0 )\n" +"#####   {\n" +"#####      i -- ;\n" +"#####   }\n" +"#####}";
+        String after="#####public int a ( ) {\n" +"#####   int i = 100 ;\n" +"#####   while( i > 0 ) {\n" +"#####      i -- ;\n" +"#####   }\n" +"#####}";
         assertTrue(obj.setCatchType(JspStatic.LineType.NEXT_LINE).setOtherType(JspStatic.LineType.NEXT_LINE).Make3().toString().trim().equals(next.trim()));
         assertTrue(obj.setCatchType(JspStatic.LineType.NEXT_LINE).setOtherType(JspStatic.LineType.AFTER_LINE).Make3().toString().trim().equals(after.trim()));
         assertTrue(obj.setCatchType(JspStatic.LineType.AFTER_LINE).setOtherType(JspStatic.LineType.NEXT_LINE).Make3().toString().trim().equals(next.trim()));
@@ -125,7 +125,7 @@ public class Test_JspStatic3 {
         String AfterLine2=obj.Make3().toString();
         System.out.println("Next2:\n"+NextLine2);
         System.out.println("After2:\n"+AfterLine2);
-        String next2_eq_after2="public int a ( ) {\n" +"   int i = 100 ;\n" +"   while( i >= 0 )\n" +"      i -- ;\n" +"}";
+        String next2_eq_after2="#####public int a ( ) {\n" +"#####   int i = 100 ;\n" +"#####   while( i >= 0 )\n" +"#####      i -- ;\n" +"#####}\n" +"";
         
         assertTrue(obj.setCatchType(JspStatic.LineType.NEXT_LINE).setOtherType(JspStatic.LineType.NEXT_LINE).Make3().toString().trim().equals( next2_eq_after2.trim()));
         assertTrue(obj.setCatchType(JspStatic.LineType.NEXT_LINE).setOtherType(JspStatic.LineType.AFTER_LINE).Make3().toString().trim().equals(next2_eq_after2.trim()));
@@ -140,9 +140,9 @@ public class Test_JspStatic3 {
         String nextline3=obj.Make3().toString(); 
         JspStatic3.OtherType=JspStatic.LineType.AFTER_LINE;
         String afterline3=obj.Make3().toString();
-        System.out.println(nextline3);
-        System.out.println(afterline3);
-        String next3_eq_after3="public int ( ) {\n" +"   int i = 100 ;\n" +"   while( -- i > 0 );\n" +"}";                           
+        System.out.println("Next3:\n"+nextline3);
+        System.out.println("After3:\n"+afterline3);
+        String next3_eq_after3="#####public int ( ) {\n" +"#####   int i = 100 ;\n" +"#####   while( -- i > 0 );\n" +"#####}";
         assertTrue(obj.setCatchType(JspStatic.LineType.NEXT_LINE).setOtherType(JspStatic.LineType.NEXT_LINE).Make3().toString().trim().equals( next3_eq_after3.trim()));
         assertTrue(obj.setCatchType(JspStatic.LineType.NEXT_LINE).setOtherType(JspStatic.LineType.AFTER_LINE).Make3().toString().trim().equals(next3_eq_after3.trim()));
         assertTrue(obj.setCatchType(JspStatic.LineType.AFTER_LINE).setOtherType(JspStatic.LineType.NEXT_LINE).Make3().toString().trim().equals(next3_eq_after3.trim()));
@@ -161,7 +161,7 @@ public class Test_JspStatic3 {
         String AfterLine1=obj.setCatchType(JspStatic.LineType.NEXT_LINE).setOtherType(JspStatic.LineType.AFTER_LINE).Make3().toString().trim();
         System.out.println("Next1:\n"+NextLine1);
         System.out.println("After1:\n"+AfterLine1);        
-        String next1_eq_after1="public void a ( ) {\n" +"   int a = 10 ;\n" +"   if ( a >= 1 )\n" +"      a -- ;\n" +"   else if ( a == 0 )\n" +"      a ++ ;\n" +"   else\n" +"      return ;\n" +"}";                
+        String next1_eq_after1="#####public void a ( ) {\n" +"#####   int a = 10 ;\n" +"#####   if ( a >= 1 )\n" +"#####      a -- ;\n" +"#####   else if ( a == 0 )\n" +"#####      a ++ ;\n" +"#####   else\n" +"#####      return ;\n" +"#####}";
         assertTrue(NextLine1.trim().equals(next1_eq_after1.trim()));
         assertTrue(AfterLine1.trim().equals(next1_eq_after1.trim()));   
         
@@ -177,8 +177,8 @@ public class Test_JspStatic3 {
         obj.go();
         String NextLine2=obj.setCatchType(JspStatic.LineType.NEXT_LINE).setOtherType(JspStatic.LineType.NEXT_LINE).Make3().toString().trim();
         String AfterLine2=obj.setCatchType(JspStatic.LineType.NEXT_LINE).setOtherType(JspStatic.LineType.AFTER_LINE).Make3().toString().trim();        
-        String next2="public void a ( ) {\n" +"   int a = 10 ;\n" +"   if ( a >= 1 )\n" +"   {\n" +"      a -- ;\n" +"      a ++ ;\n" +"   }\n" +"   else if ( a == 0 )\n" +"   {\n" +"      ++ a ;\n" +"      -- a ;\n" +"   }\n" +"   else\n" +"   {\n" +"      a += 3 ;\n" +"      return ;\n" +"   }\n" +"}";
-        String after2="public void a ( ) {\n"+"   int a = 10 ;\n" +"   if ( a >= 1 ) {\n" +"      a -- ;\n" +"      a ++ ;\n" +"   }\n" +"   else if ( a == 0 ) {\n" +"      ++ a ;\n" +"      -- a ;\n" +"   }\n" +"   else {\n" +"      a += 3 ;\n" +"      return ;\n" +"   }\n" +"}";
+        String next2="#####public void a ( ) {\n" +"#####   int a = 10 ;\n" +"#####   if ( a >= 1 )\n" +"#####   {\n" +"#####      a -- ;\n" +"#####      a ++ ;\n" +"#####   }\n" +"#####   else if ( a == 0 )\n" +"#####   {\n" +"#####      ++ a ;\n" +"#####      -- a ;\n" +"#####   }\n" +"#####   else\n" +"#####   {\n" +"#####      a += 3 ;\n" +"#####      return ;\n" +"#####   }\n" +"#####}";
+        String after2="#####public void a ( ) {\n" +"#####   int a = 10 ;\n" +"#####   if ( a >= 1 ) {\n" +"#####      a -- ;\n" +"#####      a ++ ;\n" +"#####   }\n" +"#####   else if ( a == 0 ) {\n" +"#####      ++ a ;\n" +"#####      -- a ;\n" +"#####   }\n" +"#####   else {\n" +"#####      a += 3 ;\n" +"#####      return ;\n" +"#####   }\n" +"#####}";
         System.out.println("Next2:\n"+NextLine2);
         System.out.println("After2:\n"+AfterLine2);        
         assertTrue(NextLine2.trim().equals(next2.trim()));

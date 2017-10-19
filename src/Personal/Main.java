@@ -425,10 +425,12 @@ public class Main {
 				// System.out.println(ToStr(obj.CommentArea,obj.MyText));
 				// System.out.println("HeaderArea:");
 				// System.out.println(ToStr(obj.HeaderArea,obj.MyText));
-				System.out.println("OutputText:");
+				System.out.println("Next OutputText:");
                                 //System.out.println(obj.Make0(JspStatic.LineType.NEXT_LINE));
                                 //System.out.println(obj.Make0(JspStatic.LineType.AFTER_LINE));
-                                System.out.println(obj3.Make3());
+                                System.out.println(obj3.setOtherType(JspStatic.LineType.NEXT_LINE).Make3());
+                                System.out.println("After OutputText:");
+                                System.out.println(obj3.setOtherType(JspStatic.LineType.AFTER_LINE).Make3());
 				//System.out.println(obj.OutputText);
 			}
 		}

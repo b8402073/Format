@@ -109,6 +109,7 @@ public class JspStatic {
      */
     public Vector<Focus> MyFocus;
 
+    public Vector<FocusPair> AttributeArea;
     /**
      * **
      * 建構子
@@ -144,6 +145,7 @@ public class JspStatic {
     public void go() {
         System.out.println(warning());
         Build_MyFocus();
+        Build_AttributeArea(AttributeArea);
         Build_Class_Area(ClassArea);
         Build_Header_Area(FuncHeaderArea);
         Build_Array_Area(ArrayArea);
@@ -159,7 +161,13 @@ public class JspStatic {
         */
         
     }
-
+    void Build_AttributeArea(Vector<FocusPair> destArea) {
+        for (int i=0; i<MyFocus.size()-1; i++) {
+            if (MyFocus.get(i).getString().equals("@")) {
+                destArea.add(new FocusPair(i,i+1));
+            }
+        }
+    }
     /**
      * **
      * 輸出一份完全沒有註釋的程式碼,全部AFTER_LINE or NEXT_LINE as much as possible,結尾是\n
@@ -581,6 +589,7 @@ public class JspStatic {
         FuncHeaderArea = new Vector<FocusPair>();
         ClassArea = new Vector<FocusPair>();
         ArrayArea = new Vector<FocusPair>();
+        AttributeArea=new Vector<FocusPair>();
     }
 
     /**
@@ -1269,6 +1278,8 @@ public class JspStatic {
                 case ";":
                 case "{":
                     return i + 1;
+                case "@":  //如果遇到Attribute
+                    return i+2;
                 default:
                     --i;
             }

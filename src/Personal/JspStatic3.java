@@ -92,7 +92,11 @@ public class JspStatic3 extends JspStatic {
                        break;
                    case"case":
                        Level=Complex.peek().Level;
-                       i=Make_Case(ret,i,Level,Complex); Level++;                       
+                       i=Make_Case_Default(ret,i,Level,Complex,"case"); Level++;                       
+                       break;
+                   case"default":
+                       Level=Complex.peek().Level;
+                       i=Make_Case_Default(ret,i,Level,Complex,"default"); Level++;
                        break;
                    default:
                        i=MakeStatement(ret,i,Level,Complex);
@@ -104,12 +108,22 @@ public class JspStatic3 extends JspStatic {
         }        
         return ret;
     }
-    public int Make_Case(StringBuffer refRet,int NowPos,int level,Stack<TextLevel> refComplex) {
+    public int Make_Case_Default(StringBuffer refRet,int NowPos,int level,Stack<TextLevel> refComplex,String what) {
         int Colum=SearchForTokenPos(NowPos,":",MyFocus);
-        FocusPair _case=new FocusPair(NowPos+1,Colum-1);
-        String line=sHead+GetString(sLv,level)+"case "+ _case.toString(MyFocus)+":"+NexLine;
-        refRet.append(line);
-        return Colum;
+        String line;
+        switch(what) {
+            case"case": 
+                FocusPair _case=new FocusPair(NowPos+1,Colum-1);
+                line=sHead+GetString(sLv,level)+what+" "+ _case.toString(MyFocus)+":"+NexLine;
+                refRet.append(line);
+                return Colum;                
+            case"default":
+                line=sHead+GetString(sLv,level)+"default:"+NexLine;
+                refRet.append(line);
+                return Colum;
+            default:
+                throw new NullPointerException("bad case NowPos="+NowPos);
+        }
     }
     public int Make_If_ElseIf(StringBuffer refRet,int NowPos,int level,Stack<TextLevel> refComplex,String what) {
         switch(what){

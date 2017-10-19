@@ -301,6 +301,9 @@ public class JspStatic3 extends JspStatic {
                    return NowPos;
             }
         }else {
+           // System.out.println("**************************************");
+           // System.out.println(refRet.toString());
+           // System.out.println("**************************************");
             throw new Exception("NowPos="+NowPos+" ComplexStack is broken");
         }
     }

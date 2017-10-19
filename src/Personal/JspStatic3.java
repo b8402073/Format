@@ -171,7 +171,7 @@ public class JspStatic3 extends JspStatic {
         }
     }
     public int MakeDo(StringBuffer refRet,int NowPos,int level,FocusPair Block,Stack<TextLevel> refComplex) {
-        String line=sHead+GetString(sLv,level)+"do";
+        String line=NexLine+sHead+GetString(sLv,level)+"do";
         refRet.append(line);
         TextLevel newTL=new TextLevel("do",Block,level);
         refComplex.push(newTL);

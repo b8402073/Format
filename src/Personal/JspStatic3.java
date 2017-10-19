@@ -87,6 +87,13 @@ public class JspStatic3 extends JspStatic {
                    case"@":
                        i=MakeAttribute(ret,i,Level);
                        break;
+                   case"switch":
+                       i=Make_Switch(ret,i,Level,Complex); 
+                       break;
+                   case"case":
+                       Level=Complex.peek().Level;
+                       i=Make_Case(ret,i,Level,Complex); Level++;                       
+                       break;
                    default:
                        i=MakeStatement(ret,i,Level,Complex);
                        break;                                             
@@ -96,6 +103,13 @@ public class JspStatic3 extends JspStatic {
             ex.printStackTrace();
         }        
         return ret;
+    }
+    public int Make_Case(StringBuffer refRet,int NowPos,int level,Stack<TextLevel> refComplex) {
+        int Colum=SearchForTokenPos(NowPos,":",MyFocus);
+        FocusPair _case=new FocusPair(NowPos+1,Colum-1);
+        String line=sHead+GetString(sLv,level)+"case "+ _case.toString(MyFocus)+":"+NexLine;
+        refRet.append(line);
+        return Colum;
     }
     public int Make_If_ElseIf(StringBuffer refRet,int NowPos,int level,Stack<TextLevel> refComplex,String what) {
         switch(what){
@@ -115,6 +129,21 @@ public class JspStatic3 extends JspStatic {
                 refRet.append(NexLine);
                 return  MakeStatement(refRet,Brace.getEnd()+1,level+1,refComplex);
         }        
+    }
+    public int Make_Switch(StringBuffer refRet,int NowPos,int level,Stack<TextLevel> refComplex) {
+        FocusPair Brace=GetSmallBrace(NowPos);
+        String line=sHead+GetString(sLv,level)+"switch"+Brace.toString(MyFocus);
+        refRet.append(line);
+        switch(Next(Brace.getEnd())) {
+            case"{":
+                FocusPair Block=FindSymmetricBigBraceToken(NowPos,MyFocus);
+                TextLevel newTL=new TextLevel("switch",Block,level);
+                refComplex.push(newTL);
+                return Brace.getEnd();
+            default:
+                throw new NullPointerException("Bad Switch: NowPos="+NowPos);
+        }
+        
     }
     public int Make_For_While(StringBuffer refRet,int NowPos,int level,Stack<TextLevel> refComplex,String what) {
         switch(what) {
@@ -295,7 +324,7 @@ public class JspStatic3 extends JspStatic {
                     }
                     return NowPos;                   
                 default:
-                   //including "func","class","if","else if","else","while","for","try","catch","finally"
+                   //including "func","class","if","else if","else","while","for","try","catch","finally","switch"
                    line=sHead+GetString(sLv,Level)+"}"+NexLine;
                    refRet.append(line);
                    return NowPos;

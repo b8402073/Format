@@ -431,7 +431,8 @@ public class JspStatic3 extends JspStatic {
         FocusPair Limit=L.get();
         FocusPair Stmt=new FocusPair(StartPos, SearchForTokenPos(StartPos,";",MyFocus));                       
         if (Limit.contains(Stmt)) {
-            String line=sHead+GetString(sLv,Level)+Stmt.toString(MyFocus);
+            //old String line=sHead+GetString(sLv,Level)+Stmt.toString(MyFocus);
+            String line=sHead+GetString(sLv,Level)+Stmt.toStringCompact(MyFocus);
             refRet.append(line+NexLine);
             return Stmt.getEnd();
         }

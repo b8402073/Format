@@ -85,4 +85,33 @@ public final class FocusPair {
         }
         return true;    
     }
+    public String toStringCompact(Vector<Focus> focus) {
+        StringBuffer ret=new StringBuffer();
+        int StartPos,EndPos;
+        if (!isMother())  {
+            StartPos=i_start; EndPos=i_end;
+        }else {
+            StartPos=0; EndPos=focus.size()-1;
+        }        
+        for (int i=StartPos; i<=EndPos; i++) {
+            String that=focus.get(i).getString();
+            switch(that) {
+            case"abstract":
+            case"boolean": case"break": case"byte": 
+            case"case": case"catch": case"char": case"clase": case"const": case"continue":
+            case "default": case"do": case"double": case"else": case"extends": 
+            case"final": case"int": case"interface": case"long": case"native": case"new":
+            case"package": case"private": case"protected": case"public": case"return":
+            case"short": case"static": case"super": case"switch":
+            case"synchronized": case"this":            
+            case"finally": case"float": case"for": case"goto": case"if":
+            case"implements": case"imports": case"instanceof": case"throw": case"throws":
+            case"transient": case"try": case"void": case"volatile": case"while":
+                ret.append(that+" "); break;
+            default:
+                ret.append(that);
+            }                            
+        }
+        return ret.toString();
+    }    
 }

@@ -12,26 +12,57 @@ import java.util.Optional;
  * @author easterday
  */
 public class JspStatic3 extends JspStatic {
+    /***
+     * 設定Class的括號顯示方式
+     */
     public final static LineType ClassType=LineType.NEXT_LINE;
+    /***
+     * 設定Func的括號顯示方式
+     */
     public final static LineType FuncType=LineType.AFTER_LINE;
+    /***
+     * 其他結構的括號顯示方式
+     */
     public static LineType OtherType=LineType.AFTER_LINE;
+    /***
+     * Try後面的Catch要放在Try_Block的後面(After_LINE)或是下一行(NEXT_LINE)
+     */
     public static LineType Catch_After_Try_Block=LineType.AFTER_LINE;
+    /***
+     * 換行符號
+     */
     public static String NexLine="\n";
-    
+    /***
+     * 設定OtherType; 傳回JspStatic3物件本身可以連續設定其他的LineType
+     * @param lt
+     * @return          傳回JspStatic3物件
+     */
     public JspStatic3 setOtherType(LineType lt) {
         OtherType=lt;
         return this;
     }
+    /***
+     * 設定CatchType; 傳回JspStatic3物件本身可以連續設定其他的LineType
+     * @param lt
+     * @return          傳回JspStatic3物件
+     */
     public JspStatic3 setCatchType(LineType lt) {
         Catch_After_Try_Block=lt;
         return this;
     }
-    
+    /***
+     * 建構子
+     * @param Text 傳入的本文,包含<%!  %>
+     */
     public JspStatic3(StringBuffer Text) {
         super(Text);
         sHead="#####";
         sLv="   ";
     }
+    /***
+     * 顯示編排後的文字
+     * @return      傳回編排後的文字
+     */
     public StringBuffer Make3() {
         Stack<TextLevel> Complex=new Stack<TextLevel>();
         Complex.push(new TextLevel("class", FocusPair.MotherFocusPair, 0));
@@ -108,6 +139,15 @@ public class JspStatic3 extends JspStatic {
         }        
         return ret;
     }
+    /***
+     * 處理Case關鍵字和Default關鍵字
+     * @param refRet            要寫入傳回的本文
+     * @param NowPos            現在的字("case" or "default")的位置
+     * @param level             現在的Level
+     * @param refComplex        現在的區塊堆疊
+     * @param what              現在遇到的字是"case" or "default"
+     * @return                  傳回冒號所在位置
+     */
     public int Make_Case_Default(StringBuffer refRet,int NowPos,int level,Stack<TextLevel> refComplex,String what) {
         int Colum=SearchForTokenPos(NowPos,":",MyFocus);
         String line;
@@ -122,9 +162,18 @@ public class JspStatic3 extends JspStatic {
                 refRet.append(line);
                 return Colum;
             default:
-                throw new NullPointerException("bad case NowPos="+NowPos);
+                throw new NullPointerException("bad "+what+" without 冒號 NowPos="+NowPos);
         }
     }
+    /***
+     * 處理"if"關鍵字和"else if"關鍵字
+     * @param refRet                要寫入傳回的本文
+     * @param NowPos                現在的字("if" or "else if")的位置
+     * @param level                 現在的Level
+     * @param refComplex            現在的區塊堆疊
+     * @param what                  現在遇到的字是"if" or "else if"
+     * @return                      傳回準備下一個掃描位置 
+     */
     public int Make_If_ElseIf(StringBuffer refRet,int NowPos,int level,Stack<TextLevel> refComplex,String what) {
         switch(what){
         case"if": case"else if": break;
@@ -144,6 +193,14 @@ public class JspStatic3 extends JspStatic {
                 return  MakeStatement(refRet,Brace.getEnd()+1,level+1,refComplex);
         }        
     }
+    /***
+     * 處理"switch"關鍵字
+     * @param refRet                        要寫入傳回的本文
+     * @param NowPos                        現在的字("switch")的位置
+     * @param level                         現在的Level
+     * @param refComplex                    現在的區塊堆疊
+     * @return                              傳回準備下一個掃描位置 
+     */
     public int Make_Switch(StringBuffer refRet,int NowPos,int level,Stack<TextLevel> refComplex) {
         FocusPair Brace=GetSmallBrace(NowPos);
         String line=sHead+GetString(sLv,level)+"switch"+Brace.toString(MyFocus);
@@ -159,6 +216,15 @@ public class JspStatic3 extends JspStatic {
         }
         
     }
+    /***
+     * 處理"for"關鍵字和"while"關鍵字
+     * @param refRet                    要寫入傳回的本文
+     * @param NowPos                    現在的字("for" or "while")的位置
+     * @param level                     現在的Level
+     * @param refComplex                現在的區塊堆疊
+     * @param what                      現在的字("for" or "what
+     * @return                          傳回準備下一個掃描位置 
+     */
     public int Make_For_While(StringBuffer refRet,int NowPos,int level,Stack<TextLevel> refComplex,String what) {
         switch(what) {
         case"for": case"while":            break;
@@ -182,18 +248,42 @@ public class JspStatic3 extends JspStatic {
                 return  MakeStatement(refRet,Brace.getEnd()+1,level+1,refComplex);
         }        
     }
+    /***
+     * 幫忙取得一個敘述的範圍
+     * @param i                 開始搜尋位置
+     * @return                  傳回敘述的FocusPair
+     */
     public FocusPair GetStmt(int i) {
         int EndPos= SearchForTokenPos(i,";",MyFocus);
         return new FocusPair(i,EndPos);
     }
+    /***
+     * 傳回下一個Focus的代表字串
+     * @param i                 開始搜尋位置
+     * @return                  傳回字串
+     */
     public String Next(int i) {
         if (i+1< MyFocus.size()) 
             return MyFocus.get(i+1).RetString;
         throw new NullPointerException("i="+i+"  i+1="+(i+1));
     }
+    /***
+     * 往後尋找對稱的小括號
+     * @param i                 開始搜尋位置
+     * @return                  傳回小括號範圍
+     */
     public FocusPair GetSmallBrace(int i) {
         return FindSymmetricSmallBraceToken(i, MyFocus);
-    }    
+    }
+    /***
+     * 處理"catch"關鍵字
+     * @param refRet                    要寫入傳回的本文
+     * @param NowPos                    現在catch的位置
+     * @param level                     現在的Level
+     * @param Brace                     catch後面緊跟著的小括號範圍
+     * @param refComplex                區塊堆疊
+     * @return                          傳回準備下一個掃描位置
+     */
     public int MakeCatch(StringBuffer refRet,int NowPos,int level,FocusPair Brace,Stack<TextLevel> refComplex) {
         String line="<bad catch>";
         if (Catch_After_Try_Block==LineType.NEXT_LINE)
@@ -213,6 +303,15 @@ public class JspStatic3 extends JspStatic {
                 return MakeStatement(refRet,NowPos,level+1,refComplex);
         }
     }
+    /***
+     * 處理"do"關鍵字
+     * @param refRet                        要寫入傳回的本文
+     * @param NowPos                        現在do的位置
+     * @param level                         現在的Level
+     * @param Block                         do後面緊跟著的大括號範圍
+     * @param refComplex                    區塊堆疊
+     * @return                              傳回準備下一個掃描位置
+     */
     public int MakeDo(StringBuffer refRet,int NowPos,int level,FocusPair Block,Stack<TextLevel> refComplex) {
         String line=NexLine+sHead+GetString(sLv,level)+"do";
         refRet.append(line);
@@ -220,6 +319,15 @@ public class JspStatic3 extends JspStatic {
         refComplex.push(newTL);
         return NowPos;        
     }
+    /***
+     * 處理"try"關鍵字
+     * @param refRet                        要寫入傳回的本文
+     * @param NowPos                        現在try的位置
+     * @param Level                         現在的Level
+     * @param Block                         try後面緊跟著的大括號範圍
+     * @param refComplex                    區塊堆疊
+     * @return                              傳回準備下一個掃描位置
+     */
     public int MakeTry(StringBuffer refRet,int NowPos,int Level,FocusPair Block,Stack<TextLevel> refComplex) {
         String line=sHead+GetString(sLv,Level)+"try";
         refRet.append(line);
@@ -227,6 +335,14 @@ public class JspStatic3 extends JspStatic {
         refComplex.push(newTL);
         return NowPos;
     }
+    /***
+     * 處理"else"關鍵字
+     * @param refRet                        要寫入傳回的本文
+     * @param NowPos                        現在else的位置
+     * @param level                         現在的Level
+     * @param refComplex                    區塊堆疊
+     * @return                              傳回準備下一個掃描位置
+     */
     public int Make_Else(StringBuffer refRet,int NowPos,int level,Stack<TextLevel> refComplex) {
         String line=sHead+GetString(sLv,level)+"else";
         refRet.append(line);
@@ -241,6 +357,14 @@ public class JspStatic3 extends JspStatic {
                 return  MakeStatement(refRet,NowPos+1,level+1,refComplex);
         }
     }
+    /***
+     *  處理"finally"關鍵字
+     * @param refRet                        要寫入傳回的本文
+     * @param NowPos                        現在finally的位置
+     * @param level                         現在的Level
+     * @param refComplex                    區塊堆疊
+     * @return                              傳回下一個掃描準備位置
+     */
     public int Make_Finally(StringBuffer refRet,int NowPos,int level,Stack<TextLevel> refComplex) {
         String line="<bad finally>";
         if (Catch_After_Try_Block==LineType.AFTER_LINE)
@@ -260,11 +384,26 @@ public class JspStatic3 extends JspStatic {
                 return  MakeStatement(refRet,NowPos+1,level+1,refComplex);
         }
     }
+    /***
+     * 
+     * @param refRet                        要寫入傳回的本文
+     * @param NowPos                        現在@的位置
+     * @param Level                         現在的Level
+     * @return                              傳回下一個掃描準備位置
+     */
     public int MakeAttribute(StringBuffer refRet,int NowPos,final Integer Level) {        
         String line=sHead+GetString(sLv,Level)+"@"+MyFocus.get(NowPos+1).RetString+NexLine;
         refRet.append(line);
         return NowPos+1;
     }
+    /***
+     * 
+     * @param refRet                        要寫入傳回的本文
+     * @param StartPos                      敘述開始位置
+     * @param Level                         現在的Level
+     * @param refComplex                    區塊堆疊
+     * @return                              傳回下一個掃描準備位置
+     */
     public int MakeStatement(StringBuffer refRet,int StartPos,int Level,Stack<TextLevel> refComplex) {
         //FocusPair Limit=GetFuncBase(NowPos,refComplex).orElse(GetClassBase(NowPos,refComplex).get());  //為什麼這樣跑不對...
         Optional<FocusPair> L=GetFuncBase(StartPos,refComplex);
@@ -280,6 +419,16 @@ public class JspStatic3 extends JspStatic {
         }
         throw new NullPointerException("Bad ComplexStack: NowPos="+StartPos);                 
     }
+    /***
+     * 
+     * @param refRet                        要寫入傳回的本文
+     * @param level                         現在的Level
+     * @param f                             傳入的FocusPair範圍,這個範圍可能在ClassArea或是FuncHeaderArea
+     * @param block                         class或function的大括號範圍
+     * @param refComplex                    區塊堆疊
+     * @param what                          表示"class"或"func"
+     * @return                              傳回下一個掃描準備位置
+     */
     public int Make_Class_Function_Area(StringBuffer refRet,int level,FocusPair f,FocusPair block,Stack<TextLevel> refComplex,String what) {
         switch(what) {
             case"class": case"func": break;
@@ -292,7 +441,12 @@ public class JspStatic3 extends JspStatic {
         refComplex.push(newTL);
         return  f.getEnd();
     }
-
+    /***
+     * 
+     * @param refRet                        要寫入傳回的本文
+     * @param level                         現在的Level
+     * @param refComplex                    區塊堆疊
+     */
     public void MakeLeftBigBrace(StringBuffer refRet,int level,Stack<TextLevel> refComplex) {
         LineType use;
         TextLevel top=refComplex.peek();
@@ -315,7 +469,15 @@ public class JspStatic3 extends JspStatic {
                 break;
         }
     }
-    //MakeRightBigBrace(ret,Level,Complex);
+    /***
+     * 
+     * @param refRet                        要寫入傳回的本文
+     * @param NowPos                        現在右大括號的位置
+     * @param Level                         現在的Level
+     * @param refComplex                    區塊堆疊
+     * @return                              下一個掃描準備位置
+     * @throws Exception 
+     */
     public int MakeRightBigBrace(StringBuffer refRet,int NowPos,Integer Level,Stack<TextLevel> refComplex) throws Exception{
         TextLevel Top=refComplex.peek();
         if (Top.StartToEnd.getEnd()==NowPos) {
@@ -324,18 +486,21 @@ public class JspStatic3 extends JspStatic {
             String line;
             switch(Top.Type) {
                 case"do":
+                   //如果吃到do block的右大括號
                    FocusPair Brace=FindSymmetricSmallBraceToken(NowPos,MyFocus);
-                   line=sHead+GetString(sLv,Level)+"} while"+ Brace.toString(MyFocus)+";\n";
+                   line=sHead+GetString(sLv,Level)+"} while"+ Brace.toString(MyFocus)+";"+NexLine;
                    refRet.append(line);
                    return Brace.getEnd()+1;
                    
                 case"try":
-                case"catch":                    
+                case"catch":
+                    //如果吃到try或catch的右大括號
                     line=sHead+GetString(sLv,Level)+"}";
                     refRet.append(line);
                     if (Catch_After_Try_Block==LineType.NEXT_LINE ) {
-                        switch(Next(NowPos)) {
+                        switch(Next(NowPos)) {  
                             case"catch": case"finally":
+                            //如果右括號的後面緊接著是catch或finally
                                 refRet.append(NexLine);
                             default:
                         }

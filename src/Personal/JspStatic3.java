@@ -333,8 +333,12 @@ public class JspStatic3 extends JspStatic {
                 case"catch":                    
                     line=sHead+GetString(sLv,Level)+"}";
                     refRet.append(line);
-                    if (Catch_After_Try_Block==LineType.NEXT_LINE) {
-                        refRet.append(NexLine);
+                    if (Catch_After_Try_Block==LineType.NEXT_LINE ) {
+                        switch(Next(NowPos)) {
+                            case"catch": case"finally":
+                                refRet.append(NexLine);
+                            default:
+                        }
                     }
                     return NowPos;                   
                 default:

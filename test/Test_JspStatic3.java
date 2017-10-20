@@ -308,14 +308,60 @@ public class Test_JspStatic3 {
         JspStatic3 obj=new JspStatic3(S);
         assertTrue(obj.warning().equals(""));
         obj.go();
-        System.out.println("Next:\n"+obj.setCatchType(JspStatic.LineType.NEXT_LINE).setOtherType(JspStatic.LineType.NEXT_LINE).Make3().toString());
-        System.out.println("After:\n"+obj.setCatchType(JspStatic.LineType.NEXT_LINE).setOtherType(JspStatic.LineType.AFTER_LINE).Make3().toString());
-        System.out.println("Next:\n"+obj.setCatchType(JspStatic.LineType.AFTER_LINE).setOtherType(JspStatic.LineType.NEXT_LINE).Make3().toString());
-        System.out.println("After:\n"+obj.setCatchType(JspStatic.LineType.AFTER_LINE).setOtherType(JspStatic.LineType.AFTER_LINE).Make3().toString());
-        String CNext_ONext="#####void func ( ) {\n" +"#####   try\n" +"#####   {\n" +"#####      b = null ;\n" +"#####   }\n" +"#####   catch(Exception ex)\n" +"#####   {\n" +"#####      System . out . println ( \"ok\" ) ;\n" +"#####   }\n" +"\n" +"#####   do\n" +"#####   {\n" +"#####      AAA . A ++ ;\n" +"#####   } while( AAA . A <= 100 );\n" +"#####}";
-        String CNext_OAfter="#####void func ( ) {\n" +"#####   try {\n" +"#####      b = null ;\n" +"#####   }\n" +"#####   catch(Exception ex) {\n" +"#####      System . out . println ( \"ok\" ) ;\n" +"#####   }\n" +"\n" +"#####   do {\n" +"#####      AAA . A ++ ;\n" +"#####   } while( AAA . A <= 100 );\n" +"#####}";
-        String CAfter_ONext="#####void func ( ) {\n" +"#####   try\n" +"#####   {\n" +"#####      b = null ;\n" +"#####   }catch(Exception ex)\n" +"#####   {\n" +"#####      System . out . println ( \"ok\" ) ;\n" +"#####   }\n" +"#####   do\n" +"#####   {\n" +"#####      AAA . A ++ ;\n" +"#####   } while( AAA . A <= 100 );\n" +"#####}";
-        String CAfter_OAfter="#####void func ( ) {\n" +"#####   try {\n" +"#####      b = null ;\n" +"#####   }catch(Exception ex) {\n" +"#####      System . out . println ( \"ok\" ) ;\n" +"#####   }\n" +"#####   do {\n" +"#####      AAA . A ++ ;\n" +"#####   } while( AAA . A <= 100 );\n" +"#####}";
+        System.out.println("CN_ONext:\n"+obj.setCatchType(JspStatic.LineType.NEXT_LINE).setOtherType(JspStatic.LineType.NEXT_LINE).Make3().toString());
+        System.out.println("CN_OAfter:\n"+obj.setCatchType(JspStatic.LineType.NEXT_LINE).setOtherType(JspStatic.LineType.AFTER_LINE).Make3().toString());
+        System.out.println("CA_ONext:\n"+obj.setCatchType(JspStatic.LineType.AFTER_LINE).setOtherType(JspStatic.LineType.NEXT_LINE).Make3().toString());
+        System.out.println("CA_OAfter:\n"+obj.setCatchType(JspStatic.LineType.AFTER_LINE).setOtherType(JspStatic.LineType.AFTER_LINE).Make3().toString());
+        String CNext_ONext="#####void func ( ) {\n" +
+"#####   try\n" +
+"#####   {\n" +
+"#####      b = null ;\n" +
+"#####   }\n" +
+"#####   catch(Exception ex)\n" +
+"#####   {\n" +
+"#####      System . out . println ( \"ok\" ) ;\n" +
+"#####   }\n" +
+"#####   do\n" +
+"#####   {\n" +
+"#####      AAA . A ++ ;\n" +
+"#####   } while( AAA . A <= 100 );\n" +
+"#####}";
+        String CNext_OAfter="#####void func ( ) {\n" +
+"#####   try {\n" +
+"#####      b = null ;\n" +
+"#####   }\n" +
+"#####   catch(Exception ex) {\n" +
+"#####      System . out . println ( \"ok\" ) ;\n" +
+"#####   }\n" +
+"#####   do {\n" +
+"#####      AAA . A ++ ;\n" +
+"#####   } while( AAA . A <= 100 );\n" +
+"#####}";                
+        String CAfter_ONext="#####void func ( ) {\n" +
+"#####   try\n" +
+"#####   {\n" +
+"#####      b = null ;\n" +
+"#####   }catch(Exception ex)\n" +
+"#####   {\n" +
+"#####      System . out . println ( \"ok\" ) ;\n" +
+"#####   }\n" +
+"#####   do\n" +
+"#####   {\n" +
+"#####      AAA . A ++ ;\n" +
+"#####   } while( AAA . A <= 100 );\n" +
+"#####}\n" +
+"";
+        String CAfter_OAfter="#####void func ( ) {\n" +
+"#####   try {\n" +
+"#####      b = null ;\n" +
+"#####   }catch(Exception ex) {\n" +
+"#####      System . out . println ( \"ok\" ) ;\n" +
+"#####   }\n" +
+"#####   do {\n" +
+"#####      AAA . A ++ ;\n" +
+"#####   } while( AAA . A <= 100 );\n" +
+"#####}\n" +
+"";
         assertTrue(obj.setCatchType(JspStatic.LineType.NEXT_LINE).setOtherType(JspStatic.LineType.NEXT_LINE).Make3().toString().trim().equals( CNext_ONext.trim()));
         assertTrue(obj.setCatchType(JspStatic.LineType.NEXT_LINE).setOtherType(JspStatic.LineType.AFTER_LINE).Make3().toString().trim().equals(CNext_OAfter.trim()));
         assertTrue(obj.setCatchType(JspStatic.LineType.AFTER_LINE).setOtherType(JspStatic.LineType.NEXT_LINE).Make3().toString().trim().equals(CAfter_ONext.trim()));

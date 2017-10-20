@@ -51,6 +51,7 @@ public class JspStatic {
     public final static String NUMBER = "0123456789";
     public final static String[] op2 = {"++", "--", "==", "!=", ">=", "<=", "<<", ">>", "&&", "||", "+=", "-=", "*=", "/=", "%=", "&=", "^=", "|="};
     public final static String[] op3 = {">>>", "<<=", ">>="};
+    public final static String OC="()[];=><+-*/%^~@,:!|.~?";
 
     /**
      * **

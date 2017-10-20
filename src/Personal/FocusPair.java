@@ -95,6 +95,30 @@ public final class FocusPair {
         }        
         for (int i=StartPos; i<=EndPos; i++) {
             String that=focus.get(i).getString();
+            if (IsKeyWord(that)) {
+                ret.append(that+" ");continue;
+            }
+            if (i+1<focus.size()) {            
+                String next=focus.get(i).getString();
+                boolean bthat=IsOperation(that);
+                boolean bnext=IsOperation(next);
+                if (bthat!=bnext) {
+                    ret.append(that+next);i++; continue;
+                }
+            }
+            ret.append(that+" ");continue;
+        }
+        return ret.toString();
+    }
+    public static boolean Search(String that,String[] arr) {
+        boolean ret=false;
+        for (String S:arr) {
+            if (that.equals(S))
+                return true;
+        }
+        return false;
+    }
+    public static boolean IsKeyWord(String that) {
             switch(that) {
             case"abstract":
             case"boolean": case"break": case"byte": 
@@ -107,11 +131,14 @@ public final class FocusPair {
             case"finally": case"float": case"for": case"goto": case"if":
             case"implements": case"imports": case"instanceof": case"throw": case"throws":
             case"transient": case"try": case"void": case"volatile": case"while":
-                ret.append(that+" "); break;
+                return true;
             default:
-                ret.append(that);
-            }                            
-        }
-        return ret.toString();
-    }    
+                return false;
+            }        
+    }
+    public static boolean IsOperation(String that) {
+        return (JspStatic.OC.indexOf(that)>=0 ||
+                Search(that,JspStatic.op3) || Search(that,JspStatic.op2));
+            
+    }
 }

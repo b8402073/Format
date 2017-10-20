@@ -7,6 +7,7 @@ package Personal;
 
 import java.util.Stack;
 import java.util.Optional;
+import java.util.Vector;
 /**
  *
  * @author easterday
@@ -69,8 +70,25 @@ public class JspStatic3 extends JspStatic {
         StringBuffer ret=new StringBuffer();
         Integer Level=0;
         int i=0;
+        Vector<Integer> Eye=new Vector<Integer>();
         try {
            for (i=0; i<MyFocus.size(); i++) {
+               Eye.add(i);
+               if (Eye.size()<=2) {
+                   Eye.add(i);
+               }else {
+                   Eye.removeElementAt(0);                   
+               }
+               if (Eye.size()>=2) {
+                   int sz=Eye.size();
+                   FocusPair Range=new FocusPair(Eye.get(sz-2), Eye.get(sz-1));
+                   Vector<Pair> comments=GetAllComment(Range,MyFocus,CommentArea);
+                   for (Pair P: comments) {
+                       ret.append(ToStr(P,MyText,Level));
+                   }
+               }
+               
+               
                FocusPair F=GetPair(i,ClassArea);
                if (F!=null) {
                    i=Make_Class_Function_Area(ret,Level,F,FindSymmetricBigBraceToken(i,MyFocus),Complex,"class");
@@ -519,4 +537,18 @@ public class JspStatic3 extends JspStatic {
             throw new Exception("NowPos="+NowPos+" ComplexStack is broken");
         }
     }
+
+    public static String ToStr(Pair p, StringBuffer text,int level) {
+            StringBuffer ret = new StringBuffer();
+            String that=text.substring(p.getStart(), p.getEnd() + 1);
+            if (that.startsWith("/*")) {
+                String[] sArr=that.split("\n");
+                for (String S: sArr) {
+                    ret.append(sHead+GetString(sLv,level)+S+NexLine);
+                }
+            }else {
+                ret.append(sHead+GetString(sLv,level)+that+NexLine);
+            }            
+            return ret.toString();
+    }    
 }

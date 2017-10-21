@@ -84,7 +84,8 @@ public class JspStatic3 extends JspStatic {
                    FocusPair Range=new FocusPair(Eye.get(sz-2), Eye.get(sz-1));
                    Vector<Pair> comments=GetAllComment(Range,MyFocus,CommentArea);
                    for (Pair P: comments) {
-                       ret.append(ToStr(P,MyText,Level));
+                       //old code: ret.append(ToStr(P,MyText,Level));
+                       ret.append(TempToStr(P,Level));
                    }
                }
                
@@ -551,5 +552,27 @@ public class JspStatic3 extends JspStatic {
                 ret.append(sHead+GetString(sLv,level)+that+NexLine);
             }            
             return ret.toString();
-    }    
+    }
+    public static String GetCommentID(Pair that,Vector<Pair> refCommentArea) {
+        for (int i=0; i<refCommentArea.size(); i++) {
+            if (that.equals(refCommentArea.get(i))) {
+                return String.format("@%d@", i);
+            }
+        }
+        return"@NO_ID@";
+    }
+    public  String TempToStr(Pair p,int level) {
+        String ID=GetCommentID(p,CommentArea);
+        StringBuffer ret=new StringBuffer();
+        String that=MyText.substring(p.getStart(), p.getEnd()+1);
+        if (that.startsWith("/*")) {
+            String[] sArr=that.split("\n");
+            for (String S: sArr) {
+                ret.append(sHead+GetString(sLv,level)+ID+S+NexLine);                
+            }
+        }else {
+            ret.append(sHead+GetString(sLv,level)+that+NexLine);
+        }
+        return ret.toString();
+    }
 }

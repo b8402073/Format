@@ -102,6 +102,16 @@ public final class FocusPair {
                 String next=focus.get(i+1).getString();                
                 boolean bthat=IsOperation(that);
                 boolean bnext=IsOperation(next);
+                if (bthat && !bnext ) {
+                    boolean _needspace=false;
+                    switch(that) {
+                        case"]": case")":
+                            ret.append(that+" "); _needspace=true;
+                        default:
+                    }
+                    if (_needspace)
+                        continue;
+                }
                 if (bthat || (bthat!=bnext )) {
                     ret.append(that); continue;
                 }

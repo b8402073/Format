@@ -99,11 +99,11 @@ public final class FocusPair {
                 ret.append(that+" ");continue;
             }
             if (i+1<focus.size()) {            
-                String next=focus.get(i).getString();
+                String next=focus.get(i+1).getString();
                 boolean bthat=IsOperation(that);
                 boolean bnext=IsOperation(next);
-                if (bthat!=bnext) {
-                    ret.append(that+next);i++; continue;
+                if (bthat || (bthat!=bnext )) {
+                    ret.append(that); continue;
                 }
             }
             ret.append(that+" ");continue;

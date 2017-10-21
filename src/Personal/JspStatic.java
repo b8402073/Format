@@ -1016,13 +1016,22 @@ public class JspStatic {
      * @return 傳回一些相關的Pair物件
      */
     public static Vector<Pair> GetAllComment(FocusPair F, Vector<Focus> refMyFocus, Vector<Pair> refCommentArea) {
-        int start = refMyFocus.get(F.getStart()).StartPos;
-        int end = refMyFocus.get(F.getEnd()).StartPos;
         Vector<Pair> ret = new Vector<Pair>();
-        for (int i = 0; i < refCommentArea.size(); i++) {
-            Pair P = refCommentArea.get(i);
-            if (start <= P.getStart() && P.getEnd() <= end) {
-                ret.add(P);
+        if (F.getStart()>=0 ) {
+            int start = refMyFocus.get(F.getStart()).StartPos;
+            int end = refMyFocus.get(F.getEnd()).StartPos;            
+            for (int i = 0; i < refCommentArea.size(); i++) {
+                Pair P = refCommentArea.get(i);
+                if (start <= P.getStart() && P.getEnd() <= end) {
+                    ret.add(P);
+                }
+            }            
+        }else {
+            for (int i=0; i<refCommentArea.size(); i++) {
+                Pair P=refCommentArea.get(i);
+                if (P.getStart()< refMyFocus.get(0).StartPos) {
+                    ret.add(P);
+                }
             }
         }
         return ret;

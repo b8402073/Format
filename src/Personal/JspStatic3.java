@@ -71,9 +71,9 @@ public class JspStatic3 extends JspStatic {
         Integer Level=0;
         int i=0;
         Vector<Integer> Eye=new Vector<Integer>();
+        Eye.add(-1);
         try {
            for (i=0; i<MyFocus.size(); i++) {
-               Eye.add(i);
                if (Eye.size()<=2) {
                    Eye.add(i);
                }else {

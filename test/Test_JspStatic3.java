@@ -372,4 +372,19 @@ public class Test_JspStatic3 {
     public void mix2() {
         
     }
+    
+    @Test
+    public void GetStatementCompact() {
+        StringBuffer S=new StringBuffer("<%! void a() { Integer a=GetPair(i,FuncHeaderArea); } %>");
+        JspStatic3 obj=new JspStatic3(S);
+        assertTrue(obj.warning().equals(""));
+        obj.go();  
+        /*
+        System.out.println("CN_ONext:\n"+obj.setCatchType(JspStatic.LineType.NEXT_LINE).setOtherType(JspStatic.LineType.NEXT_LINE).Make3().toString());
+        System.out.println("CN_OAfter:\n"+obj.setCatchType(JspStatic.LineType.NEXT_LINE).setOtherType(JspStatic.LineType.AFTER_LINE).Make3().toString());
+        System.out.println("CA_ONext:\n"+obj.setCatchType(JspStatic.LineType.AFTER_LINE).setOtherType(JspStatic.LineType.NEXT_LINE).Make3().toString());
+        System.out.println("CA_OAfter:\n"+obj.setCatchType(JspStatic.LineType.AFTER_LINE).setOtherType(JspStatic.LineType.AFTER_LINE).Make3().toString());
+        */
+        System.out.println(obj.Make3());
+    }
 }

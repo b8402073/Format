@@ -390,8 +390,8 @@ public class Main {
 		// FileReader fr = new FileReader("c:/test/xxx.jsp");
 		//                                "Black.jsp"
 		try {
-		ReadFileIntoStringBuffer("c:/DB/ANN/CC1.jsp", buf);
-                //ReadFileIntoStringBuffer("c:/DB/ANN/CC2.jsp", buf);
+		//ReadFileIntoStringBuffer("c:/DB/ANN/CC1.jsp", buf);
+                ReadFileIntoStringBuffer("c:/DB/ANN/CC2.jsp", buf);
 		refineStringBuffer(buf);   //把全部的\r\n都改成\n
 		}catch(Exception ex) {
 			ex.printStackTrace();

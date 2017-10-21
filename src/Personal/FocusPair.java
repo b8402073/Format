@@ -99,7 +99,7 @@ public final class FocusPair {
                 ret.append(that+" ");continue;
             }
             if (i+1<focus.size()) {            
-                String next=focus.get(i+1).getString();
+                String next=focus.get(i+1).getString();                
                 boolean bthat=IsOperation(that);
                 boolean bnext=IsOperation(next);
                 if (bthat || (bthat!=bnext )) {
@@ -137,7 +137,8 @@ public final class FocusPair {
             }        
     }
     public static boolean IsOperation(String that) {
-        return (JspStatic.OC.indexOf(that)>=0 ||
+        final String OC="()[];=><+-*/%^~@,:!|.~?";  
+        return (OC.indexOf(that)>=0 ||
                 Search(that,JspStatic.op3) || Search(that,JspStatic.op2));
             
     }

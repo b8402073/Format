@@ -42,6 +42,7 @@ public class JspStatic3 extends JspStatic {
         OtherType=lt;
         return this;
     }
+    
     /***
      * 設定CatchType; 傳回JspStatic3物件本身可以連續設定其他的LineType
      * @param lt
@@ -87,9 +88,7 @@ public class JspStatic3 extends JspStatic {
                        //old code: ret.append(ToStr(P,MyText,Level));
                        ret.append(TempToStr(P,Level));
                    }
-               }
-               
-               
+               }                             
                FocusPair F=GetPair(i,ClassArea);
                if (F!=null) {
                    i=Make_Class_Function_Area(ret,Level,F,FindSymmetricBigBraceToken(i,MyFocus),Complex,"class");
@@ -148,6 +147,12 @@ public class JspStatic3 extends JspStatic {
                        Level=Complex.peek().Level;
                        i=Make_Case_Default(ret,i,Level,Complex,"default"); Level++;
                        break;
+                   case"synchronized":
+                       if (InFunction(i,Complex)) {
+                           i=Make_Synchronized(ret,i,Level,Complex);
+                           break;
+                       }
+                       throw new NullPointerException("Keyword\"Synchronzied\" appears in no function...");
                    default:
                        i=MakeStatement(ret,i,Level,Complex);
                        break;                                             
@@ -266,6 +271,20 @@ public class JspStatic3 extends JspStatic {
                 refRet.append(NexLine);
                 return  MakeStatement(refRet,Brace.getEnd()+1,level+1,refComplex);
         }        
+    }//Make_Synchronized(ret,i,Level,Complex);
+    public int Make_Synchronized(StringBuffer refRet,int NowPos,int level,Stack<TextLevel> refComplex) {
+        String line=sHead+GetString(sLv,level)+"synchronized";
+        FocusPair Brace=GetSmallBrace(NowPos);
+        refRet.append(line+Brace.toString(MyFocus));
+        switch(Next(Brace.getEnd())) {
+            case"{":
+                FocusPair Block=FindSymmetricBigBraceToken(NowPos,MyFocus);
+                TextLevel newTL=new TextLevel("synchronized",Block,level);
+                refComplex.push(newTL);
+                return Brace.getEnd();
+            default:
+                throw new NullPointerException("keyword \"synchronized\" do not have a block");
+        }
     }
     /***
      * 幫忙取得一個敘述的範圍
@@ -527,7 +546,7 @@ public class JspStatic3 extends JspStatic {
                     }
                     return NowPos;                   
                 default:
-                   //including "func","class","if","else if","else","while","for","try","catch","finally","switch"
+                   //including "func","class","if","else if","else","while","for","try","catch","finally","switch","synchronized"
                    line=sHead+GetString(sLv,Level)+"}"+NexLine;
                    refRet.append(line);
                    return NowPos;
@@ -575,4 +594,13 @@ public class JspStatic3 extends JspStatic {
         }
         return ret.toString();
     }
+    public static boolean InFunction(int NowPos,Stack<TextLevel> refComplex) {
+        for (TextLevel T:refComplex) {
+            if ("func".equals(T.Type)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
 }

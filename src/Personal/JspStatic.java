@@ -804,7 +804,7 @@ public class JspStatic {
      * @param destClassArea 放置ClassArea的地方
      */
     public void Build_Class_Area(Vector<FocusPair> destClassArea) {
-        final String[] prev_accept = {"private", "protected", "public", "final", "static", "abstract"};
+        final String[] prev_accept = {"private", "protected", "public", "final", "static", "abstract","synchronized"};
         //final String[] next_accept={"extends","implements","<",">",","};
         int classStart = (-1), classEnd = (-1);
         for (int i = 0; i < MyFocus.size(); i++) {

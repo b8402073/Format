@@ -212,6 +212,9 @@ public class JspStatic3 extends JspStatic {
                 TextLevel newTL=new TextLevel(what,Block,level);
                 refComplex.push(newTL);                
                 return Brace.getEnd();
+            case"for": case"while": case"try": case"switch": 
+            case"do": case"if": case"synchronized":
+                throw new NullPointerException(what+"後面的單敘述不適合用製造block的關鍵字---這樣的碼太醜了");
             default:
                 refRet.append(NexLine);
                 return  MakeStatement(refRet,Brace.getEnd()+1,level+1,refComplex);
@@ -236,7 +239,7 @@ public class JspStatic3 extends JspStatic {
                 refComplex.push(newTL);
                 return Brace.getEnd();
             default:
-                throw new NullPointerException("Bad Switch: NowPos="+NowPos);
+                throw new NullPointerException("Bad Switch without following Block: NowPos="+NowPos);
         }
         
     }
@@ -266,6 +269,11 @@ public class JspStatic3 extends JspStatic {
             case";":
                 refRet.append(";"+NexLine);
                 return Brace.getEnd()+1;
+                
+            case"for": case"while": case"try": case"switch": 
+            case"do": case"if": case"synchronized":
+                throw new NullPointerException(what+"後面的單敘述不適合用製造block的關鍵字---這樣的碼太醜了");                
+                
             default:
                 //遇到stmt
                 refRet.append(NexLine);
@@ -398,6 +406,9 @@ public class JspStatic3 extends JspStatic {
                 FocusPair Block=FindSymmetricBigBraceToken(NowPos,MyFocus);
                 refComplex.push(new TextLevel("else",Block,level));
                 return NowPos;
+            case"for": case"while": case"try": case"switch": 
+            case"do": case"if": case"synchronized":
+                throw new NullPointerException("else 後面的單敘述不適合用製造block的關鍵字---這樣的碼太醜了");                
             default:
                 //遇到stmt
                 refRet.append(NexLine);
@@ -425,6 +436,9 @@ public class JspStatic3 extends JspStatic {
                 FocusPair Block=FindSymmetricBigBraceToken(NowPos,MyFocus);
                 refComplex.push(new TextLevel("finally",Block,level));
                 return NowPos;
+            case"for": case"while": case"try": case"switch": 
+            case"do": case"if": case"synchronized":
+                throw new NullPointerException("finally 後面的單敘述不適合用製造block的關鍵字---這樣的碼太醜了");                
             default:
                 //遇到stmt
                 refRet.append(NexLine);
@@ -452,7 +466,7 @@ public class JspStatic3 extends JspStatic {
      * @return                              傳回下一個掃描準備位置
      */
     public int MakeStatement(StringBuffer refRet,int StartPos,int Level,Stack<TextLevel> refComplex) {
-        //FocusPair Limit=GetFuncBase(NowPos,refComplex).orElse(GetClassBase(NowPos,refComplex).get());  //為什麼這樣跑不對...
+        //FocusPair Limit=GetFuncBase(NowPos,refComplex).orElse(GetClassBase(NowPos,refComplex).get());  //為什麼這樣跑不對...        
         Optional<FocusPair> L=GetFuncBase(StartPos,refComplex);
         if (!L.isPresent())    {
             L=GetClassBase(StartPos,refComplex);

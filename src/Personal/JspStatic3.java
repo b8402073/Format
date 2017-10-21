@@ -305,6 +305,12 @@ public class JspStatic3 extends JspStatic {
             return MyFocus.get(i+1).RetString;
         throw new NullPointerException("i="+i+"  i+1="+(i+1));
     }
+    public String Prev(int i) {
+        if (i-1>=0) {
+            return MyFocus.get(i-1).RetString;
+        }
+        throw new NullPointerException("i="+i+"  i-1="+(i-1));
+    }
     /***
      * 往後尋找對稱的小括號
      * @param i                 開始搜尋位置
@@ -350,8 +356,11 @@ public class JspStatic3 extends JspStatic {
      * @param refComplex                    區塊堆疊
      * @return                              傳回準備下一個掃描位置
      */
-    public int MakeDo(StringBuffer refRet,int NowPos,int level,FocusPair Block,Stack<TextLevel> refComplex) {
-        String line=NexLine+sHead+GetString(sLv,level)+"do";
+    public int MakeDo(StringBuffer refRet,int NowPos,int level,FocusPair Block,Stack<TextLevel> refComplex) {        
+        if (Prev(NowPos).equals("}")&& refRet.charAt(refRet.length()-1)!='\n' ) {   //這句有改善空間...
+            refRet.append(NexLine);
+        }
+        String line=sHead+GetString(sLv,level)+"do";
         refRet.append(line);
         TextLevel newTL=new TextLevel("do",Block,level);
         refComplex.push(newTL);

@@ -609,11 +609,22 @@ public class JspStatic3 extends JspStatic {
         String that=MyText.substring(p.getStart(), p.getEnd()+1);
         if (that.startsWith("/*")) {
             String[] sArr=that.split("\n");
-            for (String S: sArr) {
-                ret.append(sHead+GetString(sLv,level)+ID+S+NexLine);                
-            }
+            for (int i=0; i<sArr.length; i++) {
+                String S;
+                if (i>0 && i<sArr.length-1) {
+                    S=ID+sArr[i];
+                }else if (i==0){
+                    String line=sArr[i].replace("/*", "");
+                    S="/*"+ID+line;
+                }else {
+                    String line=sArr[i].replace("*/","");
+                    S=ID+line+"*/";
+                }
+                ret.append(sHead+GetString(sLv,level)+S+NexLine);
+            }            
         }else {
-            ret.append(sHead+GetString(sLv,level)+that+NexLine);
+            that=that.replace("//", ID);
+            ret.append(sHead+GetString(sLv,level)+"//"+that+NexLine);
         }
         return ret.toString();
     }

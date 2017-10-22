@@ -1013,6 +1013,98 @@ public class Test_JspStatic3 {
     }
     @Test
     public void AboutComment1() {
-        StringBuffer S=new StringBuffer("<%! /***hahaha**/ public class JspStatic ")
+        StringBuffer S=new StringBuffer("<%!\n" +" \n" +"/*HAHAHA*/\n" +
+"public class JspStatic {\n" +
+"    public enum  LineType { AFTER_LINE, NEXT_LINE};\n" +
+"    public final static PairSort PairSortObj=new PairSort();\n" +
+"    public final static String ALPHABET = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\";\n" +
+"    public final static String EMPTY = \" \\t\\r\\n\\0\";\n" +
+"    public final static String NUMBER=\"0123456789\";\n" +
+"    /****\n" +
+"     * 傳回一個字串,這個字串是重複字串space重複了count次\n" +
+"     * 用在make系列函式的建構line變數\n" +
+"     * @param space     要重複的母字串\n" +
+"     * @param count     重複的次數\n" +
+"     * @return          傳回的字串\n" +
+"     */\n" +
+"    public static String GetString(String space,int count) {\n" +
+"        StringBuffer ret=new StringBuffer();\n" +
+"        for (int i=0; i<count; i++) {\n" +
+"            ret.append(space);\n" +
+"        }\n" +
+"        return ret.toString();\n" +
+"    }\n" +
+"    public static StringBuffer MyText, OutputText;  //Comment3\n" +
+"    \n" +
+"    //Comment1\n" +
+"    //Comment2\n" +
+"	\n" +
+"}\n" +
+"\n" +
+"%>");
+        
+        JspStatic3 obj=new JspStatic3(S);
+        assertTrue(obj.warning().equals(""));
+        obj.go(); 
+        System.out.println("Next:\n"+obj.setOtherType(JspStatic.LineType.NEXT_LINE).Make3());
+        String next="#####/*@0@HAHAHA*/\n" +
+"#####public class JspStatic\n" +
+"#####{\n" +
+"#####   public enum LineType { AFTER_LINE,NEXT_LINE };\n" +
+"#####   public final static PairSort PairSortObj=new PairSort();\n" +
+"#####   public final static String ALPHABET=\"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\";\n" +
+"#####   public final static String EMPTY=\" \\t\\r\\n\\0\";\n" +
+"#####   public final static String NUMBER=\"0123456789\";\n" +
+"#####   /*@1@***\n" +
+"#####   @1@     * 傳回一個字串,這個字串是重複字串space重複了count次\n" +
+"#####   @1@     * 用在make系列函式的建構line變數\n" +
+"#####   @1@     * @param space     要重複的母字串\n" +
+"#####   @1@     * @param count     重複的次數\n" +
+"#####   @1@     * @return          傳回的字串\n" +
+"#####   @1@     */\n" +
+"#####   public static String GetString ( String space , int count ) {\n" +
+"#####      StringBuffer ret=new StringBuffer();\n" +
+"#####      for( int i = 0 ; i < count ; i ++ )\n" +
+"#####      {\n" +
+"#####         ret.append(space);\n" +
+"#####      }\n" +
+"#####      return ret.toString();\n" +
+"#####   }\n" +
+"#####   public static StringBuffer MyText,OutputText;\n" +
+"#####   //@2@Comment3\n" +
+"#####   //@3@Comment1\n" +
+"#####   //@4@Comment2\n" +
+"#####}";
+        System.out.println("After:\n"+obj.setOtherType(JspStatic.LineType.AFTER_LINE).Make3()); 
+        String after="#####/*@0@HAHAHA*/\n" +
+"#####public class JspStatic\n" +
+"#####{\n" +
+"#####   public enum LineType { AFTER_LINE,NEXT_LINE };\n" +
+"#####   public final static PairSort PairSortObj=new PairSort();\n" +
+"#####   public final static String ALPHABET=\"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\";\n" +
+"#####   public final static String EMPTY=\" \\t\\r\\n\\0\";\n" +
+"#####   public final static String NUMBER=\"0123456789\";\n" +
+"#####   /*@1@***\n" +
+"#####   @1@     * 傳回一個字串,這個字串是重複字串space重複了count次\n" +
+"#####   @1@     * 用在make系列函式的建構line變數\n" +
+"#####   @1@     * @param space     要重複的母字串\n" +
+"#####   @1@     * @param count     重複的次數\n" +
+"#####   @1@     * @return          傳回的字串\n" +
+"#####   @1@     */\n" +
+"#####   public static String GetString ( String space , int count ) {\n" +
+"#####      StringBuffer ret=new StringBuffer();\n" +
+"#####      for( int i = 0 ; i < count ; i ++ ) {\n" +
+"#####         ret.append(space);\n" +
+"#####      }\n" +
+"#####      return ret.toString();\n" +
+"#####   }\n" +
+"#####   public static StringBuffer MyText,OutputText;\n" +
+"#####   //@2@Comment3\n" +
+"#####   //@3@Comment1\n" +
+"#####   //@4@Comment2\n" +
+"#####}\n" +
+"";
+        assertTrue(obj.setOtherType(JspStatic.LineType.NEXT_LINE).Make3().toString().trim().equals(next.trim()));
+        assertTrue(obj.setOtherType(JspStatic.LineType.AFTER_LINE).Make3().toString().trim().equals(after.trim()));
     }
 }

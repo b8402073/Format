@@ -96,7 +96,8 @@ public class JspStatic3 extends JspStatic {
             for (i = 0; i < MyFocus.size(); i++) {
                 if (Eye.size() <= 2) {
                     Eye.add(i);
-                } else {
+                } 
+                if (Eye.size()>2){
                     Eye.removeElementAt(0);
                 }
                 if (Eye.size() >= 2) {
@@ -731,7 +732,7 @@ public class JspStatic3 extends JspStatic {
                 ret.append(sHead + GetString(sLv, level) + S + NexLine);
             }
         } else {
-            that = that.replace("//", ID);
+            that = that.replace("//", ID).replace("\n", "");
             ret.append(sHead + GetString(sLv, level) + "//" + that + NexLine);
         }
         return ret.toString();
@@ -769,13 +770,6 @@ public class JspStatic3 extends JspStatic {
                     }
                 } while (!refStackCommentArea.empty());
             }
-            /*
-            for (int i = 0; i < refCommentArea.size(); i++) {
-                Pair P = refCommentArea.get(i);
-                if (start <= P.getStart() && P.getEnd() <= end) {
-                    ret.add(P);
-                }
-            }*/
 
         } else {
             if (!refStackCommentArea.empty()) {
@@ -788,14 +782,6 @@ public class JspStatic3 extends JspStatic {
                     }
                 }while(!refStackCommentArea.empty());
             }
-            /*
-            for (int i=0; i<refCommentArea.size(); i++) {
-                Pair P=refCommentArea.get(i);
-                if (P.getStart()< refMyFocus.get(0).StartPos) {
-                    ret.add(P);
-                }
-            }
-             */
         }
         return ret;
     }

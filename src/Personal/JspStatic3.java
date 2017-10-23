@@ -296,6 +296,11 @@ public class JspStatic3  {
                         break;
                 }
             }
+            while(!StackCommentArea.empty()) {
+                Pair P=StackCommentArea.pop();
+                //old code: ret.append(ToStr(P,MyText,Level));
+                ret.append(TempToStr(P, Level));                                
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1007,7 +1012,7 @@ public class JspStatic3  {
                     continue;
                 }
                 start = i;
-                for (; i < text.length() - 2; i++) {
+                for (; i < text.length() - 1; i++) {
                     String hand2 = text.substring(i, i + 2);
                     if (hand2.equals("*/")) {
                         Pair p = new Pair(start, i + 1);

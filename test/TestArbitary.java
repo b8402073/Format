@@ -6,7 +6,7 @@
 
 import Personal.Focus;
 import Personal.FocusPair;
-import Personal.JspStatic;
+import Personal.JspStatic3;
 import Personal.Pair;
 import java.util.Vector;
 import org.junit.After;
@@ -65,10 +65,10 @@ public class TestArbitary {
     static Vector<FocusPair> FuncHeaderArea=new Vector<FocusPair>();
     static Vector<FocusPair> ClassArea=new Vector<FocusPair>();
     public TestArbitary() {
-        JspStatic.Build_DQ_Area(str0,DQArea);
-        JspStatic.Build_SQ_Area(str0,DQArea,SQArea);
-        JspStatic.Build_Comment_Area(str0,DQArea,SQArea,CommentArea);
-        //JspStatic.Build_Array_Area(str0,ArrayArea);
+        JspStatic3.Build_DQ_Area(str0,DQArea);
+        JspStatic3.Build_SQ_Area(str0,DQArea,SQArea);
+        JspStatic3.Build_Comment_Area(str0,DQArea,SQArea,CommentArea);
+        //JspStatic3.Build_Array_Area(str0,ArrayArea);
     }
     
     @BeforeClass
@@ -98,45 +98,45 @@ public class TestArbitary {
     @Test
     public void Test1() {
         //assertTrue(true==true);
-        Focus aaa=JspStatic.GetOneToken(str0, 0, CommentArea,  DQArea, SQArea);
+        Focus aaa=JspStatic3.GetOneToken(str0, 0, CommentArea,  DQArea, SQArea);
         assertTrue(aaa.RetString.equals("public"));
         assertTrue(aaa.NextCharPos==6);
-        aaa=JspStatic.GetOneToken(str0, 1, CommentArea,  DQArea, SQArea); 
+        aaa=JspStatic3.GetOneToken(str0, 1, CommentArea,  DQArea, SQArea); 
         assertTrue(aaa.RetString.equals("ublic"));
         assertTrue(aaa.NextCharPos==6);
 
-        aaa=JspStatic.GetOneToken(str0, 2, CommentArea,  DQArea, SQArea); 
+        aaa=JspStatic3.GetOneToken(str0, 2, CommentArea,  DQArea, SQArea); 
         assertTrue(aaa.RetString.equals("blic"));
         assertTrue(aaa.NextCharPos==6);
 
-        aaa=JspStatic.GetOneToken(str0, 3, CommentArea,  DQArea, SQArea); 
+        aaa=JspStatic3.GetOneToken(str0, 3, CommentArea,  DQArea, SQArea); 
         assertTrue(aaa.RetString.equals("lic"));
         assertTrue(aaa.NextCharPos==6);
 
-        aaa=JspStatic.GetOneToken(str0, 4, CommentArea,  DQArea, SQArea); 
+        aaa=JspStatic3.GetOneToken(str0, 4, CommentArea,  DQArea, SQArea); 
         assertTrue(aaa.RetString.equals("ic"));
         assertTrue(aaa.NextCharPos==6);
   
-        aaa=JspStatic.GetOneToken(str0, 5, CommentArea,  DQArea, SQArea); 
+        aaa=JspStatic3.GetOneToken(str0, 5, CommentArea,  DQArea, SQArea); 
         assertTrue(aaa.RetString.equals("c"));
         assertTrue(aaa.NextCharPos==6);
         
-        aaa=JspStatic.GetOneToken(str0, 6, CommentArea,  DQArea, SQArea); 
+        aaa=JspStatic3.GetOneToken(str0, 6, CommentArea,  DQArea, SQArea); 
         assertTrue(aaa.RetString.equals("final"));
         assertTrue(aaa.NextCharPos==12);
         
-        aaa=JspStatic.GetOneToken(str0,aaa.NextCharPos,CommentArea,DQArea,SQArea);
+        aaa=JspStatic3.GetOneToken(str0,aaa.NextCharPos,CommentArea,DQArea,SQArea);
         assertTrue(aaa.RetString.equals("static"));
         
-        aaa=JspStatic.GetOneToken(str0,aaa.NextCharPos,CommentArea,DQArea,SQArea);
+        aaa=JspStatic3.GetOneToken(str0,aaa.NextCharPos,CommentArea,DQArea,SQArea);
         assertTrue(aaa.RetString.equals("class"));
         
-        aaa=JspStatic.GetOneToken(str0,aaa.NextCharPos,CommentArea,DQArea,SQArea);
+        aaa=JspStatic3.GetOneToken(str0,aaa.NextCharPos,CommentArea,DQArea,SQArea);
         assertTrue(aaa.RetString.equals("AAA")); 
         
         
         while(aaa!=null) {
-            aaa=JspStatic.GetOneToken(str0, aaa.NextCharPos, CommentArea,  DQArea, SQArea);
+            aaa=JspStatic3.GetOneToken(str0, aaa.NextCharPos, CommentArea,  DQArea, SQArea);
             if (aaa!=null)
                 System.out.println(aaa.toString());
         }
@@ -148,7 +148,7 @@ public class TestArbitary {
     public void Test_Before_Writing() {
          StringBuffer Q=new StringBuffer("<%! int D=3>>>1+5; int E +=15; int F= ++E; %>");
          
-         JspStatic obj=new JspStatic(Q);
+         JspStatic3 obj=new JspStatic3(Q);
          obj.go();
          System.out.println("obj.MyFocus.size()="+obj.MyFocus.size());
          assertTrue(obj.MyFocus.size()==20);
@@ -164,10 +164,10 @@ public class TestArbitary {
          StringBuffer str=new StringBuffer(" int D=3>>>1+5; int E +=15; int F= ++E;");         
          final String[] arr={"int","D","=","3",">",">",">","1","+","5",";","int","E","+","=","15",";","int","F","=","+","+","E",";"};
          Vector<Focus> tmp=new Vector<Focus>();
-         Focus hand=JspStatic.GetOneToken(str, 0, CommentArea,  DQArea, SQArea); 
+         Focus hand=JspStatic3.GetOneToken(str, 0, CommentArea,  DQArea, SQArea); 
          while(hand!=null) {
             tmp.add(hand);
-            hand=JspStatic.GetOneToken(str, hand.NextCharPos, CommentArea, DQArea, SQArea); 
+            hand=JspStatic3.GetOneToken(str, hand.NextCharPos, CommentArea, DQArea, SQArea); 
         }
          assertTrue(tmp.size()==arr.length );
          
@@ -175,7 +175,7 @@ public class TestArbitary {
              assertTrue(arr[i].equals(tmp.get(i).RetString));
          }
          //final String[] op3={">>>","<<=",">>="};
-         Vector<Focus> tmp2=JspStatic.OP_Replacement(tmp,JspStatic.op3);
+         Vector<Focus> tmp2=JspStatic3.OP_Replacement(tmp,JspStatic3.op3);
          final String[] arr2={"int","D","=","3",">>>","1","+","5",";","int","E","+","=","15",";","int","F","=","+","+","E",";" };         
          assertTrue(tmp2.size()==arr2.length);
          for (int i=0; i<tmp2.size(); i++) {
@@ -183,18 +183,18 @@ public class TestArbitary {
          }
          
          //final String[] op2={"++","--","==","!=",">=","<=","<<",">>","&&","||","+=","-=","*=","/=","%=","&=","^=","|="};
-         Vector<Focus> tmp3=JspStatic.OP_Replacement(tmp2, JspStatic.op2);
+         Vector<Focus> tmp3=JspStatic3.OP_Replacement(tmp2, JspStatic3.op2);
          final String[] arr3={"int","D","=","3",">>>","1","+","5",";","int","E","+=","15",";","int","F","=","++","E",";"};
          assertTrue(tmp3.size()==arr3.length);
          for (int i=0; i<tmp3.size(); i++) {
              assertTrue(arr3[i].equals(tmp3.get(i).RetString));
          }
-         Vector<Focus> tmp4=JspStatic.ELSE_IF_Replacement(tmp3);
+         Vector<Focus> tmp4=JspStatic3.ELSE_IF_Replacement(tmp3);
          assertTrue(tmp4.size()==arr3.length);
          for (int i=0; i<tmp4.size(); i++) {
              assertTrue(arr3[i].equals(tmp4.get(i).RetString));
          }
-         Vector<Focus> _myfocus=JspStatic.FloatNUM_Replacement(tmp4);
+         Vector<Focus> _myfocus=JspStatic3.FloatNUM_Replacement(tmp4);
          assertTrue(_myfocus.size()==arr3.length);
          for (int i=0; i< _myfocus.size(); i++) {
              assertTrue(arr3[i].equals(_myfocus.get(i).RetString));
@@ -205,7 +205,7 @@ public class TestArbitary {
     public void Test_Build_ClassArea(){
          StringBuffer Q=new StringBuffer("<%! int D=3>>>1+5; int E +=15; int F= ++E; %>");         
          final String[] arr3={"int","D","=","3",">>>","1","+","5",";","int","E","+=","15",";","int","F","=","++","E",";"};
-         JspStatic obj=new JspStatic(Q);
+         JspStatic3 obj=new JspStatic3(Q);
          obj.Build_MyFocus();
          obj.Build_Class_Area(ClassArea);
          assertTrue(obj.MyFocus.size()==arr3.length );         
@@ -228,12 +228,12 @@ public class TestArbitary {
         */
         
         Vector<Focus> tmp=new Vector<Focus>();
-        Focus hand=JspStatic.GetOneToken(Q,0,CommentArea,DQArea,SQArea);
+        Focus hand=JspStatic3.GetOneToken(Q,0,CommentArea,DQArea,SQArea);
         while(hand!=null) {
             tmp.add(hand);
-            hand=JspStatic.GetOneToken(Q, hand.NextCharPos, CommentArea,  DQArea, SQArea);
+            hand=JspStatic3.GetOneToken(Q, hand.NextCharPos, CommentArea,  DQArea, SQArea);
         }
-        Vector<Focus> afterFloat=JspStatic.FloatNUM_Replacement(tmp);
+        Vector<Focus> afterFloat=JspStatic3.FloatNUM_Replacement(tmp);
         final String[] arr={"int","A","=","1.00","+","2.00","+","3.00",";","int","B","=","5.0","+","8.0",";"};
         for (int i=0; i<afterFloat.size(); i++) {
             System.out.println(arr[i]);
@@ -251,10 +251,10 @@ public class TestArbitary {
         */
         
         Vector<Focus> tmp=new Vector<Focus>();
-        Focus hand=JspStatic.GetOneToken(Q,0,CommentArea,DQArea,SQArea);
+        Focus hand=JspStatic3.GetOneToken(Q,0,CommentArea,DQArea,SQArea);
         while(hand!=null) {
             tmp.add(hand);
-            hand=JspStatic.GetOneToken(Q, hand.NextCharPos, CommentArea,  DQArea, SQArea);
+            hand=JspStatic3.GetOneToken(Q, hand.NextCharPos, CommentArea,  DQArea, SQArea);
         }
         final String[] arr={"AAA",".","BBB","+","=","3",";"};
         for (int i=0; i<tmp.size(); i++) {

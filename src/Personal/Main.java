@@ -132,7 +132,7 @@ public class Main {
 				continue;
 			} else if (hand.startsWith("<") && hand.endsWith("/>")) {
 				//old ret.add("html:" + hand);
-                                ret.add(new JspElement(ID,"html",new StringBuffer(hand)));
+                                ret.add(new JspElement(ID,"single_html",new StringBuffer(hand)));
 				continue;
 			}
 			// if the code looks not symmetrical, take these steps:
@@ -418,8 +418,62 @@ public class Main {
 		Fix_if_LeftRight_in_DQArea(buf);
 		//Build_JavaScript_Area(buf);
 		Vector<JspElement> ret = JSPFileString(buf);
-                for (JspElement)
-		for (JspElement that : ret) {
+                Vector<StringBuffer> jspmain=new Vector<StringBuffer>();
+                for (JspElement X: ret) {
+                    switch(X.Type) {
+                        case"jsp_main":
+                            jspmain.add(X.Txt); break;
+                        default:
+                    }
+                }
+                JspMain3 MyMain=new JspMain3(jspmain);
+                System.out.println(MyMain.warning());
+                MyMain.go();
+                MyMain.setOtherType(JspStatic3.LineType.AFTER_LINE);
+                MyMain.MainMake3();
+                int main_index=0;
+		for (int i=0; i<ret.size(); i++) {
+                    JspElement that=ret.get(i);
+                    String line;
+                    switch(that.Type) {
+                        case"jsp_static":
+                            JspStatic3 obj=new JspStatic3(that.Txt);
+                            System.out.println(obj.warning());
+                            obj.go();
+                            obj.setOtherType(JspStatic3.LineType.AFTER_LINE);
+                            line=AssembleElement("<%!","%>",obj.Make3().toString());
+                            System.out.println(line);
+                            break;
+                        case"jsp_main":
+                            line=AssembleElement("<%","%>",MyMain.MyOutput[main_index++].toString());
+                            System.out.println(line);
+                            break;
+                        case"html":
+                            line=AssembleElement("<",">",that.Txt.toString());
+                            System.out.println(line);
+                            break;
+                        case"jsp_import":
+                            line=AssembleElement("<%@","%>",that.Txt.toString());
+                            System.out.println(line);
+                            break;
+                        case"html_comment":
+                            line=AssembleElement("<!--","-->",that.Txt.toString());
+                            System.out.println(line);
+                            break;
+                        case"jsp_comment":
+                            line=AssembleElement("<%--","--%>",that.Txt.toString());
+                            System.out.println(line);
+                            break;
+                        case"jsp_value":
+                            line=AssembleElement("<%=","%>",that.Txt.toString());
+                            System.out.println(line);
+                            break;
+                        case"single_html":
+                            line=AssembleElement("<"," />",that.Txt.toString());
+                            System.out.println(line);
+                            break;                            
+                    }
+                    /*
 			if (that.startsWith("jsp_static:")) {
 				StringBuffer that=new StringBuffer(str);                                
                                 JspStatic3 obj3=new JspStatic3(that);
@@ -431,7 +485,16 @@ public class Main {
                                 //System.out.println(obj3.setOtherType(JspStatic3.LineType.AFTER_LINE).Make3());
 				//System.out.println(obj.OutputText);
 			}
+                    */
+                    
 		}
 		// System.out.println(ret);
 	}
+        public static String AssembleElement(String start,String end,String inn) {
+            StringBuffer ret=new StringBuffer();
+            ret.append(start+JspStatic3.NexLine);
+            ret.append(inn);
+            ret.append(JspStatic3.NexLine+end);
+            return ret.toString();
+        }
 }

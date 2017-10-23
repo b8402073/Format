@@ -111,6 +111,9 @@ public class JspStatic {
     public Vector<Focus> MyFocus;
 
     public Vector<FocusPair> AttributeArea;
+    public JspStatic() {
+        //do nothing...
+    }
     /**
      * **
      * «Øºc¤l

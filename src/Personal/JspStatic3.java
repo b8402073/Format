@@ -64,7 +64,10 @@ public class JspStatic3 extends JspStatic {
         Catch_After_Try_Block = lt;
         return this;
     }
-
+    public JspStatic3() {
+        //do nothing
+        super();
+    }
     /**
      * *
      * «Øºc¤l

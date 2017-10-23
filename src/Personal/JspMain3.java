@@ -30,6 +30,7 @@ public class JspMain3 extends JspStatic3{
         sHead="#####";
         sLv="   ";        
     }
+    
     public StringBuffer GetMyMainText(StringBuffer[] arrText) {
         StringBuffer ret=new StringBuffer();
         for (int i=0; i<arrText.length-1; i++) {

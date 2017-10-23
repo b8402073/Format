@@ -97,9 +97,9 @@ public class Main {
 	/*
 	 * Needed Elements: Left,Right,DQArea,SQArea,CommentArea
 	 */
-	public static Vector<String> JSPFileString(StringBuffer inn) {
-		Vector<String> ret = new Vector<String>();
-		for (int L = 0, R = 0; L < Left.size() && R < Right.size(); L++, R++) {
+	public static Vector<JspElement> JSPFileString(StringBuffer inn) {
+		Vector<JspElement> ret = new Vector<JspElement>();
+		for (int L = 0, R = 0,ID=1; L < Left.size() && R < Right.size(); L++, R++,ID++) {
 			if (L > 0) {
 				while (Left.get(L) < Right.get(R - 1)) {
 					L++;
@@ -107,25 +107,32 @@ public class Main {
 			}
 			String hand = inn.substring(Left.get(L), Right.get(R) + 1);
 			if (hand.startsWith("<%@") && hand.endsWith("%>")) {
-				ret.add("jspimport:" + hand);
+				//old ret.add("jspimport:" + hand);
+                                ret.add(new JspElement(ID,"jspimport",new StringBuffer(hand)));
 				continue;
 			} else if (hand.startsWith("<!--") && hand.endsWith("-->")) {
-				ret.add("html_comment:" + hand);
+				//old ret.add("html_comment:" + hand);
+                                ret.add(new JspElement(ID,"html_comment",new StringBuffer(hand)));
 				continue;
 			} else if (hand.startsWith("<%--") && hand.endsWith("--%>")) {
-				ret.add("jsp_comment:" + hand);
+				//old ret.add("jsp_comment:" + hand);
+                                ret.add(new JspElement(ID,"jsp_comment",new StringBuffer(hand)));
 				continue;
 			} else if (hand.startsWith("<%!") && hand.endsWith("%>")) {
-				ret.add("jsp_static:" + hand);
+				//old ret.add("jsp_static:" + hand);
+                                ret.add(new JspElement(ID,"jsp_static",new StringBuffer(hand)));
 				continue;
 			} else if (hand.startsWith("<%=") && hand.endsWith("%>")) {
-				ret.add("jsp_value:" + hand);
+				//old ret.add("jsp_value:" + hand);
+                                ret.add(new JspElement(ID,"jsp_value",new StringBuffer(hand)));
 				continue;
 			} else if (hand.startsWith("<%") && hand.endsWith("%>")) {
-				ret.add("jsp_main:" + hand);
+				//old ret.add("jsp_main:" + hand);
+                                ret.add(new JspElement(ID,"jsp_main",new StringBuffer(hand)));
 				continue;
 			} else if (hand.startsWith("<") && hand.endsWith("/>")) {
-				ret.add("html:" + hand);
+				//old ret.add("html:" + hand);
+                                ret.add(new JspElement(ID,"html",new StringBuffer(hand)));
 				continue;
 			}
 			// if the code looks not symmetrical, take these steps:
@@ -134,7 +141,8 @@ public class Main {
 					R++;
 					hand = inn.substring(Left.get(L), Right.get(R) + 1);
 				} while (!hand.endsWith("--%>") || In(R, DQArea) || In(R, SQArea) || In(R, CommentArea));
-				ret.add("jsp_comment:" + hand);
+				//old ret.add("jsp_comment:" + hand);
+                                ret.add(new JspElement(ID,"jsp_comment",new StringBuffer(hand)));
 				continue;
 			}
 			/*
@@ -151,20 +159,25 @@ public class Main {
                                             break;
                                         }
 				} while  (!hand.endsWith("%>") || In(R, DQArea) || In(R, SQArea) || In(R, CommentArea));
-				if (hand.startsWith("<%!"))
-					ret.add("jsp_static:" + hand);
-				else if (hand.startsWith("<%"))
-					ret.add("jsp_main:" + hand);
+				if (hand.startsWith("<%!")) {
+					//old ret.add("jsp_static:" + hand);
+                                        ret.add(new JspElement(ID,"jsp_static",new StringBuffer(hand)));
+                                }
+				else if (hand.startsWith("<%")) {
+					//old ret.add("jsp_main:" + hand);
+                                        ret.add(new JspElement(ID,"jsp_main",new StringBuffer(hand)));
+                                }
 				continue;
 			}
 			if (hand.startsWith("<")) {
 				while (In(R, DQArea) || In(R, SQArea) || In(R, CommentArea)) {
 					R++;
 				}
-				ret.add("html:" + hand);
+				//old ret.add("html:" + hand);
+                                ret.add(new JspElement(ID,"html",new StringBuffer(hand)));
 				continue;
 			}
-			 System.out.println("hand="+hand);
+			System.out.println("hand="+hand);
 		}
 		return ret;
 	}
@@ -391,7 +404,7 @@ public class Main {
 		//                                "Black.jsp"
 		try {
 		//ReadFileIntoStringBuffer("c:/DB/ANN/CC1.jsp", buf);
-                ReadFileIntoStringBuffer("c:/DB/ANN/CC2.jsp", buf);
+                ReadFileIntoStringBuffer("c:/DB/ANN/CC3.jsp", buf);
 		refineStringBuffer(buf);   //把全部的\r\n都改成\n
 		}catch(Exception ex) {
 			ex.printStackTrace();
@@ -404,33 +417,17 @@ public class Main {
 		Fix_if_SQDQ_in_CommentArea(buf);
 		Fix_if_LeftRight_in_DQArea(buf);
 		//Build_JavaScript_Area(buf);
-		Vector<String> ret = JSPFileString(buf);
-		for (String str : ret) {
+		Vector<JspElement> ret = JSPFileString(buf);                
+		for (JspElement str : ret) {
 			if (str.startsWith("jsp_static:")) {
-
-				StringBuffer that=new StringBuffer(str);
-				//JspStatic obj = new JspStatic(that);
-                                //obj.go();
-                                
+				StringBuffer that=new StringBuffer(str);                                
                                 JspStatic3 obj3=new JspStatic3(that);
                                 System.out.println(obj3.warning());
                                 obj3.go();
-                                
-                                
-				// System.out.println("SQArea:");
-				// System.out.println(ToStr(obj.SQArea,obj.MyText));
-				// System.out.println("DQArea:");
-				// System.out.println(ToStr(obj.DQArea,obj.MyText));
-				// System.out.println("CommentArea:");
-				// System.out.println(ToStr(obj.CommentArea,obj.MyText));
-				// System.out.println("HeaderArea:");
-				// System.out.println(ToStr(obj.HeaderArea,obj.MyText));
 				System.out.println("Next OutputText:");
-                                //System.out.println(obj.Make0(JspStatic.LineType.NEXT_LINE));
-                                //System.out.println(obj.Make0(JspStatic.LineType.AFTER_LINE));
                                 System.out.println(obj3.setOtherType(JspStatic3.LineType.NEXT_LINE).Make3());
-                                System.out.println("After OutputText:");
-                                System.out.println(obj3.setOtherType(JspStatic3.LineType.AFTER_LINE).Make3());
+                                //System.out.println("After OutputText:");
+                                //System.out.println(obj3.setOtherType(JspStatic3.LineType.AFTER_LINE).Make3());
 				//System.out.println(obj.OutputText);
 			}
 		}

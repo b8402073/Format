@@ -30,6 +30,9 @@ public class JspMain3 extends JspStatic3{
         sHead="#####";
         sLv="   ";        
     }
+    public JspMain3(Vector<StringBuffer> vecText) {
+        this((StringBuffer[]) vecText.toArray());
+    }
     
     public StringBuffer GetMyMainText(StringBuffer[] arrText) {
         StringBuffer ret=new StringBuffer();

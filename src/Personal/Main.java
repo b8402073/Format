@@ -417,9 +417,10 @@ public class Main {
 		Fix_if_SQDQ_in_CommentArea(buf);
 		Fix_if_LeftRight_in_DQArea(buf);
 		//Build_JavaScript_Area(buf);
-		Vector<JspElement> ret = JSPFileString(buf);                
-		for (JspElement str : ret) {
-			if (str.startsWith("jsp_static:")) {
+		Vector<JspElement> ret = JSPFileString(buf);
+                for (JspElement)
+		for (JspElement that : ret) {
+			if (that.startsWith("jsp_static:")) {
 				StringBuffer that=new StringBuffer(str);                                
                                 JspStatic3 obj3=new JspStatic3(that);
                                 System.out.println(obj3.warning());

@@ -155,9 +155,23 @@ public class Main {
 				do {
 					R++;
 					hand = inn.substring(Left.get(L), Right.get(R) + 1);
+                                        System.out.println(hand);
                                         if (R==Right.size()-1) {
                                             break;
                                         }
+                                        if (R>=45) {
+                                            System.out.println("hand.endsWith(%>)="+hand.endsWith("%>"));
+                                            System.out.println("In(DQArea)="+In(R, DQArea));
+                                            System.out.println("In(SQArea)="+In(R, SQArea));
+                                            System.out.println("In(CommentArea)="+In(R, CommentArea));
+                                        }
+                                        /***
+                                         * 絕對不會被<%=ggyy%>所攔截而出錯
+                                         * R=45卻沒有跳出來的原因是
+                                         * 吃到後面的DQArea 
+                                         * 講清楚一點...
+                                         * 就是DQArea的判斷錯誤
+                                         */
 				} while  (!hand.endsWith("%>") || In(R, DQArea) || In(R, SQArea) || In(R, CommentArea));
 				if (hand.startsWith("<%!")) {
 					//old ret.add("jsp_static:" + hand);
@@ -404,7 +418,7 @@ public class Main {
 		//                                "Black.jsp"
 		try {
 		//ReadFileIntoStringBuffer("c:/DB/ANN/CC1.jsp", buf);
-                ReadFileIntoStringBuffer("c:/DB/ANN/CC3.jsp", buf);
+                ReadFileIntoStringBuffer("c:/DB/ANN/CC4.jsp", buf);
 		refineStringBuffer(buf);   //把全部的\r\n都改成\n
 		}catch(Exception ex) {
 			ex.printStackTrace();
@@ -429,7 +443,7 @@ public class Main {
                 JspMain3 MyMain=new JspMain3(jspmain);
                 System.out.println(MyMain.warning());
                 MyMain.go();
-                MyMain.setCatchType(JspStatic3.LineType.NEXT_LINE).setOtherType(JspStatic3.LineType.NEXT_LINE);
+                MyMain.setCatchType(JspStatic3.LineType.AFTER_LINE).setOtherType(JspStatic3.LineType.AFTER_LINE);
                 MyMain.MainMake3();
                 int main_index=0;
 		for (int i=0; i<ret.size(); i++) {

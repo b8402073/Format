@@ -429,7 +429,7 @@ public class Main {
                 JspMain3 MyMain=new JspMain3(jspmain);
                 System.out.println(MyMain.warning());
                 MyMain.go();
-                MyMain.setOtherType(JspStatic3.LineType.AFTER_LINE);
+                MyMain.setCatchType(JspStatic3.LineType.NEXT_LINE).setOtherType(JspStatic3.LineType.NEXT_LINE);
                 MyMain.MainMake3();
                 int main_index=0;
 		for (int i=0; i<ret.size(); i++) {
@@ -457,7 +457,8 @@ public class Main {
                             System.out.println(line);
                             break;
                         case"html_comment":
-                            line=AssembleElement("<!--","-->",that.Txt.toString());
+                            //line=AssembleElement("<!--","-->",that.Txt.toString());
+                            line=AssembleElement("","",that.Txt.toString());
                             System.out.println(line);
                             break;
                         case"jsp_comment":

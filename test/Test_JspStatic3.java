@@ -1204,5 +1204,204 @@ public class Test_JspStatic3 {
 "#####/*@5@*CommentAfterText**/\n";
         assertTrue(obj.setOtherType(JspStatic3.LineType.NEXT_LINE).Make3().toString().trim().equals(next.trim()));
         assertTrue(obj.setOtherType(JspStatic3.LineType.AFTER_LINE).Make3().toString().trim().equals(after.trim()));
-    }    
+    }
+    @Test
+    public void Try_test_2() {
+        StringBuffer S=new StringBuffer("<%! public void ff(){   try{ a++;a--;}catch(Exception e) { out.println(\"hate\"); } finally {       try{ con.close();  } catch(Exception e)   {    out.println(\"關閉資料庫失敗\"+e);   }  } } %>");
+        JspStatic3 obj=new JspStatic3(S);
+        assertTrue(obj.warning().equals(""));
+        obj.go(); 
+        String CNextONext="#####public void ff ( ) {\n" +
+"#####   try\n" +
+"#####   {\n" +
+"#####      a++;\n" +
+"#####      a--;\n" +
+"#####   }\n" +
+"#####   catch(Exception e)\n" +
+"#####   {\n" +
+"#####      out.println(\"hate\");\n" +
+"#####   }\n" +
+"#####   finally \n" +
+"#####   {\n" +
+"#####      try\n" +
+"#####      {\n" +
+"#####         con.close();\n" +
+"#####      }\n" +
+"#####      catch(Exception e)\n" +
+"#####      {\n" +
+"#####         out.println(\"關閉資料庫失敗\"+e);\n" +
+"#####      }\n" +
+"#####   }\n" +
+"#####}";
+        String CNextOAfter="#####public void ff ( ) {\n" +
+"#####   try {\n" +
+"#####      a++;\n" +
+"#####      a--;\n" +
+"#####   }\n" +
+"#####   catch(Exception e) {\n" +
+"#####      out.println(\"hate\");\n" +
+"#####   }\n" +
+"#####   finally  {\n" +
+"#####      try {\n" +
+"#####         con.close();\n" +
+"#####      }\n" +
+"#####      catch(Exception e) {\n" +
+"#####         out.println(\"關閉資料庫失敗\"+e);\n" +
+"#####      }\n" +
+"#####   }\n" +
+"#####}\n" +
+"";
+        String CAfterONext="#####public void ff ( ) {\n" +
+"#####   try\n" +
+"#####   {\n" +
+"#####      a++;\n" +
+"#####      a--;\n" +
+"#####   }catch(Exception e)\n" +
+"#####   {\n" +
+"#####      out.println(\"hate\");\n" +
+"#####   }finally \n" +
+"#####   {\n" +
+"#####      try\n" +
+"#####      {\n" +
+"#####         con.close();\n" +
+"#####      }catch(Exception e)\n" +
+"#####      {\n" +
+"#####         out.println(\"關閉資料庫失敗\"+e);\n" +
+"#####      }\n" +
+"#####   }\n" +
+"#####}";
+        String CAfterOAfter="#####public void ff ( ) {\n" +
+"#####   try {\n" +
+"#####      a++;\n" +
+"#####      a--;\n" +
+"#####   }catch(Exception e) {\n" +
+"#####      out.println(\"hate\");\n" +
+"#####   }finally  {\n" +
+"#####      try {\n" +
+"#####         con.close();\n" +
+"#####      }catch(Exception e) {\n" +
+"#####         out.println(\"關閉資料庫失敗\"+e);\n" +
+"#####      }\n" +
+"#####   }\n" +
+"#####}\n" +
+"";
+        //System.out.println("CNextONext:\n"+obj.setCatchType(JspStatic3.LineType.NEXT_LINE).setOtherType(JspStatic3.LineType.NEXT_LINE).Make3());
+        //System.out.println("CNextOAfter:\n"+obj.setCatchType(JspStatic3.LineType.NEXT_LINE).setOtherType(JspStatic3.LineType.AFTER_LINE).Make3());
+        //System.out.println("CAfterONext:\n"+obj.setCatchType(JspStatic3.LineType.AFTER_LINE).setOtherType(JspStatic3.LineType.NEXT_LINE).Make3());
+        //System.out.println("CAfterOAfter:\n"+obj.setCatchType(JspStatic3.LineType.AFTER_LINE).setOtherType(JspStatic3.LineType.AFTER_LINE).Make3());
+        assertTrue(obj.setCatchType(JspStatic3.LineType.NEXT_LINE).setOtherType(JspStatic3.LineType.NEXT_LINE).Make3().toString().trim().equals( CNextONext.trim()));
+        assertTrue(obj.setCatchType(JspStatic3.LineType.NEXT_LINE).setOtherType(JspStatic3.LineType.AFTER_LINE).Make3().toString().trim().equals(CNextOAfter.trim()));
+        assertTrue(obj.setCatchType(JspStatic3.LineType.AFTER_LINE).setOtherType(JspStatic3.LineType.NEXT_LINE).Make3().toString().trim().equals(CAfterONext.trim()));
+        assertTrue(obj.setCatchType(JspStatic3.LineType.AFTER_LINE).setOtherType(JspStatic3.LineType.AFTER_LINE).Make3().toString().trim().equals(CAfterOAfter.trim()));                        
+        
+        S=new StringBuffer("<%! public void ff(){   try{ a++;a--;}catch(Exception e) {         try{ con.close();  } catch(Exception e)   {    out.println(\"關閉資料庫失敗\"+e);   }   } finally {       try{ con.close();  } catch(Exception e)   {    out.println(\"關閉資料庫失敗\"+e);   }  } } %>");
+        obj=new JspStatic3(S);
+        assertTrue(obj.warning().equals(""));
+        obj.go(); 
+        //System.out.println("CNextONext:\n"+obj.setCatchType(JspStatic3.LineType.NEXT_LINE).setOtherType(JspStatic3.LineType.NEXT_LINE).Make3());
+        //System.out.println("CNextOAfter:\n"+obj.setCatchType(JspStatic3.LineType.NEXT_LINE).setOtherType(JspStatic3.LineType.AFTER_LINE).Make3());
+        //System.out.println("CAfterONext:\n"+obj.setCatchType(JspStatic3.LineType.AFTER_LINE).setOtherType(JspStatic3.LineType.NEXT_LINE).Make3());
+        //System.out.println("CAfterOAfter:\n"+obj.setCatchType(JspStatic3.LineType.AFTER_LINE).setOtherType(JspStatic3.LineType.AFTER_LINE).Make3());
+        String CNextONext2="#####public void ff ( ) {\n" +
+"#####   try\n" +
+"#####   {\n" +
+"#####      a++;\n" +
+"#####      a--;\n" +
+"#####   }\n" +
+"#####   catch(Exception e)\n" +
+"#####   {\n" +
+"#####      try\n" +
+"#####      {\n" +
+"#####         con.close();\n" +
+"#####      }\n" +
+"#####      catch(Exception e)\n" +
+"#####      {\n" +
+"#####         out.println(\"關閉資料庫失敗\"+e);\n" +
+"#####      }\n" +
+"#####   }\n" +
+"#####   finally \n" +
+"#####   {\n" +
+"#####      try\n" +
+"#####      {\n" +
+"#####         con.close();\n" +
+"#####      }\n" +
+"#####      catch(Exception e)\n" +
+"#####      {\n" +
+"#####         out.println(\"關閉資料庫失敗\"+e);\n" +
+"#####      }\n" +
+"#####   }\n" +
+"#####}";
+        String CNextOAfter2="#####public void ff ( ) {\n" +
+"#####   try {\n" +
+"#####      a++;\n" +
+"#####      a--;\n" +
+"#####   }\n" +
+"#####   catch(Exception e) {\n" +
+"#####      try {\n" +
+"#####         con.close();\n" +
+"#####      }\n" +
+"#####      catch(Exception e) {\n" +
+"#####         out.println(\"關閉資料庫失敗\"+e);\n" +
+"#####      }\n" +
+"#####   }\n" +
+"#####   finally  {\n" +
+"#####      try {\n" +
+"#####         con.close();\n" +
+"#####      }\n" +
+"#####      catch(Exception e) {\n" +
+"#####         out.println(\"關閉資料庫失敗\"+e);\n" +
+"#####      }\n" +
+"#####   }\n" +
+"#####}";
+        String CAfterONext2="#####public void ff ( ) {\n" +
+"#####   try\n" +
+"#####   {\n" +
+"#####      a++;\n" +
+"#####      a--;\n" +
+"#####   }catch(Exception e)\n" +
+"#####   {\n" +
+"#####      try\n" +
+"#####      {\n" +
+"#####         con.close();\n" +
+"#####      }catch(Exception e)\n" +
+"#####      {\n" +
+"#####         out.println(\"關閉資料庫失敗\"+e);\n" +
+"#####      }\n" +
+"#####   }finally \n" +
+"#####   {\n" +
+"#####      try\n" +
+"#####      {\n" +
+"#####         con.close();\n" +
+"#####      }catch(Exception e)\n" +
+"#####      {\n" +
+"#####         out.println(\"關閉資料庫失敗\"+e);\n" +
+"#####      }\n" +
+"#####   }\n" +
+"#####}\n" +
+"";
+        String CAfterOAfter2="#####public void ff ( ) {\n" +
+"#####   try {\n" +
+"#####      a++;\n" +
+"#####      a--;\n" +
+"#####   }catch(Exception e) {\n" +
+"#####      try {\n" +
+"#####         con.close();\n" +
+"#####      }catch(Exception e) {\n" +
+"#####         out.println(\"關閉資料庫失敗\"+e);\n" +
+"#####      }\n" +
+"#####   }finally  {\n" +
+"#####      try {\n" +
+"#####         con.close();\n" +
+"#####      }catch(Exception e) {\n" +
+"#####         out.println(\"關閉資料庫失敗\"+e);\n" +
+"#####      }\n" +
+"#####   }\n" +
+"#####}\n" +
+"";
+        assertTrue(obj.setCatchType(JspStatic3.LineType.NEXT_LINE).setOtherType(JspStatic3.LineType.NEXT_LINE).Make3().toString().trim().equals( CNextONext2.trim()));
+        assertTrue(obj.setCatchType(JspStatic3.LineType.NEXT_LINE).setOtherType(JspStatic3.LineType.AFTER_LINE).Make3().toString().trim().equals(CNextOAfter2.trim()));
+        assertTrue(obj.setCatchType(JspStatic3.LineType.AFTER_LINE).setOtherType(JspStatic3.LineType.NEXT_LINE).Make3().toString().trim().equals(CAfterONext2.trim()));
+        assertTrue(obj.setCatchType(JspStatic3.LineType.AFTER_LINE).setOtherType(JspStatic3.LineType.AFTER_LINE).Make3().toString().trim().equals(CAfterOAfter2.trim()));                        
+        
+    }
 }

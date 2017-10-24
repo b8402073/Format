@@ -4,13 +4,24 @@
  * and open the template in the editor.
  */
 
+import Personal.JspElement;
 import Personal.JspMain3;
+import Personal.JspStatic3;
+import Personal.Main;
+import static Personal.Main.AssembleElement;
+import static Personal.Main.Build_Comment_Area;
+import static Personal.Main.Build_DQ_Area;
+import static Personal.Main.Build_Left_and_Right;
+import static Personal.Main.Build_SQ_Area;
+import static Personal.Main.Fix_if_LeftRight_in_DQArea;
+import static Personal.Main.Fix_if_SQDQ_in_CommentArea;
+import static Personal.Main.JSPFileString;
+import java.util.Vector;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -38,71 +49,73 @@ public class Test_JspMain3 {
     }
     @Test
     public void do_while_test_1() {
-        StringBuffer S = new StringBuffer("<%  int i=0; do {System.out.println(i); ++i; }while(i<100);  %>");
-        StringBuffer[] arrS=new StringBuffer[1];
-        arrS[0]=S;
-        JspMain3 obj = new JspMain3(arrS);
-        assertTrue(obj.warning().equals(""));
-        obj.go();
-        obj.MainMake3();
-        System.out.println(obj.MyOutput[0].toString());
-        /*
-        String AfterLine=obj.setCatchType(JspMain3.LineType.NEXT_LINE).setOtherType(JspMain3.LineType.AFTER_LINE).Make3().toString().trim(); 
-        String NextLine= obj.setCatchType(JspMain3.LineType.NEXT_LINE).setOtherType(JspMain3.LineType.NEXT_LINE).Make3().toString().trim();
-        System.out.println("AfterLine:\n"+AfterLine);
-        System.out.println("NExtLine:\n"+NextLine);
-        String after="#####public int a ( ) {\n" +
-"#####   int i=0;\n" +
-"#####   do {\n" +
-"#####      System.out.println(i);\n" +
-"#####      ++i;\n" +
-"#####   } while( i < 100 );\n" +
-"#####   return i;\n" +
-"#####}";
-        String next="#####public int a ( ) {\n" +
-"#####   int i=0;\n" +
-"#####   do\n" +
-"#####   {\n" +
-"#####      System.out.println(i);\n" +
-"#####      ++i;\n" +
-"#####   } while( i < 100 );\n" +
-"#####   return i;\n" +
-"#####}";
-        assertTrue(AfterLine.trim().equals(after.trim()));
-        assertTrue(NextLine.trim().equals(next.trim()));
-        
-        AfterLine=obj.setCatchType(JspMain3.LineType.AFTER_LINE).setOtherType(JspMain3.LineType.AFTER_LINE).Make3().toString().trim(); 
-        NextLine= obj.setCatchType(JspMain3.LineType.AFTER_LINE).setOtherType(JspMain3.LineType.NEXT_LINE).Make3().toString().trim();
-        assertTrue(AfterLine.trim().equals(after.trim()));
-        assertTrue(NextLine.trim().equals(next.trim()));
-        
-        S = new StringBuffer("<%! public int a(int i) { do {System.out.println(i); ++i; }while(i<100); return i; } %>");
-        obj = new JspMain3(S);
-        assertTrue(obj.warning().equals(""));
-        obj.go();
-        obj.Make3();
-        String AfterLine2=obj.setCatchType(JspMain3.LineType.NEXT_LINE).setOtherType(JspMain3.LineType.AFTER_LINE).Make3().toString().trim(); 
-        String NextLine2= obj.setCatchType(JspMain3.LineType.NEXT_LINE).setOtherType(JspMain3.LineType.NEXT_LINE).Make3().toString().trim();
-        System.out.println("AfterLine2:\n"+AfterLine2);
-        System.out.println("NExtLine2:\n"+NextLine2);
-        String next2="#####public int a ( int i ) {\n" +
-"#####   do\n" +
-"#####   {\n" +
-"#####      System.out.println(i);\n" +
-"#####      ++i;\n" +
-"#####   } while( i < 100 );\n" +
-"#####   return i;\n" +
-"#####}";
-        String after2="#####public int a ( int i ) {\n" +
-"#####   do {\n" +
-"#####      System.out.println(i);\n" +
-"#####      ++i;\n" +
-"#####   } while( i < 100 );\n" +
-"#####   return i;\n" +
-"#####}";
-        assertTrue(AfterLine2.trim().equals(after2.trim()));
-        assertTrue(NextLine2.trim().equals(next2.trim()));        
-        */      
+        StringBuffer S = new StringBuffer("<%  int i=0; do {System.out.println(i);%> <% ++i; }while(i<100);  %>");
+        Main.refineStringBuffer(S); 
+        Main.Build_Left_and_Right(S);
+        Build_DQ_Area(S);
+        Build_SQ_Area(S);
+        Build_Comment_Area(S);
+        Fix_if_SQDQ_in_CommentArea(S);
+        Fix_if_LeftRight_in_DQArea(S);
+        //Build_JavaScript_Area(buf);
+        Vector<JspElement> ret = JSPFileString(S);
+        Vector<StringBuffer> jspmain=new Vector<StringBuffer>();
+        for (JspElement X: ret) {
+            switch(X.Type) {
+                case"jsp_main":
+                    jspmain.add(X.Txt); break;
+                default:
+            }
+        }
+        // JspMain3 MyMain=new JspMain3((StringBuffer[]) jspmain.toArray());  //這樣寫不能動
+        JspMain3 MyMain=new JspMain3(jspmain);
+        System.out.println(MyMain.warning());
+        MyMain.go();
+        MyMain.setOtherType(JspStatic3.LineType.AFTER_LINE);
+        MyMain.MainMake3();
+        int main_index=0;
+        for (int i=0; i<ret.size(); i++) {
+            JspElement that=ret.get(i);
+            String line;
+            switch(that.Type) {
+                case"jsp_static":
+                    JspStatic3 obj=new JspStatic3(that.Txt);
+                    System.out.println(obj.warning());
+                    obj.go();
+                    obj.setOtherType(JspStatic3.LineType.AFTER_LINE);
+                    line=AssembleElement("<%!","%>",obj.Make3().toString());
+                    System.out.println(line);
+                    break;
+                case"jsp_main":
+                    line=AssembleElement("<%","%>",MyMain.MyOutput[main_index++].toString());
+                    System.out.println(line);
+                    break;
+                case"html":
+                    line=AssembleElement("<",">",that.Txt.toString());
+                    System.out.println(line);
+                    break;
+                case"jsp_import":
+                    line=AssembleElement("<%@","%>",that.Txt.toString());
+                    System.out.println(line);
+                    break;
+                case"html_comment":
+                    line=AssembleElement("<!--","-->",that.Txt.toString());
+                    System.out.println(line);
+                    break;
+                case"jsp_comment":
+                    line=AssembleElement("<%--","--%>",that.Txt.toString());
+                    System.out.println(line);
+                    break;
+                case"jsp_value":
+                    line=AssembleElement("<%=","%>",that.Txt.toString());
+                    System.out.println(line);
+                    break;
+                case"single_html":
+                    line=AssembleElement("<"," />",that.Txt.toString());
+                    System.out.println(line);
+                    break;                            
+            } 
+        }
     }
     
 }

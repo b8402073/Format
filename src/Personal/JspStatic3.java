@@ -783,12 +783,15 @@ public class JspStatic3  {
                     //如果吃到try或catch的右大括號
                     line = sHead + GetString(sLv, Level) + "}";
                     refRet.append(line);
-                    if (Catch_After_Try_Block == LineType.NEXT_LINE) {
+                    if (Next(NowPos).equals("}")) {
+                        //右括號又接著右括號就要送一個換行符號...
+                        refRet.append(NexLine);
+                    }else if (Catch_After_Try_Block == LineType.NEXT_LINE) {
                         switch (Next(NowPos)) {
                             case "catch":
-                            case "finally":
+                            case "finally":                            
                                 //如果右括號的後面緊接著是catch或finally
-                                refRet.append(NexLine);
+                                refRet.append(NexLine);                            
                             default:
                         }
                     }

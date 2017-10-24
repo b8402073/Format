@@ -31,9 +31,37 @@ public class JspMain3 extends JspStatic3{
         sLv="   ";        
     }
     public JspMain3(Vector<StringBuffer> vecText) {
-        this((StringBuffer[]) vecText.toArray());
+        //this((StringBuffer[]) vecText.toArray());   不能這樣寫真的很沒有道理
+        super();
+        MyOutput=new StringBuffer[vecText.size()];
+        for (int i=0; i<vecText.size(); i++) {
+            MyOutput[i]=new StringBuffer();
+        }
+        MyText=GetMyMainText(vecText);
+        init();
+        Build_DQ_Area(MyText, DQArea);
+        Build_SQ_Area(MyText, DQArea, SQArea);
+        Build_Comment_Area(MyText, DQArea, SQArea, CommentArea);
+        Fix_if_SQDQ_SLeft_SRight_SemiColon_in_CommentArea(MyText, SQArea, DQArea, CommentArea);        
+        sHead="#####";
+        sLv="   ";         
     }
-    
+    @Override
+    /***
+     * 在這裡不建ClassArea和FuncHeaderArea
+     */
+    public void go() {
+        System.out.println(warning());
+        Build_MyFocus();
+        Build_Array_Area(ArrayArea);
+    }
+    public StringBuffer GetMyMainText(Vector<StringBuffer> vecText) {
+        StringBuffer[] arr=new StringBuffer[vecText.size()];
+        for (int i=0; i<arr.length; i++) {
+            arr[i]=vecText.get(i);
+        }
+        return GetMyMainText(arr);
+    }
     public StringBuffer GetMyMainText(StringBuffer[] arrText) {
         StringBuffer ret=new StringBuffer();
         for (int i=0; i<arrText.length-1; i++) {

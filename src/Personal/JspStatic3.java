@@ -355,6 +355,9 @@ public class JspStatic3  {
             default:
                 throw new NullPointerException("Bad Make_If_ElseIf: NowPos=" + NowPos + " what=" + what);
         }
+        if (Prev(NowPos).equals("}") && refRet.charAt(refRet.length() - 1) != '\n') {   //這句有改善空間...
+            refRet.append(NexLine);
+        }        
         String line = sHead + GetString(sLv, level) + what;
         FocusPair Brace = GetSmallBrace(NowPos);
         refRet.append(line + " " + Brace.toString(MyFocus));
@@ -415,7 +418,7 @@ public class JspStatic3  {
      * @param what 現在的字("for" or "what
      * @return 傳回準備下一個掃描位置
      */
-    public int Make_For_While(StringBuffer refRet, int NowPos, int level, Stack<TextLevel> refComplex, String what) {
+    public int Make_For_While(StringBuffer refRet, int NowPos, int level, Stack<TextLevel> refComplex, String what) {        
         switch (what) {
             case "for":
             case "while":
@@ -423,6 +426,9 @@ public class JspStatic3  {
             default:
                 throw new NullPointerException("Bad Make_For_While: NowPos=" + NowPos + " what=" + what);
         }
+        if (Prev(NowPos).equals("}") && refRet.charAt(refRet.length() - 1) != '\n') {   //這句有改善空間...
+            refRet.append(NexLine);
+        }        
         String line = sHead + GetString(sLv, level) + what;
         FocusPair Brace = GetSmallBrace(NowPos);
         refRet.append(line + Brace.toString(MyFocus));
@@ -539,7 +545,8 @@ public class JspStatic3  {
                 return Brace.getEnd();
             default:
                 refRet.append(NexLine);
-                return MakeStatement(refRet, NowPos, level + 1, refComplex);
+                //old return MakeStatement(refRet, NowPos, level + 1, refComplex);
+                return MakeStatement(refRet, Brace.getEnd()+1, level + 1, refComplex);
         }
     }
 
@@ -576,7 +583,10 @@ public class JspStatic3  {
      * @param refComplex 區塊堆疊
      * @return 傳回準備下一個掃描位置
      */
-    public int MakeTry(StringBuffer refRet, int NowPos, int Level, FocusPair Block, Stack<TextLevel> refComplex) {
+    public int MakeTry(StringBuffer refRet, int NowPos, int Level, FocusPair Block, Stack<TextLevel> refComplex) { 
+        if (Prev(NowPos).equals("}") && refRet.charAt(refRet.length() - 1) != '\n') {   //這句有改善空間...
+            refRet.append(NexLine);
+        }        
         String line = sHead + GetString(sLv, Level) + "try";
         refRet.append(line);
         TextLevel newTL = new TextLevel("try", Block, Level);
@@ -629,9 +639,11 @@ public class JspStatic3  {
      */
     public int Make_Finally(StringBuffer refRet, int NowPos, int level, Stack<TextLevel> refComplex) {
         String line = "<bad finally>";
-        if (Catch_After_Try_Block == LineType.AFTER_LINE) {
+        if (Catch_After_Try_Block == LineType.AFTER_LINE  && Prev(NowPos).equals("}")  ) {
             line = "finally" + " ";
         } else if (Catch_After_Try_Block == LineType.NEXT_LINE) {
+            line = sHead + GetString(sLv, level) + "finally" + " ";
+        }else {
             line = sHead + GetString(sLv, level) + "finally" + " ";
         }
         refRet.append(line);
@@ -783,7 +795,8 @@ public class JspStatic3  {
                     //如果吃到try或catch的右大括號
                     line = sHead + GetString(sLv, Level) + "}";
                     refRet.append(line);
-                    if (Next(NowPos).equals("}")) {
+                    String _next=Next(NowPos);
+                    if (_next.equals("}"))  {
                         //右括號又接著右括號就要送一個換行符號...
                         refRet.append(NexLine);
                     }else if (Catch_After_Try_Block == LineType.NEXT_LINE) {

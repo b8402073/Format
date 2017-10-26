@@ -155,6 +155,7 @@ public class Main {
 				do {
 					R++;
 					hand = inn.substring(Left.get(L), Right.get(R) + 1);
+                                        System.out.println("hand=");
                                         System.out.println(hand);
                                         if (R==Right.size()-1) {
                                             break;
@@ -426,10 +427,14 @@ public class Main {
 
 		Build_Left_and_Right(buf);
 		Build_DQ_Area(buf);
+                System.out.println(ToStr(DQArea,buf)); 
+                System.out.println("DQArea.size()="+DQArea.size());
 		Build_SQ_Area(buf);
 		Build_Comment_Area(buf);
-		Fix_if_SQDQ_in_CommentArea(buf);
+		Fix_if_SQDQ_in_CommentArea(buf);     //這裡有一點問題以致R-45時切element會出錯
+                System.out.println("DQArea.size()="+DQArea.size());
 		Fix_if_LeftRight_in_DQArea(buf);
+                System.out.println("DQArea.size()="+DQArea.size());
 		//Build_JavaScript_Area(buf);
 		Vector<JspElement> ret = JSPFileString(buf);
                 Vector<StringBuffer> jspmain=new Vector<StringBuffer>();

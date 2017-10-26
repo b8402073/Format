@@ -3986,6 +3986,10 @@ public class Test_JspStatic3 {
                 System.out.println("Possible wrong in Line"+(i+1));
                 return (i);
             }
+            if (S.indexOf(JspStatic3.sHead)>=1){
+                System.out.println("Possible wrong in Line"+(i+1));
+                return (i);                
+            }
         }
         return (-1);
     }

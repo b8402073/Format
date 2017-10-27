@@ -3994,12 +3994,73 @@ public class Test_JspStatic3 {
         return (-1);
     }
     
+    @Test
+    public void Switch_Case_with_Synchronized() {
+        StringBuffer S=new StringBuffer("<%!");
+        String f="public static void func()\n" +"{\n" +"	int a=3;\n" +"	switch(a)\n" +"	{\n" +"	  case 1:\n" +"		synchronized(A)\n" +"		{\n" +"			a++; a--;\n" +"		}\n" +"		break;\n" +"	  case 2:\n" +"		a++;\n" +"	  default:\n" +"		synchronized(A)\n" +"		{\n" +"			a++; a--;\n" +"		}\n" +"		break;\n" +"	}\n" +"}";    
+        S.append(f+"\n");
+        S.append("%>");
+        JspStatic3 obj=new JspStatic3(S);
+        System.out.println(obj.warning());
+        obj.go();
+        //System.out.println("AfterLine:\n");
+        //System.out.println(obj.setOtherType(JspStatic3.LineType.AFTER_LINE).Make3().toString());
+        //System.out.println("NextLine:\n");
+        //System.out.println(obj.setOtherType(JspStatic3.LineType.NEXT_LINE).Make3().toString());
+        String After="#####public static void func ( ) {\n" +
+"#####   int a=3;\n" +
+"#####   switch( a ) {\n" +
+"#####   case 1:\n" +
+"#####      synchronized( A ) {\n" +
+"#####         a++;\n" +
+"#####         a--;\n" +
+"#####      }\n" +
+"#####      break ;\n" +
+"#####   case 2:\n" +
+"#####      a++;\n" +
+"#####   default:\n" +
+"#####      synchronized( A ) {\n" +
+"#####         a++;\n" +
+"#####         a--;\n" +
+"#####      }\n" +
+"#####      break ;\n" +
+"#####   }\n" +
+"#####}";
+        String Next="#####public static void func ( ) {\n" +
+"#####   int a=3;\n" +
+"#####   switch( a )\n" +
+"#####   {\n" +
+"#####   case 1:\n" +
+"#####      synchronized( A )\n" +
+"#####      {\n" +
+"#####         a++;\n" +
+"#####         a--;\n" +
+"#####      }\n" +
+"#####      break ;\n" +
+"#####   case 2:\n" +
+"#####      a++;\n" +
+"#####   default:\n" +
+"#####      synchronized( A )\n" +
+"#####      {\n" +
+"#####         a++;\n" +
+"#####         a--;\n" +
+"#####      }\n" +
+"#####      break ;\n" +
+"#####   }\n" +
+"#####}";
+       assertTrue(obj.setCatchType(JspStatic3.LineType.NEXT_LINE).setOtherType(JspStatic3.LineType.NEXT_LINE).Make3().toString().trim().equals(Next.trim()));
+       assertTrue(obj.setCatchType(JspStatic3.LineType.AFTER_LINE).setOtherType(JspStatic3.LineType.NEXT_LINE).Make3().toString().trim().equals(Next.trim()));
+       assertTrue(obj.setCatchType(JspStatic3.LineType.NEXT_LINE).setOtherType(JspStatic3.LineType.AFTER_LINE).Make3().toString().trim().equals(After.trim()));
+       assertTrue(obj.setCatchType(JspStatic3.LineType.AFTER_LINE).setOtherType(JspStatic3.LineType.AFTER_LINE).Make3().toString().trim().equals(After.trim()));
+    }
+    
+    
     
     @Test
     public void System_Syn() {
         StringBuffer S=new StringBuffer("<%!\n");
-        //S.append(KK.FUNC(KK.IX_Syn_Mixing(), KK.W_Syn_Mixing(), KK.T_Syn_Mixing(),KK.S_Syn_Mixing()));
-        S.append(KK.FUNC(KK.S_Syn_Mixing()));
+        S.append(KK.FUNC(KK.IX_Syn_Mixing(), KK.W_Syn_Mixing(), KK.T_Syn_Mixing(),KK.S_Syn_Mixing()));
+        //S.append(KK.FUNC(KK.S_Syn_Mixing()));
         S.append("\n%>");
         System.out.println(S.toString());
         JspStatic3 obj=new JspStatic3(S);
@@ -4015,6 +4076,7 @@ public class Test_JspStatic3 {
         assertTrue(EasyCheck(CAOA)<0);
         
     }
+    
     
     
 }

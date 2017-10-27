@@ -321,19 +321,24 @@ public class JspStatic3  {
     public int Make_Case_Default(StringBuffer refRet, int NowPos, int level, Stack<TextLevel> refComplex, String what) {
         int Colum = SearchForTokenPos(NowPos, ":", MyFocus);
         String line;
+        
         switch (what) {
             case "case":
                 FocusPair _case = new FocusPair(NowPos + 1, Colum - 1);
                 line = sHead + GetString(sLv, level) + what + " " + _case.toString(MyFocus) + ":" + NexLine;
                 refRet.append(line);
-                return Colum;
+                break;
             case "default":
                 line = sHead + GetString(sLv, level) + "default:" + NexLine;
                 refRet.append(line);
-                return Colum;
+                break;
             default:
                 throw new NullPointerException("bad " + what + " without «_¸¹ NowPos=" + NowPos);
         }
+        if (!Next(Colum).equals("synchronized")) {
+            return Colum;
+        }        
+        return Make_Synchronized(refRet,Colum+1,level+1,refComplex);
     }
 
     /**

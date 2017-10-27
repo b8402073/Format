@@ -35,9 +35,9 @@ public class KK {
     public static final String F2="for (int a=0; a<10; a++) { a++; a--;}";
     
     public static final String S1="switch(a) { case 1: a++; a--;}";
-    public static final String S2="switch(a) { case 1: a++; a--; break; case2: a++; a--; break; default: a++; a--;  }";
+    public static final String S2="switch(a) { case 1: a++; a--; break; case 2: a++; a--; break; default: a++; a--;  }";
     public static final String S3="switch(a) { default: a++; a--; }";
-    public static final String S4="switch(a) { case 1: a++; a--; continue; case2: a++; a--; continue; default: a++; a--;  }";
+    public static final String S4="switch(a) { case 1: a++; a--; continue; case 2: a++; a--; continue; default: a++; a--;  }";
     
     
     public static final String Syn1="synchronized(A) { a++; a--; } ";

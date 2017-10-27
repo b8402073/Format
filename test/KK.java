@@ -19,7 +19,7 @@ public class KK {
     public static final String ifX5="if (a>3) {a++; a--;}";
     public static final String ifX6="if (a>3) a++;";
 
-    public static final String whY1="do{ a++; }while(a>=0);";
+    public static final String whY1="do{ a++; a--; }while(a>=0);";
     public static final String whY2="while(a>=0) a--;";
     public static final String whY3="while(a>=0) {a++; a--;}";
     public static final String whY4="while(a--);";    
@@ -45,6 +45,34 @@ public class KK {
     public static final String[] W={whY1,whY2,whY3,whY4};
     public static final String[] T={T1,T2,T3,T4,T5,T6,F1,F2};    
     public static final String[] S={S1,S2,S3,S4};
+    public static final String   NexLine=JspStatic3.NexLine;
+    public static String IX_W_Mixing() {
+        StringBuffer ret=new StringBuffer();
+        for (String s:IX) {
+            for (String w:W) {
+                ret.append(s.replace("a++; a--;", w));
+            }
+        }
+        for (String w:W) {
+            for (String s:IX) {
+                ret.append(w.replace("a++; a--;",s));
+            }
+        }
+        return ret.toString();  
+    }
+    public static String IX_W_IX() {            //IX與W的順序性測試
+        StringBuffer ret=new StringBuffer();
+        for (String s1:IX) {
+            for (String s2: W) {
+                for (String s3: IX) {
+                    ret.append(s1+NexLine);
+                    ret.append(s2+NexLine);
+                    ret.append(s3+NexLine);
+                }
+            }
+        }
+        return ret.toString();  
+    }
     public static String S_Syn_Mixing() {       //S與Syn的混合性測試
         StringBuffer ret=new StringBuffer();
         for (String s:S) {

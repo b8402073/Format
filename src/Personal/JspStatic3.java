@@ -426,7 +426,8 @@ public class JspStatic3  {
             default:
                 throw new NullPointerException("Bad Make_For_While: NowPos=" + NowPos + " what=" + what);
         }
-        if (Prev(NowPos).equals("}") && refRet.charAt(refRet.length() - 1) != '\n') {   //這句有改善空間...
+        //old if (Prev(NowPos).equals("}") && refRet.charAt(refRet.length() - 1) != '\n') {   //這句有改善空間...
+        if (Prev(NowPos).equals("}") && !refRet.toString().endsWith(NexLine)) {  
             refRet.append(NexLine);
         }        
         String line = sHead + GetString(sLv, level) + what;
@@ -562,7 +563,9 @@ public class JspStatic3  {
      * @return 傳回準備下一個掃描位置
      */
     public int MakeDo(StringBuffer refRet, int NowPos, int level, FocusPair Block, Stack<TextLevel> refComplex) {
-        if (Prev(NowPos).equals("}") && refRet.charAt(refRet.length() - 1) != '\n') {   //這句有改善空間...
+        
+        //old: if (Prev(NowPos).equals("}") && refRet.charAt(refRet.length() - 1) != '\n') {   //這句有改善空間...
+        if (Prev(NowPos).equals("}") && !refRet.toString().endsWith(NexLine)) {  
             refRet.append(NexLine);
         }
         String line = sHead + GetString(sLv, level) + "do";
@@ -584,7 +587,8 @@ public class JspStatic3  {
      * @return 傳回準備下一個掃描位置
      */
     public int MakeTry(StringBuffer refRet, int NowPos, int Level, FocusPair Block, Stack<TextLevel> refComplex) { 
-        if (Prev(NowPos).equals("}") && refRet.charAt(refRet.length() - 1) != '\n') {   //這句有改善空間...
+        //old if (Prev(NowPos).equals("}") && refRet.charAt(refRet.length() - 1) != '\n') {   //這句有改善空間...
+        if (Prev(NowPos).equals("}") && !refRet.toString().endsWith(NexLine)) {  
             refRet.append(NexLine);
         }        
         String line = sHead + GetString(sLv, Level) + "try";

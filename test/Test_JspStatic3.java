@@ -1436,18 +1436,18 @@ public class Test_JspStatic3 {
         JspStatic3 obj=new JspStatic3(S);
         assertTrue(obj.warning().equals(""));
         obj.go();
-        System.out.println("**********make3_CAfter_OAfter***********");
+        //System.out.println("**********make3_CAfter_OAfter***********");
         String CAfter_OAfter=obj.setCatchType(JspStatic3.LineType.AFTER_LINE).setOtherType(JspStatic3.LineType.AFTER_LINE).Make3().toString().trim();
-        System.out.println(CAfter_OAfter);
-        System.out.println("**********make3_CNext_OAfter***********");
+        //System.out.println(CAfter_OAfter);
+        //System.out.println("**********make3_CNext_OAfter***********");
         String CNext_OAfter=obj.setCatchType(JspStatic3.LineType.NEXT_LINE).setOtherType(JspStatic3.LineType.AFTER_LINE).Make3().toString().trim();
-        System.out.println(CNext_OAfter);
-        System.out.println("**********make3_CAfter_ONext***********");
+        //System.out.println(CNext_OAfter);
+        //System.out.println("**********make3_CAfter_ONext***********");
         String CAfter_ONext=obj.setCatchType(JspStatic3.LineType.AFTER_LINE).setOtherType(JspStatic3.LineType.NEXT_LINE).Make3().toString().trim();
-        System.out.println(CAfter_ONext);
-        System.out.println("**********make3_CNext_ONext***********");
+        //System.out.println(CAfter_ONext);
+        //System.out.println("**********make3_CNext_ONext***********");
         String CNext_ONext=obj.setCatchType(JspStatic3.LineType.NEXT_LINE).setOtherType(JspStatic3.LineType.NEXT_LINE).Make3().toString().trim();        
-        System.out.println(CNext_ONext);
+        //System.out.println(CNext_ONext);
         
         String CAOA="#####int a ( ) {\n" +
 "#####   try {\n" +
@@ -3993,5 +3993,36 @@ public class Test_JspStatic3 {
         }
         return (-1);
     }
+    
+    /*
+    @Test
+    public void mix3() {
+        StringBuffer S=new StringBuffer("<%!\n");
+        S.append("int a() { ");
+        //S.append("if (a>100) while(true){ a+=2;}");
+        
+        String[] X={X1,X2,X3,X4,X5,X6};
+        String[] T={T1,T2,T3,T4,T5,T6};
+        for (String t:T) {
+            S.append(t+JspStatic3.NexLine);
+        }
+        for (String x1:X) {
+            for (String t:T) {
+                for (String x2:X) {
+                    S.append(x1+JspStatic3.NexLine);
+                    S.append(t+JspStatic3.NexLine);
+                    S.append(x2+JspStatic3.NexLine);
+                }
+            }
+        }
+     
+        S.append("\n}\n");
+        S.append("\n%>");
+        System.out.println(S.toString());
+        //JspStatic3 obj=new JspStatic3(S);
+        //assertTrue(obj.warning().equals(""));
+        //obj.go();        
+    }
+    */
     
 }

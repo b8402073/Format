@@ -18,7 +18,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
         {
-         Test_JspStatic3.class, 
+         Test_JspStatic3.class, Test_JspMain3.class,
          TestArbitary.class})
 public class ALL_Elementary {
 

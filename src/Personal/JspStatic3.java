@@ -808,6 +808,7 @@ public class JspStatic3  {
                     line = sHead + GetString(sLv, Level) + "}";
                     refRet.append(line);
                     String _next=Next(NowPos);
+                    /*old code
                     if (_next.equals("}"))  {
                         //右括號又接著右括號就要送一個換行符號...
                         refRet.append(NexLine);
@@ -820,6 +821,14 @@ public class JspStatic3  {
                             default:
                         }
                     }
+                    */
+                    if (Catch_After_Try_Block==LineType.AFTER_LINE) {
+                        switch(_next) {
+                            case"catch": case"finally":
+                                return NowPos;
+                        }
+                    }
+                    refRet.append(NexLine);
                     return NowPos;
                 default:
                     //including "func","class","if","else if","else","while","for","try","catch","finally","switch","synchronized"

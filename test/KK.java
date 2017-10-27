@@ -26,10 +26,10 @@ public class KK {
     
     public static final String T1="try {a++; a--;} catch(Exception ex) { a++;}";
     public static final String T2="try {a++; a--;} catch(Exception ex) {a++;}";
-    public static final String T3="try {a++; a--;} catch(Exception ex) {a++;} static finally {a++; a--;}";
+    public static final String T3="try {a++; a--;} catch(Exception ex) {a++;}  finally {a++; a--;}";
     public static final String T4="try {a++; a--;} catch(Exception ex) {a++; a--;} catch(IOException e) {a++; a--;}";
-    public static final String T5="try {a++; a--;} catch(Exception ex) {a++; a--;} catch(IOException ex) { a++; a--;} static finally{ a++; a--;} ";
-    public static final String T6="try {a++; a--;} catch(Exception ex) {a++; a--;} catch(IOException ex) { a++; a--;} static finally c++; ";
+    public static final String T5="try {a++; a--;} catch(Exception ex) {a++; a--;} catch(IOException ex) { a++; a--;}  finally{ a++; a--;} ";
+    public static final String T6="try {a++; a--;} catch(Exception ex) {a++; a--;} catch(IOException ex) { a++; a--;}  finally c++; ";
     
     public static final String F1="for (int a=0; a<10; a++) b++;";
     public static final String F2="for (int a=0; a<10; a++) { a++; a--;}";
@@ -56,8 +56,16 @@ public class KK {
         }         
         return ret.toString();        
     }
-    public static String S_Syn_S(){
+    public static String S_Syn_S(){         //S與Syn的順序性測試
         StringBuffer ret=new StringBuffer();
+        for (String s:S) {
+            ret.append(s+JspStatic3.NexLine);
+            ret.append(Syn1+JspStatic3.NexLine);
+        }
+        for (String s: S) {
+            ret.append(Syn1+JspStatic3.NexLine);
+            ret.append(s+JspStatic3.NexLine);
+        }        
         return ret.toString();        
     }
     public static String T_Syn_Mixing() {   //T與Syn的混合性測試
@@ -71,8 +79,16 @@ public class KK {
         }         
         return ret.toString();        
     }
-    public static String T_Syn_T(){
+    public static String T_Syn_T(){         //T與Syn的順序性測試
         StringBuffer ret=new StringBuffer();
+        for (String t:T) {
+            ret.append(t+JspStatic3.NexLine);
+            ret.append(Syn1+JspStatic3.NexLine);
+        }
+        for (String t: T) {
+            ret.append(Syn1+JspStatic3.NexLine);
+            ret.append(t+JspStatic3.NexLine);
+        }        
         return ret.toString();
         
     }
@@ -89,6 +105,14 @@ public class KK {
     }
     public static String W_Syn_W() {      //W跟Syn的順序性測試
         StringBuffer ret=new StringBuffer();
+        for (String w:W) {
+            ret.append(w+JspStatic3.NexLine);
+            ret.append(Syn1+JspStatic3.NexLine);
+        }
+        for (String w: W) {
+            ret.append(Syn1+JspStatic3.NexLine);
+            ret.append(w+JspStatic3.NexLine);
+        }        
         return ret.toString();
     } 
     public static String IX_Syn_IX() {    //IX跟Syn的順序性測試

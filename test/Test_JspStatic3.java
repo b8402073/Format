@@ -3994,35 +3994,27 @@ public class Test_JspStatic3 {
         return (-1);
     }
     
-    /*
+    
     @Test
-    public void mix3() {
+    public void System_Syn() {
         StringBuffer S=new StringBuffer("<%!\n");
-        S.append("int a() { ");
-        //S.append("if (a>100) while(true){ a+=2;}");
-        
-        String[] X={X1,X2,X3,X4,X5,X6};
-        String[] T={T1,T2,T3,T4,T5,T6};
-        for (String t:T) {
-            S.append(t+JspStatic3.NexLine);
-        }
-        for (String x1:X) {
-            for (String t:T) {
-                for (String x2:X) {
-                    S.append(x1+JspStatic3.NexLine);
-                    S.append(t+JspStatic3.NexLine);
-                    S.append(x2+JspStatic3.NexLine);
-                }
-            }
-        }
-     
-        S.append("\n}\n");
+        //S.append(KK.FUNC(KK.IX_Syn_Mixing(), KK.W_Syn_Mixing(), KK.T_Syn_Mixing(),KK.S_Syn_Mixing()));
+        S.append(KK.FUNC(KK.S_Syn_Mixing()));
         S.append("\n%>");
         System.out.println(S.toString());
-        //JspStatic3 obj=new JspStatic3(S);
-        //assertTrue(obj.warning().equals(""));
-        //obj.go();        
+        JspStatic3 obj=new JspStatic3(S);
+        assertTrue(obj.warning().equals(""));
+        obj.go();
+        String CNON=obj.setCatchType(JspStatic3.LineType.NEXT_LINE).setOtherType(JspStatic3.LineType.NEXT_LINE).Make3().toString();
+        String CNOA=obj.setCatchType(JspStatic3.LineType.NEXT_LINE).setOtherType(JspStatic3.LineType.AFTER_LINE).Make3().toString();
+        String CAON=obj.setCatchType(JspStatic3.LineType.AFTER_LINE).setOtherType(JspStatic3.LineType.NEXT_LINE).Make3().toString();
+        String CAOA=obj.setCatchType(JspStatic3.LineType.AFTER_LINE).setOtherType(JspStatic3.LineType.AFTER_LINE).Make3().toString();                        
+        assertTrue(EasyCheck(CNON)<0);
+        assertTrue(EasyCheck(CNOA)<0);
+        assertTrue(EasyCheck(CAON)<0);
+        assertTrue(EasyCheck(CAOA)<0);
+        
     }
-    */
+    
     
 }

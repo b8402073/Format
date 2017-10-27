@@ -465,6 +465,9 @@ public class JspStatic3  {
     }//Make_Synchronized(ret,i,Level,Complex);
 
     public int Make_Synchronized(StringBuffer refRet, int NowPos, int level, Stack<TextLevel> refComplex) {
+        if (Prev(NowPos).equals("}") && !refRet.toString().endsWith(NexLine)) {  
+            refRet.append(NexLine);
+        }         
         String line = sHead + GetString(sLv, level) + "synchronized";
         FocusPair Brace = GetSmallBrace(NowPos);
         refRet.append(line + Brace.toString(MyFocus));

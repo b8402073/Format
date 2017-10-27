@@ -46,6 +46,143 @@ public class KK {
     public static final String[] T={T1,T2,T3,T4,T5,T6,F1,F2};    
     public static final String[] S={S1,S2,S3,S4};
     public static final String   NexLine=JspStatic3.NexLine;
+    public static String SeqTestString(String[] a1,String[] a2,String[] a3) {
+        StringBuffer ret=new StringBuffer();
+        for (String s1:a1) {
+            for (String s2: a2) {
+                for (String s3: a3) {
+                    ret.append(s1+NexLine);
+                    ret.append(s2+NexLine);
+                    ret.append(s3+NexLine);
+                }
+            }
+        }
+        return ret.toString();         
+    }
+    public static String MixTestString(String[] A1,String[] A2) {
+        StringBuffer ret=new StringBuffer();
+        for (String s:A1) {
+            for (String t:A2) {
+                ret.append(s.replace("a++; a--;", t));
+            }
+        }
+        for (String t:A2) {
+            for (String s:A1) {
+                ret.append(t.replace("a++; a--;",s));
+            }
+        }
+        return ret.toString();         
+    }
+    
+   
+    public static String S_T_Mixing() {
+        StringBuffer ret=new StringBuffer();
+        for (String s:S) {
+            for (String t:T) {
+                ret.append(s.replace("a++; a--;", t));
+            }
+        }
+        for (String t:T) {
+            for (String s:S) {
+                ret.append(t.replace("a++; a--;",s));
+            }
+        }
+        return ret.toString();         
+    }
+    public static String S_T_S() {
+        StringBuffer ret=new StringBuffer();
+        for (String s1:S) {
+            for (String s2: T) {
+                for (String s3: S) {
+                    ret.append(s1+NexLine);
+                    ret.append(s2+NexLine);
+                    ret.append(s3+NexLine);
+                }
+            }
+        }
+        return ret.toString();          
+    }
+    public static String W_T_W(){
+        StringBuffer ret=new StringBuffer();
+        for (String s1:W) {
+            for (String s2: T) {
+                for (String s3: W) {
+                    ret.append(s1+NexLine);
+                    ret.append(s2+NexLine);
+                    ret.append(s3+NexLine);
+                }
+            }
+        }
+        return ret.toString();         
+    }
+    public static String W_T_Mixing(){
+        StringBuffer ret=new StringBuffer();
+        for (String w:W) {
+            for (String t:T) {
+                ret.append(w.replace("a++; a--;", t));
+            }
+        }
+        for (String t:T) {
+            for (String w:W) {
+                ret.append(t.replace("a++; a--;",w));
+            }
+        }
+        return ret.toString();         
+    }    
+    public static String IX_S_Mixing(){
+        StringBuffer ret=new StringBuffer();
+        for (String x:IX) {
+            for (String s:S) {
+                ret.append(x.replace("a++; a--;", s));
+            }
+        }
+        for (String s:S) {
+            for (String x:IX) {
+                ret.append(s.replace("a++; a--;",x));
+            }
+        }
+        return ret.toString();         
+    }
+    public static String IX_S_IX(){
+        StringBuffer ret=new StringBuffer();
+        for (String s1:IX) {
+            for (String s2: S) {
+                for (String s3: IX) {
+                    ret.append(s1+NexLine);
+                    ret.append(s2+NexLine);
+                    ret.append(s3+NexLine);
+                }
+            }
+        }
+        return ret.toString();        
+    }    
+    public static String IX_T_Mixing(){
+        StringBuffer ret=new StringBuffer();
+        for (String s:IX) {
+            for (String t:T) {
+                ret.append(s.replace("a++; a--;", t));
+            }
+        }
+        for (String t:T) {
+            for (String s:IX) {
+                ret.append(t.replace("a++; a--;",s));
+            }
+        }
+        return ret.toString();         
+    }
+    public static String IX_T_IX(){
+        StringBuffer ret=new StringBuffer();
+        for (String s1:IX) {
+            for (String s2: T) {
+                for (String s3: IX) {
+                    ret.append(s1+NexLine);
+                    ret.append(s2+NexLine);
+                    ret.append(s3+NexLine);
+                }
+            }
+        }
+        return ret.toString();        
+    }
     public static String IX_W_Mixing() {
         StringBuffer ret=new StringBuffer();
         for (String s:IX) {

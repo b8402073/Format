@@ -4059,7 +4059,11 @@ public class Test_JspStatic3 {
     @Test
     public void System_Syn() {
         StringBuffer S=new StringBuffer("<%!\n");
-        S.append(KK.FUNC(KK.IX_Syn_Mixing(), KK.W_Syn_Mixing(), KK.T_Syn_Mixing(),KK.S_Syn_Mixing()));
+        S.append(KK.FUNC(KK.MixTestString(KK.aSyn1,KK.IX),
+                         KK.MixTestString(KK.aSyn1,KK.W),
+                         KK.MixTestString(KK.aSyn1,KK.T),
+                         KK.MixTestString(KK.aSyn1,KK.S)
+        ));
         //S.append(KK.FUNC(KK.S_Syn_Mixing()));
         S.append("\n%>");
         System.out.println(S.toString());
@@ -4076,7 +4080,11 @@ public class Test_JspStatic3 {
         assertTrue(EasyCheck(CAOA)<0); 
         
         S=new StringBuffer("<%!\n");
-        S.append(KK.FUNC(KK.IX_Syn_IX(), KK.W_Syn_W(),KK.S_Syn_S(),KK.T_Syn_T()));
+        S.append(KK.FUNC(KK.SeqTestString(KK.aSyn1, KK.IX, KK.aSyn1),
+                         KK.SeqTestString(KK.aSyn1, KK.W, KK.aSyn1),
+                         KK.SeqTestString(KK.aSyn1, KK.T, KK.aSyn1),
+                         KK.SeqTestString(KK.aSyn1, KK.S,KK.aSyn1)
+                ));
         //S.append(KK.FUNC(KK.IX_Syn_IX()));
         S.append("\n%>");
         System.out.println(S.toString());
@@ -4092,10 +4100,15 @@ public class Test_JspStatic3 {
         assertTrue(EasyCheck(CAON2)<0);
         assertTrue(EasyCheck(CAOA2)<0);        
     }
+    
     @Test
     public void System_If() {
         StringBuffer S=new StringBuffer("<%!\n");
-        S.append(KK.FUNC(KK.IX_S_Mixing(), KK.IX_T_Mixing(), KK.IX_W_IX(),  KK.IX_Syn_Mixing()));
+        S.append(KK.FUNC(KK.MixTestString(KK.IX,KK.aSyn1),
+                         KK.MixTestString(KK.IX,KK.W),
+                         KK.MixTestString(KK.IX,KK.T),
+                         KK.MixTestString(KK.IX,KK.S)
+        ));
         //S.append(KK.FUNC(KK.S_Syn_Mixing()));
         S.append("\n%>");
         System.out.println(S.toString());
@@ -4112,7 +4125,11 @@ public class Test_JspStatic3 {
         assertTrue(EasyCheck(CAOA)<0); 
         
         S=new StringBuffer("<%!\n");
-        S.append(KK.FUNC(KK.IX_Syn_IX(), KK.IX_T_IX(), KK.IX_W_IX(), KK.IX_S_IX()));
+        S.append(KK.FUNC(KK.SeqTestString(KK.aSyn1, KK.IX, KK.aSyn1),
+                         KK.SeqTestString(KK.W, KK.IX, KK.W),
+                         KK.SeqTestString(KK.T, KK.IX, KK.T),
+                         KK.SeqTestString(KK.S, KK.IX, KK.S)
+                ));        
         //S.append(KK.FUNC(KK.IX_Syn_IX()));
         S.append("\n%>");
         System.out.println(S.toString());
@@ -4128,10 +4145,15 @@ public class Test_JspStatic3 {
         assertTrue(EasyCheck(CAON2)<0);
         assertTrue(EasyCheck(CAOA2)<0);        
     }
+    
     @Test
     public void System_WhileFor() {
         StringBuffer S=new StringBuffer("<%!\n");
-        S.append(KK.FUNC(KK.IX_W_Mixing(),KK.W_T_Mixing(),KK.W_Syn_Mixing()));
+        S.append(KK.FUNC(KK.MixTestString(KK.W,KK.aSyn1),
+                         KK.MixTestString(KK.W,KK.IX),
+                         KK.MixTestString(KK.W,KK.T),
+                         KK.MixTestString(KK.W,KK.S)
+        ));        
         //S.append(KK.FUNC(KK.S_Syn_Mixing()));
         S.append("\n%>");
         System.out.println(S.toString());
@@ -4148,7 +4170,11 @@ public class Test_JspStatic3 {
         assertTrue(EasyCheck(CAOA)<0); 
         
         S=new StringBuffer("<%!\n");
-        S.append(KK.FUNC(KK.IX_Syn_IX(), KK.IX_T_IX(), KK.IX_W_IX(), KK.IX_S_IX()));
+        S.append(KK.FUNC(KK.SeqTestString(KK.aSyn1, KK.W, KK.aSyn1),
+                         KK.SeqTestString(KK.IX, KK.W, KK.IX),
+                         KK.SeqTestString(KK.T, KK.W, KK.T),
+                         KK.SeqTestString(KK.S, KK.W, KK.S)
+                ));          
         //S.append(KK.FUNC(KK.IX_Syn_IX()));
         S.append("\n%>");
         System.out.println(S.toString());
@@ -4164,6 +4190,56 @@ public class Test_JspStatic3 {
         assertTrue(EasyCheck(CAON2)<0);
         assertTrue(EasyCheck(CAOA2)<0);        
     }    
+    
+    @Test
+    public void System_Try(){
+        StringBuffer S=new StringBuffer("<%!\n");
+        S.append(KK.FUNC(KK.MixTestString(KK.T,KK.aSyn1),
+                         KK.MixTestString(KK.T,KK.IX),
+                         KK.MixTestString(KK.T,KK.W),
+                         KK.MixTestString(KK.T,KK.S)
+        ));        
+        //S.append(KK.FUNC(KK.S_Syn_Mixing()));
+        S.append("\n%>");
+        System.out.println(S.toString());
+        JspStatic3 obj=new JspStatic3(S);
+        assertTrue(obj.warning().equals(""));
+        obj.go();
+        String CNON=obj.setCatchType(JspStatic3.LineType.NEXT_LINE).setOtherType(JspStatic3.LineType.NEXT_LINE).Make3().toString();
+        String CNOA=obj.setCatchType(JspStatic3.LineType.NEXT_LINE).setOtherType(JspStatic3.LineType.AFTER_LINE).Make3().toString();
+        String CAON=obj.setCatchType(JspStatic3.LineType.AFTER_LINE).setOtherType(JspStatic3.LineType.NEXT_LINE).Make3().toString();
+        String CAOA=obj.setCatchType(JspStatic3.LineType.AFTER_LINE).setOtherType(JspStatic3.LineType.AFTER_LINE).Make3().toString();                        
+        assertTrue(EasyCheck(CNON)<0);
+        assertTrue(EasyCheck(CNOA)<0);
+        assertTrue(EasyCheck(CAON)<0);
+        assertTrue(EasyCheck(CAOA)<0); 
+        
+        S=new StringBuffer("<%!\n");
+        S.append(KK.FUNC(KK.SeqTestString(KK.aSyn1, KK.T, KK.aSyn1),
+                         KK.SeqTestString(KK.IX, KK.T, KK.IX),
+                         KK.SeqTestString(KK.W, KK.T, KK.W),
+                         KK.SeqTestString(KK.S, KK.T, KK.S)
+                ));          
+        //S.append(KK.FUNC(KK.IX_Syn_IX()));
+        S.append("\n%>");
+        System.out.println(S.toString());
+        obj=new JspStatic3(S);
+        assertTrue(obj.warning().equals(""));
+        obj.go();
+        String CNON2=obj.setCatchType(JspStatic3.LineType.NEXT_LINE).setOtherType(JspStatic3.LineType.NEXT_LINE).Make3().toString();
+        String CNOA2=obj.setCatchType(JspStatic3.LineType.NEXT_LINE).setOtherType(JspStatic3.LineType.AFTER_LINE).Make3().toString();
+        String CAON2=obj.setCatchType(JspStatic3.LineType.AFTER_LINE).setOtherType(JspStatic3.LineType.NEXT_LINE).Make3().toString();
+        String CAOA2=obj.setCatchType(JspStatic3.LineType.AFTER_LINE).setOtherType(JspStatic3.LineType.AFTER_LINE).Make3().toString();
+        assertTrue(EasyCheck(CNON2)<0);
+        assertTrue(EasyCheck(CNOA2)<0);
+        assertTrue(EasyCheck(CAON2)<0);
+        assertTrue(EasyCheck(CAOA2)<0);         
+    }
+    @Test 
+    public void System_Switch(){
+        
+    }
+     
     
     
 }

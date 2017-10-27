@@ -38,13 +38,14 @@ public class KK {
     public static final String S2="switch(a) { case 1: a++; a--; break; case 2: a++; a--; break; default: a++; a--;  }";
     public static final String S3="switch(a) { default: a++; a--; }";
     public static final String S4="switch(a) { case 1: a++; a--; continue; case 2: a++; a--; continue; default: a++; a--;  }";
-    
+    public static final String S5="switch(a) { case 1: case 3:  a++; a--; break; case 2: a++; a--; break; default: a++; a--;  }";
     
     public static final String Syn1="synchronized(A) { a++; a--; } ";
     public static final String[] IX={ifX1,ifX2,ifX3,ifX4,ifX5,ifX6};
     public static final String[] W={whY1,whY2,whY3,whY4};
     public static final String[] T={T1,T2,T3,T4,T5,T6,F1,F2};    
-    public static final String[] S={S1,S2,S3,S4};
+    public static final String[] S={S1,S2,S3,S4,S5};
+    public static final String[] aSyn1={Syn1};
     public static final String   NexLine=JspStatic3.NexLine;
     public static String SeqTestString(String[] a1,String[] a2,String[] a3) {
         StringBuffer ret=new StringBuffer();
@@ -74,7 +75,7 @@ public class KK {
         return ret.toString();         
     }
     
-   
+/*   
     public static String S_T_Mixing() {
         StringBuffer ret=new StringBuffer();
         for (String s:S) {
@@ -303,7 +304,11 @@ public class KK {
             ret.append(syn.replace("a++; a--;", x));            
         }
         return ret.toString();
+
+    
     }
+*/
+    
     public static  String FUNC(String... Arr) {
         StringBuffer ret=new StringBuffer("public void FuncA() {"+JspStatic3.NexLine);
         for(String s:Arr) {
@@ -311,12 +316,5 @@ public class KK {
         }
         ret.append("}");
         return ret.toString();
-    }
-    public static void main(String[] arr) {        
-        String str=IX_Syn_IX();
-        System.out.println(str);
-        System.out.println("---------------------");
-        String s=str.replace("a++; a--;", F1);
-        System.out.println(s);
     }
 }

@@ -3969,10 +3969,10 @@ public class Test_JspStatic3 {
 "#####}";
        // assertTrue(next.trim().equals(NextLine.trim()));
        // assertTrue(after.trim().equals(AfterLine.trim()));
-       assertTrue(EasyCheck(CAfter_OAfter)<0 );
-       assertTrue(EasyCheck(CNext_OAfter)<0 );
-       assertTrue(EasyCheck(CAfter_ONext)<0 );
-       assertTrue(EasyCheck(CNext_ONext)<0 );
+       assertTrue(EasyCheck(CAfter_OAfter,JspStatic3.LineType.AFTER_LINE)<0 );
+       assertTrue(EasyCheck(CNext_OAfter,JspStatic3.LineType.NEXT_LINE)<0 );
+       assertTrue(EasyCheck(CAfter_ONext,JspStatic3.LineType.AFTER_LINE)<0 );
+       assertTrue(EasyCheck(CNext_ONext,JspStatic3.LineType.NEXT_LINE)<0 );
        assertTrue(CAfter_OAfter.trim().equals(CAOA.trim()));
        assertTrue(CNext_OAfter.trim().equals(CNOA.trim()));
        assertTrue(CAfter_ONext.trim().equals(CAON.trim()));
@@ -3980,7 +3980,9 @@ public class Test_JspStatic3 {
     }
     public static int EasyCheck(String result,JspStatic3.LineType catchType ) {
         String[] sArr= result.split(JspStatic3.NexLine);
-        for (int i=0; i<sArr.length; i++) {
+        for (int i=1; i<sArr.length; i++) {      
+//跳從line1開始檢查,因為通常這種檢查對象會很長...,
+//EasyCheckCatch需要傳入sArr[i-1]
             String S=sArr[i];
             if (!S.startsWith(JspStatic3.sHead)) {
                 System.out.println("Possible wrong in Line"+(i));
@@ -3990,38 +3992,43 @@ public class Test_JspStatic3 {
                 System.out.println("Possible wrong in Line"+(i));
                 return (i);                
             }
-            if (!EasyCheckCatch(S,catchType)) {
+            if (!EasyCheckCatch(S,catchType, sArr[i-1])) {
                 System.out.println("Possible wrong in Line"+(i));
                 return (i);                
             }            
         }
         return (-1);
     }
-    public static int EasyCheck(String result ) {
-        String[] sArr= result.split(JspStatic3.NexLine);
-        for (int i=0; i<sArr.length; i++) {
-            String S=sArr[i];
-            if (!S.startsWith(JspStatic3.sHead)) {
-                System.out.println("Possible wrong in Line"+(i));
-                return (i);
-            }
-            if (S.substring(JspStatic3.sHead.length()).indexOf(JspStatic3.sHead)>=1){
-                System.out.println("Possible wrong in Line"+(i));
-                return (i);                
-            }           
-        }
-        return (-1);
-    }    
-    public static boolean EasyCheckCatch(String line,JspStatic3.LineType lt) {
-        //應該更仔細設計....
-        int RightBigBrace=line.indexOf("}");
-        if (RightBigBrace>=0) {
-            if (line.substring(RightBigBrace+1).trim().startsWith("catch")) {
-                if (lt==JspStatic3.LineType.AFTER_LINE)
-                    return true;
-                else if (lt==JspStatic3.LineType.NEXT_LINE)
+    
+    public static boolean EasyCheckCatch(String line,JspStatic3.LineType lt,String lastline) {      
+        switch(lt) {
+            case AFTER_LINE:
+                int RightBigBrace=line.indexOf("}");                
+                if (RightBigBrace>=0) {
+                    if (line.substring(RightBigBrace+1).trim().startsWith("catch")) {
+                        return true;
+                    }                    
+                } else {
+                    if (line.indexOf("catch")>=0 || line.indexOf("finally")>=0 ) {
+                        return false;
+                    }
+                }
+                break;
+            case NEXT_LINE:
+                //因為找不到字會傳回(-1),所以取兩個找到字的max
+                int KeyWordPos=Math.max(line.indexOf("catch"), line.indexOf("finally"));
+                if (KeyWordPos>=0) {
+                    if (line.startsWith(JspStatic3.sHead)) {
+                        String afterblank=line.substring(JspStatic3.sHead.length());
+                        if (afterblank.trim().startsWith("catch") || afterblank.trim().startsWith("finally")) {
+                            if (lastline.trim().endsWith("}")){
+                                return true;                                
+                            }
+                        }
+                    }
                     return false;
-            }
+                }
+                break;
         }
         return true;
     }
@@ -4270,10 +4277,10 @@ public class Test_JspStatic3 {
     @Test 
     public void System_Switch(){
         StringBuffer S=new StringBuffer("<%!\n");
-        S.append(KK.FUNC(KK.MixTestString(KK.S,KK.aSyn1),
+        S.append(KK.FUNC( KK.MixTestString(KK.S,KK.T),
+                          KK.MixTestString(KK.S,KK.aSyn1),
                          KK.MixTestString(KK.S,KK.IX),
-                         KK.MixTestString(KK.S,KK.W),
-                         KK.MixTestString(KK.S,KK.T)
+                         KK.MixTestString(KK.S,KK.W)
         ));        
         //S.append(KK.FUNC(KK.S_Syn_Mixing()));
         S.append("\n%>");
@@ -4285,7 +4292,9 @@ public class Test_JspStatic3 {
         String CNOA=obj.setCatchType(JspStatic3.LineType.NEXT_LINE).setOtherType(JspStatic3.LineType.AFTER_LINE).Make3().toString();
         String CAON=obj.setCatchType(JspStatic3.LineType.AFTER_LINE).setOtherType(JspStatic3.LineType.NEXT_LINE).Make3().toString();
         String CAOA=obj.setCatchType(JspStatic3.LineType.AFTER_LINE).setOtherType(JspStatic3.LineType.AFTER_LINE).Make3().toString();                        
-        assertTrue(EasyCheck(CNON,JspStatic3.LineType.NEXT_LINE)<0);
+        
+//Correct Version
+        assertTrue(EasyCheck(CNON,JspStatic3.LineType.NEXT_LINE)<0);                       
         assertTrue(EasyCheck(CNOA,JspStatic3.LineType.NEXT_LINE)<0);
         assertTrue(EasyCheck(CAON,JspStatic3.LineType.AFTER_LINE)<0);
         assertTrue(EasyCheck(CAOA,JspStatic3.LineType.AFTER_LINE)<0); 
@@ -4307,9 +4316,11 @@ public class Test_JspStatic3 {
         String CAON2=obj.setCatchType(JspStatic3.LineType.AFTER_LINE).setOtherType(JspStatic3.LineType.NEXT_LINE).Make3().toString();
         String CAOA2=obj.setCatchType(JspStatic3.LineType.AFTER_LINE).setOtherType(JspStatic3.LineType.AFTER_LINE).Make3().toString();
         assertTrue(EasyCheck(CNON2,JspStatic3.LineType.NEXT_LINE)<0);
-        assertTrue(EasyCheck(CNOA2,JspStatic3.LineType.NEXT_LINE)<0);
+        assertTrue(EasyCheck(CNOA2,JspStatic3.LineType.NEXT_LINE)<0);        
         assertTrue(EasyCheck(CAON2,JspStatic3.LineType.AFTER_LINE)<0);
-        assertTrue(EasyCheck(CAOA2,JspStatic3.LineType.AFTER_LINE)<0);         
+        assertTrue(EasyCheck(CAOA2,JspStatic3.LineType.AFTER_LINE)<0);                  
+        
+
         
     }
      

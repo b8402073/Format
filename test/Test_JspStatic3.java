@@ -4320,8 +4320,6 @@ public class Test_JspStatic3 {
         assertTrue(EasyCheck(CAON2,JspStatic3.LineType.AFTER_LINE)<0);
         assertTrue(EasyCheck(CAOA2,JspStatic3.LineType.AFTER_LINE)<0);                  
         
-
-        
     }
      
     

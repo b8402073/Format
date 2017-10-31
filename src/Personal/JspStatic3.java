@@ -360,9 +360,11 @@ public class JspStatic3  {
             default:
                 throw new NullPointerException("Bad Make_If_ElseIf: NowPos=" + NowPos + " what=" + what);
         }
-        if (Prev(NowPos).equals("}") && refRet.charAt(refRet.length() - 1) != '\n') {   //這句有改善空間...
-            refRet.append(NexLine);
-        }        
+        if (NowPos>=1) {
+            if (Prev(NowPos).equals("}") && refRet.charAt(refRet.length() - 1) != '\n') {   //這句有改善空間...
+                refRet.append(NexLine);
+            } 
+        }
         String line = sHead + GetString(sLv, level) + what;
         FocusPair Brace = GetSmallBrace(NowPos);
         refRet.append(line + " " + Brace.toString(MyFocus));
@@ -431,10 +433,11 @@ public class JspStatic3  {
             default:
                 throw new NullPointerException("Bad Make_For_While: NowPos=" + NowPos + " what=" + what);
         }
-        //old if (Prev(NowPos).equals("}") && refRet.charAt(refRet.length() - 1) != '\n') {   //這句有改善空間...
-        if (Prev(NowPos).equals("}") && !refRet.toString().endsWith(NexLine)) {  
-            refRet.append(NexLine);
-        }        
+        if (NowPos>=1) {
+            if (Prev(NowPos).equals("}") && !refRet.toString().endsWith(NexLine)) {  
+                refRet.append(NexLine);
+            }        
+        }
         String line = sHead + GetString(sLv, level) + what;
         FocusPair Brace = GetSmallBrace(NowPos);
         refRet.append(line + Brace.toString(MyFocus));
@@ -465,9 +468,11 @@ public class JspStatic3  {
     }//Make_Synchronized(ret,i,Level,Complex);
 
     public int Make_Synchronized(StringBuffer refRet, int NowPos, int level, Stack<TextLevel> refComplex) {
-        if (Prev(NowPos).equals("}") && !refRet.toString().endsWith(NexLine)) {  
-            refRet.append(NexLine);
-        }         
+        if (NowPos>=1) {
+            if (Prev(NowPos).equals("}") && !refRet.toString().endsWith(NexLine)) {  
+                refRet.append(NexLine);
+            }         
+        }
         String line = sHead + GetString(sLv, level) + "synchronized";
         FocusPair Brace = GetSmallBrace(NowPos);
         refRet.append(line + Brace.toString(MyFocus));
@@ -570,11 +575,11 @@ public class JspStatic3  {
      * @param refComplex 區塊堆疊
      * @return 傳回準備下一個掃描位置
      */
-    public int MakeDo(StringBuffer refRet, int NowPos, int level, FocusPair Block, Stack<TextLevel> refComplex) {
-        
-        //old: if (Prev(NowPos).equals("}") && refRet.charAt(refRet.length() - 1) != '\n') {   //這句有改善空間...
-        if (Prev(NowPos).equals("}") && !refRet.toString().endsWith(NexLine)) {  
-            refRet.append(NexLine);
+    public int MakeDo(StringBuffer refRet, int NowPos, int level, FocusPair Block, Stack<TextLevel> refComplex) {        
+        if (NowPos>=1) {
+            if (Prev(NowPos).equals("}") && !refRet.toString().endsWith(NexLine)) {  
+                refRet.append(NexLine);
+            }
         }
         String line = sHead + GetString(sLv, level) + "do";
         refRet.append(line);
@@ -595,10 +600,11 @@ public class JspStatic3  {
      * @return 傳回準備下一個掃描位置
      */
     public int MakeTry(StringBuffer refRet, int NowPos, int Level, FocusPair Block, Stack<TextLevel> refComplex) { 
-        //old if (Prev(NowPos).equals("}") && refRet.charAt(refRet.length() - 1) != '\n') {   //這句有改善空間...
-        if (Prev(NowPos).equals("}") && !refRet.toString().endsWith(NexLine)) {  
-            refRet.append(NexLine);
-        }        
+        if (NowPos>=1) {
+            if (Prev(NowPos).equals("}") && !refRet.toString().endsWith(NexLine)) {  
+                refRet.append(NexLine);
+            }        
+        }
         String line = sHead + GetString(sLv, Level) + "try";
         refRet.append(line);
         TextLevel newTL = new TextLevel("try", Block, Level);
@@ -649,8 +655,9 @@ public class JspStatic3  {
      * @param refComplex 區塊堆疊
      * @return 傳回下一個掃描準備位置
      */
-    public int Make_Finally(StringBuffer refRet, int NowPos, int level, Stack<TextLevel> refComplex) {
+    public int Make_Finally(StringBuffer refRet, int NowPos, int level, Stack<TextLevel> refComplex) {        
         String line = "<bad finally>";
+        //這裡用到Prev函式,但是Finally一定不會是第一個Token,所以不必檢查
         if (Catch_After_Try_Block == LineType.AFTER_LINE  && Prev(NowPos).equals("}")  ) {
             line = "finally" + " ";
         } else if (Catch_After_Try_Block == LineType.NEXT_LINE) {

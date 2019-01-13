@@ -1078,8 +1078,8 @@ public class JspStatic3  {
             }
         }
     }
-    /**
-     * **
+    /***
+     * 
      * 基本上這個修正是錯的,但是錯得不明顯,暫時可以接受,就接受吧
      */
     public static void Fix_if_SQDQ_SLeft_SRight_SemiColon_in_CommentArea(StringBuffer text, Vector<Pair> SQArea,

@@ -60,7 +60,7 @@ public class TestHTM0 {
         System.out.println("CommentArea="+that.CommentArea);
         assertTrue(that.DQArea.size()==6);
         assertTrue(that.SQArea.size()==0);
-        assertTrue(1+1==2);
+        
         
     }
 }

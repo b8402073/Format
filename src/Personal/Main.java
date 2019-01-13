@@ -242,11 +242,15 @@ public class Main {
 		}
 	}
 
+        
 	// NO TEST
+        // Needed Element: SQArea, DQArea,CommentArea
 	// OUT: Left,LeftOrRight,Right
 	public static void Build_Left_and_Right(StringBuffer inn) {
 		final int StringLength = inn.length();
 		for (int i = 0; i < StringLength; i++) {
+                        if (In(i, DQArea) || In(i, SQArea) || In(i, CommentArea))
+                            continue;
 			if (inn.charAt(i) == '<') {
 				Left.add(i);				
 				LeftOrRight.add(i);
@@ -425,13 +429,16 @@ public class Main {
 			ex.printStackTrace();
 		}
 
-		Build_Left_and_Right(buf);
 		Build_DQ_Area(buf);
+		Build_SQ_Area(buf);     
+                Build_Comment_Area(buf);
+		Fix_if_SQDQ_in_CommentArea(buf);                     
+		Build_Left_and_Right(buf);                
                 System.out.println(ToStr(DQArea,buf)); 
                 System.out.println("DQArea.size()="+DQArea.size());
-		Build_SQ_Area(buf);
-		Build_Comment_Area(buf);
-		Fix_if_SQDQ_in_CommentArea(buf);     //這裡有一點問題以致R-45時切element會出錯
+
+		
+
                 System.out.println("DQArea.size()="+DQArea.size());
 		Fix_if_LeftRight_in_DQArea(buf);
                 System.out.println("DQArea.size()="+DQArea.size());

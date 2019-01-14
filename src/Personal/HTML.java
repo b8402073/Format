@@ -5,6 +5,7 @@
  */
 package Personal;
 
+import java.util.Collections;
 import java.util.Vector;
 
 /**
@@ -118,15 +119,17 @@ public class HTML {
             } else if (inn.substring(i).startsWith("%>")) {
                 flag_in_jsp = false; 
                 Right.add(i+1);
-                i+=1;                
+                i+=1;   
+                continue;
             }
             if (inn.substring(i).startsWith("<!--")) {
                 flag_in_htmlComment=true;
                 Left.add(i);
             }else if (inn.substring(i).startsWith("-->")) {
                 flag_in_htmlComment=false;
-                i+=2;
                 Right.add(i+2);
+                i+=2;                
+                continue;
             }
             String hand = inn.substring(i).toLowerCase();
             if (hand.startsWith("<script")) {
@@ -143,18 +146,24 @@ public class HTML {
                     i++;                    
                 }
                 Right.add(i);
+                continue;
             }
             
             if (!flag_in_js && !flag_in_jsp && !flag_in_htmlComment) {
                 if (inn.charAt(i) == '<') {
                     Left.add(i);
-                    LeftOrRight.add(i);
                 } else if (inn.charAt(i) == '>') {
                     Right.add(i);
-                    LeftOrRight.add(i);
                 }
             }
         }
+        for (Integer e:Left) {
+            LeftOrRight.add(e);
+        }
+        for (Integer e:Right) {
+            LeftOrRight.add(e);
+        }
+        Collections.sort(LeftOrRight);
     }
 
 }

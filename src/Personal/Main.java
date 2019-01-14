@@ -5,7 +5,12 @@ import java.io.FileReader;
 import java.util.Vector;
 
 public class Main {
-
+        public static String DQ(String inn) {
+            return ("\""+inn+"\"");
+        }
+        public static String SQ(String inn) {
+            return ("'"+inn+"'");
+        }
 	// NO TEST
 	public static String ToStr(Vector<Pair> inn) {
 		StringBuffer ret = new StringBuffer();
@@ -31,6 +36,10 @@ public class Main {
 		ret.append("[" + p.getStart() + "," + p.getEnd() + "]=" + text.substring(p.getStart(), p.getEnd() + 1));
 		return ret.toString();
 	}
+        public static String ToSTR(Pair p,StringBuffer text) {
+            return text.substring(p.getStart(), p.getEnd()+1);
+        }
+        
 
 	public static Vector<Integer> CrLf = new Vector<Integer>();
 	public static Vector<Pair> SQArea = new Vector<Pair>();

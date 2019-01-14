@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
  * @author easterday
  */
 public class TestHTM0 {
-
+    //https://github.com/KuangPF/Professional-JavaScript-for-Web-Developer/blob/master/src/chapter01/01.html
     String HTM0 = "<!DOCTYPE html>\n"
             + "<html lang=\"en\">\n"
             + "<head>\n"
@@ -33,7 +33,7 @@ public class TestHTM0 {
             + "</body>\n"
             + "</html>";
     StringBuffer BufHTM0;
-
+    
     public TestHTM0() {
         BufHTM0 = new StringBuffer(HTM0);
     }

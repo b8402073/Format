@@ -36,7 +36,7 @@ public class Main {
 		ret.append("[" + p.getStart() + "," + p.getEnd() + "]=" + text.substring(p.getStart(), p.getEnd() + 1));
 		return ret.toString();
 	}
-        public static String ToSTR(Pair p,StringBuffer text) {
+        public static String ToSTR(Pair p,StringBuffer text) {            
             return text.substring(p.getStart(), p.getEnd()+1);
         }
         
@@ -398,6 +398,11 @@ public class Main {
 		for (int i=buf.length()-1; i>=0; i--) {
 			if (buf.charAt(i)=='\r')
 				buf.deleteCharAt(i);
+                        else if (buf.codePointAt(i)==12288) {  
+                            //某些時候會遇到這種很像空白卻又不是空白的文字,暫時拿掉
+                            //ie. ch01.jsp
+                                buf.deleteCharAt(i);
+                        }
 		}
 	}
 	//NO TEST

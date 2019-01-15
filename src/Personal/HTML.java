@@ -24,7 +24,8 @@ public class HTML {
     public Vector<Pair> DQArea;
     //很可能是HTML裡面的Attribute或是Javascript的字串
     public Vector<Pair> SQArea;
-    //很可能是Javascript裡面的註解
+    //很可能是Javascript裡面的註解,或是JSP裡面的// or /**/註解....
+    //這裡有點複雜到我還無法掌握
     public Vector<Pair> CommentArea;
     //很可能是全部的左角括號
     public Vector<Integer> Left;

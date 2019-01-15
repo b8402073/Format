@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
  * @author easterday
  */
 public class TestJSP1 {
-    String JSP1="<%@ page contentType=\"text/html; charset=big5\" %>　" +
+    String JSP1="<%@ page contentType=\"text/html; charset=big5\" %>　" + //這裡的最後一個字元有鬼符號(12288)
 "<html>" +
 "<head>" +
 "<title>基本觀念的建立</title>" +
@@ -51,8 +51,7 @@ public class TestJSP1 {
 "</html>";
     StringBuffer BufJSP1;
     public TestJSP1() {
-        BufJSP1=new StringBuffer(JSP1);
-        System.out.println(BufJSP1.substring(620));
+        BufJSP1=new StringBuffer(JSP1);       
         for (int x=0; x<BufJSP1.length(); x++) {
             System.out.println ("x="+x+"   :"+BufJSP1.codePointAt(x));
         }
@@ -77,8 +76,8 @@ public class TestJSP1 {
     public void Test1() {
         HTML that=new HTML(BufJSP1);
         that.go();
-        that.PrintIssues();
-        TestHTM1.ReportInTest(that, BufJSP1);
+        //that.PrintIssues();
+        //TestHTM1.ReportInTest(that, BufJSP1);
         assertTrue(that.Left.size()==that.Right.size());
         assertTrue(that.LeftOrRight.size()==that.Right.size()*2);
         String[] txtDQ={
@@ -149,14 +148,14 @@ public class TestJSP1 {
 "<jsp:include page=\"/public/footer.inc\" />" ,
 "</body>" ,
 "</html>"};
-        TestHTM1.assertDQ(that, BufJSP1, txtDQ);
-        TestHTM1.assertTAG(that, BufJSP1, txtTag);
+        TestHTM1.assertDQ(that, that.MyText, txtDQ,false);
+        TestHTM1.assertTAG(that, that.MyText, txtTag,false);
         for (int j=0,i=1; i<that.LeftOrRight.size()-1; i+=2, j++) {
             int Start= that.LeftOrRight.get(i);
             int End=that.LeftOrRight.get(i+1);
-            String tmp=Main.ToSTR(new Pair(Start+1,End-1), BufJSP1).trim();
-            System.out.println(Main.ToSTR(new Pair(Start+1,End-1), BufJSP1));
-            System.out.println("j="+j+" :"+tmp);
+            String tmp=Main.ToSTR(new Pair(Start+1,End-1), that.MyText).trim();
+            //System.out.println(Main.ToSTR(new Pair(Start+1,End-1), that.MyText));
+            //System.out.println("j="+j+" :"+tmp);
             switch(j) {
                 case 3:
                     assertTrue("基本觀念的建立".equals(tmp)); break;
@@ -168,11 +167,8 @@ public class TestJSP1 {
                     assertTrue("歡迎光臨--JavaScript版".equals(tmp)); break; 
                 case 28:
                     assertTrue("問候語--JSP版".equals(tmp)); break;     
-                case 32:
-                    System.out.println(" ".codePointAt(0));
-                    System.out.println(tmp.codePointAt(0));
                 default:
-                    assertTrue("".equals(tmp) || " ".equals(tmp)  );
+                    assertTrue("".equals(tmp) );
             }
 
         }         

@@ -48,8 +48,8 @@ public class J08 {
         String[] txtTag={S1};
         ///////////////////////////////////////////////////////
 
-       TestHTM1.assertDQ(that, that.MyText, txtDQ, false);
-       TestHTM1.assertTAG(that, that.MyText, txtTag, false);
+       TestHTM1.assertDQ(that,  txtDQ, false);
+       TestHTM1.assertTAG(that, txtTag, false);
        /*
         for (int j = 0, i = 1; i < that.LeftOrRight.size() - 1; i += 2, j++) {
             int Start = that.LeftOrRight.get(i);

@@ -77,14 +77,14 @@ public class TestHTM1 {
             System.out.println(tmp);         
         }
     }
-    
+    @Deprecated
     public static void PrintDQS(HTML that, StringBuffer buf) {
         for (int i = 0; i < that.DQArea.size(); i++) {
             String tmp = Main.ToSTR(that.DQArea.get(i), buf);
             System.out.println(tmp);
         }
     }
-
+    @Deprecated
     public static void PrintTags(HTML inn, StringBuffer buf) {
         for (int i = 0, j = 0; i < inn.LeftOrRight.size(); i += 2, j++) {
             int Start = inn.LeftOrRight.get(i);
@@ -93,7 +93,7 @@ public class TestHTM1 {
             System.out.println(tmp);
         }
     }
-
+    @Deprecated
     public static void PrintBetween(HTML that, StringBuffer buf) {
         for (int j = 0, i = 1; i < that.LeftOrRight.size() - 1; i += 2, j++) {
             int Start = that.LeftOrRight.get(i);
@@ -102,7 +102,8 @@ public class TestHTM1 {
             System.out.println("j=" + j + " :" + tmp);
         }
     }
-
+    
+    @Deprecated
     public static void ReportInTest(HTML that, StringBuffer buf) {
         System.out.println("DQS:");
         PrintDQS(that, buf);
@@ -114,12 +115,22 @@ public class TestHTM1 {
         PrintBetween(that, buf);
 
     }
+    public static void ReportInTest(HTML that) {
+        System.out.println("DQS:");
+        PrintDQS(that);
+        System.out.println("SQS:");
+        PrintSQ(that);
+        System.out.println("TAG:");
+        PrintTags(that);
+        System.out.println("BETWEEN:");
+        PrintBetween(that);        
+    }
 
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
-    public static void assertDQ(HTML that, StringBuffer buf, String[] txtDQ, boolean debug) {
+    public static void assertDQ(HTML that,  String[] txtDQ, boolean debug) {
         for (int i = 0; i < that.DQArea.size(); i++) {
-            String tmp = Main.ToSTR(that.DQArea.get(i), buf);
+            String tmp = Main.ToSTR(that.DQArea.get(i), that.MyText);
             if (debug) {
                 System.out.println("i=" + i);
                 System.out.println("tmp=" + tmp);
@@ -128,12 +139,22 @@ public class TestHTM1 {
             assertTrue(tmp.equals(Main.DQ(txtDQ[i])));
         }
     }
-
-    public static void assertTAG(HTML that, StringBuffer buf, String[] txtTag, boolean debug) {
+    public static void assertSQ(HTML that,String[] txtSQ,boolean debug) {
+        for (int i=0; i<that.SQArea.size(); i++) {
+            String tmp=Main.ToSTR(that.SQArea.get(i), that.MyText);
+            if (debug) {
+                System.out.println("i=" + i);
+                System.out.println("tmp=" + tmp);
+                System.out.println("other=" + Main.SQ(txtSQ[i])); 
+            }
+            assertTrue(tmp.equals(txtSQ[i]));
+        }
+    }
+    public static void assertTAG(HTML that,  String[] txtTag, boolean debug) {
         for (int i = 0, j = 0; i < that.LeftOrRight.size(); i += 2, j++) {
             int Start = that.LeftOrRight.get(i);
             int End = that.LeftOrRight.get(i + 1);
-            String tmp = Main.ToSTR(new Pair(Start, End), buf);
+            String tmp = Main.ToSTR(new Pair(Start, End), that.MyText);
             if (debug) {
                 System.out.println("i=" + i);
                 System.out.println(tmp);
@@ -173,8 +194,8 @@ public class TestHTM1 {
             "</script>",
             "</body>",
             "</html>"};
-        assertDQ(that, that.MyText, txtDQS,false);
-        assertTAG(that, that.MyText, txtTags,false);
+        assertDQ(that, txtDQS,false);
+        assertTAG(that, txtTags,false);
         for (int j = 0, i = 1; i < that.LeftOrRight.size() - 1; i += 2, j++) {
             int Start = that.LeftOrRight.get(i);
             int End = that.LeftOrRight.get(i + 1);

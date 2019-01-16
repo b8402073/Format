@@ -88,8 +88,8 @@ public class TestJSP4 {
 "  strMsg += \"，歡迎光臨！<p>現在時刻：\" + myDate.toLocaleString() + \"</h2><hr>\";\n" +"  out.println(strMsg);\n" +"%>";
         String[] txtTag={S1,"<html>" ,"<head>" ,"<title>" ,"</title>" ,"</head>" ,"<body>",S2,"</body>" ,"</html>"        };
         ///////////////////////////////////////////////////////
-        TestHTM1.assertDQ(that, that.MyText, txtDQ,false);
-        TestHTM1.assertTAG(that, that.MyText, txtTag,false);
+        TestHTM1.assertDQ(that,  txtDQ,false);
+        TestHTM1.assertTAG(that, txtTag,false);
         
         for (int j = 0, i = 1; i < that.LeftOrRight.size() - 1; i += 2, j++) {
             int Start = that.LeftOrRight.get(i);

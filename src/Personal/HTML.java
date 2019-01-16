@@ -112,6 +112,16 @@ public class HTML {
         boolean flag_in_htmlComment=false;
         boolean flag_in_pre=false;
         for (int i = 0; i < StringLength; i++) {
+            if (inn.substring(i).startsWith("<!--")) {
+                flag_in_htmlComment=true;
+                Left.add(i);
+            }else if (inn.substring(i).startsWith("-->")) {
+                flag_in_htmlComment=false;
+                Right.add(i+2);
+                i+=2;                
+                continue;
+            }
+            
             if (Main.In(i, DQArea) || Main.In(i, SQArea) || Main.In(i, CommentArea)) {
                 continue;
             }
@@ -122,15 +132,6 @@ public class HTML {
                 flag_in_jsp = false; 
                 Right.add(i+1);
                 i+=1;   
-                continue;
-            }
-            if (inn.substring(i).startsWith("<!--")) {
-                flag_in_htmlComment=true;
-                Left.add(i);
-            }else if (inn.substring(i).startsWith("-->")) {
-                flag_in_htmlComment=false;
-                Right.add(i+2);
-                i+=2;                
                 continue;
             }
             String hand = inn.substring(i).toLowerCase();

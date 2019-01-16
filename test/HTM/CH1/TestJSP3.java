@@ -85,7 +85,7 @@ public class TestJSP3 {
         assertTrue(that.Left.size() == that.Right.size());
         assertTrue(that.LeftOrRight.size() == that.Right.size() * 2);
         ///////////////////////////////////////////////////////
-        String[] txtDQS={"Content-Type",
+        String[] txtDQ={"Content-Type",
 "text/html; charset=big5",
 "JavaScript",
 "<h2>午安",
@@ -93,11 +93,38 @@ public class TestJSP3 {
 "，歡迎光臨！<p>現在時刻：",
 "</h2><hr>",
 "checkNow()" };
+        String[] txtTag={"<html>" ,
+"<head>" ,
+"<meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=big5\">" ,
+"<title>" ,
+"</title>" ,
+"<script Language=\"JavaScript\">",
+"<!--\n" +
+"function checkNow()\n" +
+"{\n" +
+"  myDate = new Date();\n" +
+"  h = myDate.getHours();\n" +
+"  var strMsg;\n" +
+"  if ((h > 12) && (h < 18)) {\n" +
+"     strMsg = \"<h2>午安\";\n" +
+"  } else {\n" +
+"     strMsg = \"<h2>您好\";\n" +
+"  }\n" +
+"  strMsg += \"，歡迎光臨！<p>現在時刻：\" + myDate.toLocaleTimeString() + \"</h2><hr>\";\n" +
+"  document.write(strMsg);\n" +
+"}\n" +
+"// -->",
+"</script>" ,
+"</head>" ,
+"<body onLoad=\"checkNow()\">" ,
+"</body>" ,
+"</html>"        
+        };
         
         ///////////////////////////////////////////////////////
-        //TestHTM1.assertDQ(that, that.MyText, txtDQ, false);
-        //TestHTM1.assertTAG(that, that.MyText, txtTag, false);
-        /*
+        TestHTM1.assertDQ(that, that.MyText, txtDQ, false);
+        TestHTM1.assertTAG(that, that.MyText, txtTag, false);
+        
         for (int j = 0, i = 1; i < that.LeftOrRight.size() - 1; i += 2, j++) {
             int Start = that.LeftOrRight.get(i);
             int End = that.LeftOrRight.get(i + 1);
@@ -106,25 +133,13 @@ public class TestJSP3 {
             //System.out.println("j="+j+" :"+tmp);
             switch (j) {
                 case 3:
-                    assertTrue("基本觀念的建立".equals(tmp));
-                    break;
-                case 8:
-                    assertTrue("Ch01 -- 基本觀念的建立".equals(tmp));
-                    break;
-                case 16:
-                    assertTrue("歡迎光臨".equals(tmp));
-                    break;
-                case 21:
-                    assertTrue("歡迎光臨--JavaScript版".equals(tmp));
-                    break;
-                case 28:
-                    assertTrue("問候語--JSP版".equals(tmp));
+                    assertTrue("問候語--HTML版 (1-02.htm)".equals(tmp));
                     break;
                 default:
                     assertTrue("".equals(tmp));
             }
         }
-        */
+        
         
     }
 }

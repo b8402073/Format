@@ -61,7 +61,23 @@ public class TestHTM1 {
     @After
     public void tearDown() {
     }
-
+    
+    public static void PrintDQS(HTML that) {
+        PrintDQS(that,that.MyText);        
+    }
+    public static void PrintTags(HTML that) {
+        PrintTags(that,that.MyText);
+    }
+    public static void PrintBetween(HTML that) {
+        PrintBetween(that,that.MyText);
+    }
+    public static void PrintSQ(HTML that) {
+        for (int i=0; i<that.SQArea.size(); i++) {
+            String tmp=Main.ToSTR(that.SQArea.get(i), that.MyText);
+            System.out.println(tmp);         
+        }
+    }
+    
     public static void PrintDQS(HTML that, StringBuffer buf) {
         for (int i = 0; i < that.DQArea.size(); i++) {
             String tmp = Main.ToSTR(that.DQArea.get(i), buf);
@@ -90,6 +106,8 @@ public class TestHTM1 {
     public static void ReportInTest(HTML that, StringBuffer buf) {
         System.out.println("DQS:");
         PrintDQS(that, buf);
+        System.out.println("SQS:");
+        PrintSQ(that);
         System.out.println("TAG:");
         PrintTags(that, buf);
         System.out.println("BETWEEN:");

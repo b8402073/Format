@@ -80,8 +80,8 @@ public class TestJSP3 {
     public void Test3() {
         HTML that = new HTML(BufJSP3);
         that.go();
-        that.PrintIssues();
-        TestHTM1.ReportInTest(that, that.MyText);
+        //that.PrintIssues();
+        //TestHTM1.ReportInTest(that, that.MyText);
         assertTrue(that.Left.size() == that.Right.size());
         assertTrue(that.LeftOrRight.size() == that.Right.size() * 2);
         ///////////////////////////////////////////////////////

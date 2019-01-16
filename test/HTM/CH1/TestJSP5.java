@@ -21,13 +21,10 @@ import static org.junit.Assert.*;
  * @author easterday
  */
 public class TestJSP5 {
-    String sJSP5="<%@ page import = \"java.util.Date\"\n" +
-"    contentType = \"text/html; charset=BIG5\" %>\n" +
-"<html>\n" +
-"<head><title>問候語--JSP版 (1-03.jsp)</title>\n" +
-"</head>\n" +
-"<body>\n" +
-"<%\n" +
+    String sJSP5="<%@ page import = \"java.util.Date\" contentType = \"text/html; charset=BIG5\" %>\n" +
+"<%!\n" +
+"private String checkNow()\n" +
+"{\n" +
 "  Date myDate = new Date();\n" +
 "  int h = myDate.getHours();\n" +
 "  String strMsg;\n" +
@@ -36,9 +33,15 @@ public class TestJSP5 {
 "  } else {\n" +
 "     strMsg = \"<h2>您好\";\n" +
 "  }\n" +
-"  strMsg += \"，歡迎光臨！<p>現在時刻：\" + myDate.toLocaleString() + \"</h2><hr>\";\n" +
-"  out.println(strMsg);\n" +
+"  strMsg = strMsg + \"，歡迎光臨！<p>現在時刻：\" + myDate.toLocaleString() + \"</h2><hr>\";\n" +
+"  return (strMsg);\n" +
+"}\n" +
 "%>\n" +
+"<html>\n" +
+"<head><title>問候語--JSP版 (1-13.jsp)</title>\n" +
+"</head>\n" +
+"<body>\n" +
+"<%= checkNow() %>\n" +
 "</body>\n" +
 "</html>";
     StringBuffer BufJSP5;
@@ -72,11 +75,31 @@ public class TestJSP5 {
     public void test5() {
         HTML that=new HTML(BufJSP5);
         that.go();
-        //that.PrintIssues();
-        //TestHTM1.ReportInTest(that, that.MyText);
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that, that.MyText);
         assertTrue(that.Left.size()==that.Right.size());
         assertTrue(that.LeftOrRight.size()==that.Right.size()*2);
         ///////////////////////////////////////////////////////
+        String[] txtDQ={"java.util.Date","text/html; charset=BIG5","<h2>午安","<h2>您好","，歡迎光臨！<p>現在時刻：","</h2><hr>"};
+        String S1="<%@ page import = \"java.util.Date\" contentType = \"text/html; charset=BIG5\" %>";
+        String S2="<%!\n" +
+"private String checkNow()\n" +
+"{\n" +
+"  Date myDate = new Date();\n" +
+"  int h = myDate.getHours();\n" +
+"  String strMsg;\n" +
+"  if ((h > 12) && (h < 18)) {\n" +
+"     strMsg = \"<h2>午安\";\n" +
+"  } else {\n" +
+"     strMsg = \"<h2>您好\";\n" +
+"  }\n" +
+"  strMsg = strMsg + \"，歡迎光臨！<p>現在時刻：\" + myDate.toLocaleString() + \"</h2><hr>\";\n" +
+"  return (strMsg);\n" +
+"}\n" +
+"%>";
+        String[] txtTag={S1,S2,"<html>" ,"<head>" ,"<title>" ,
+"</title>" ,"</head>" ,"<body>" ,"<%= checkNow() %>" ,"</body>" ,"</html>"};
+        
         ///////////////////////////////////////////////////////
         TestHTM1.assertDQ(that, that.MyText, txtDQ,false);
         TestHTM1.assertTAG(that, that.MyText, txtTag,false);
@@ -87,16 +110,8 @@ public class TestJSP5 {
             //System.out.println(Main.ToSTR(new Pair(Start+1,End-1), that.MyText));
             //System.out.println("j="+j+" :"+tmp);
             switch(j) {
-                case 3:
-                    assertTrue("基本觀念的建立".equals(tmp)); break;
-                case 8:
-                    assertTrue("Ch01 -- 基本觀念的建立".equals(tmp)); break;
-                case 16:
-                    assertTrue("歡迎光臨".equals(tmp)); break;
-                case 21:
-                    assertTrue("歡迎光臨--JavaScript版".equals(tmp)); break; 
-                case 28:
-                    assertTrue("問候語--JSP版".equals(tmp)); break;     
+                case 4:
+                    assertTrue("問候語--JSP版 (1-13.jsp)".equals(tmp)); break;
                 default:
                     assertTrue("".equals(tmp) );
             }      

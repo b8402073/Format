@@ -66,7 +66,7 @@ public class TestHTM0 {
         String[] txtDQ = {"en", "UTF-8", "viewport", "width=device-width, initial-scale=1.0",
             "X-UA-Compatible", "ie=edge"};
         for (int i = 0; i < that.DQArea.size(); i++) {
-            String tmp = Main.ToSTR(that.DQArea.get(i), BufHTM0);
+            String tmp = Main.ToSTR(that.DQArea.get(i), that.MyText);
             //System.out.println("tmp=" + tmp);
             //System.out.println("txtDQ[i]=" + txtDQ[i]);
             assertTrue(tmp.equals(Main.DQ(txtDQ[i])));
@@ -88,7 +88,7 @@ public class TestHTM0 {
         for (int i=0,j=0; i< that.LeftOrRight.size(); i+=2,j++) {
             int Start= that.LeftOrRight.get(i);
             int End= that.LeftOrRight.get(i+1);
-            String tmp=Main.ToSTR(new Pair(Start,End), BufHTM0);
+            String tmp=Main.ToSTR(new Pair(Start,End), that.MyText);
             //System.out.println(tmp);
             //System.out.println(txtTag[j]);
             assertTrue(txtTag[j].equals(tmp));
@@ -96,7 +96,7 @@ public class TestHTM0 {
         for (int j=0,i=1; i<that.LeftOrRight.size()-1; i+=2, j++) {
             int Start= that.LeftOrRight.get(i);
             int End=that.LeftOrRight.get(i+1);
-            String tmp=Main.ToSTR(new Pair(Start+1,End-1), BufHTM0).trim();
+            String tmp=Main.ToSTR(new Pair(Start+1,End-1), that.MyText).trim();
             //System.out.println("j="+j+" :"+tmp);            
             switch(j) {
                 case 6:

@@ -154,12 +154,12 @@ public class TestHTM1 {
             "</script>",
             "</body>",
             "</html>"};
-        assertDQ(that, BufHTM1, txtDQS,false);
-        assertTAG(that, BufHTM1, txtTags,false);
+        assertDQ(that, that.MyText, txtDQS,false);
+        assertTAG(that, that.MyText, txtTags,false);
         for (int j = 0, i = 1; i < that.LeftOrRight.size() - 1; i += 2, j++) {
             int Start = that.LeftOrRight.get(i);
             int End = that.LeftOrRight.get(i + 1);
-            String tmp = Main.ToSTR(new Pair(Start + 1, End - 1), BufHTM1).trim();
+            String tmp = Main.ToSTR(new Pair(Start + 1, End - 1), that.MyText).trim();
             //System.out.println("j="+j+" :"+tmp);            
             switch (j) {
                 case 6:

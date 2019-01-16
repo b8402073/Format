@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package HTM;
+package HTM.CH1;
 
+import HTM.TestHTM1;
 import Personal.HTML;
 import Personal.Main;
 import Personal.Pair;
@@ -16,11 +17,11 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * E:\WEBAPPS\JSP_2\CH01\CH01.JSP
  * @author easterday
  */
-public class TestJSP1 {
-    String JSP1="<%@ page contentType=\"text/html; charset=big5\" %>　" + //這裡的最後一個字元有鬼符號(12288)
+public class TestJSP1 {        
+    String sJSP1="<%@ page contentType=\"text/html; charset=big5\" %>　" + //這裡的最後一個字元有鬼符號(12288)
 "<html>" +
 "<head>" +
 "<title>基本觀念的建立</title>" +
@@ -51,7 +52,7 @@ public class TestJSP1 {
 "</html>";
     StringBuffer BufJSP1;
     public TestJSP1() {
-        BufJSP1=new StringBuffer(JSP1);       
+        BufJSP1=new StringBuffer(sJSP1);       
         for (int x=0; x<BufJSP1.length(); x++) {
             System.out.println ("x="+x+"   :"+BufJSP1.codePointAt(x));
         }
@@ -77,7 +78,7 @@ public class TestJSP1 {
         HTML that=new HTML(BufJSP1);
         that.go();
         //that.PrintIssues();
-        //TestHTM1.ReportInTest(that, BufJSP1);
+        //TestHTM1.ReportInTest(that, that.MyText);
         assertTrue(that.Left.size()==that.Right.size());
         assertTrue(that.LeftOrRight.size()==that.Right.size()*2);
         String[] txtDQ={

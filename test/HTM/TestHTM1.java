@@ -117,6 +117,7 @@ public class TestHTM1 {
             int End = that.LeftOrRight.get(i + 1);
             String tmp = Main.ToSTR(new Pair(Start, End), buf);
             if (debug) {
+                System.out.println("i=" + i);
                 System.out.println(tmp);
                 System.out.println(txtTag[j]);                
             }

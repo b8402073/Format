@@ -110,6 +110,7 @@ public class HTML {
         boolean flag_in_js = false;
         boolean flag_in_jsp = false;
         boolean flag_in_htmlComment=false;
+        boolean flag_in_pre=false;
         for (int i = 0; i < StringLength; i++) {
             if (Main.In(i, DQArea) || Main.In(i, SQArea) || Main.In(i, CommentArea)) {
                 continue;
@@ -148,9 +149,23 @@ public class HTML {
                 }
                 Right.add(i);
                 continue;
+            }else if (hand.startsWith("<pre")) {
+                flag_in_pre=true;
+                Left.add(i);
+                while(inn.charAt(i)!='>') {
+                    i++;
+                }
+                Right.add(i); continue;
+            }else if (hand.startsWith("</pre")) {
+                flag_in_pre=false;
+                Left.add(i);
+                while(inn.charAt(i)!='>') {
+                    i++;
+                }
+                Right.add(i); continue;
             }
             
-            if (!flag_in_js && !flag_in_jsp && !flag_in_htmlComment) {
+            if (!flag_in_js && !flag_in_jsp && !flag_in_htmlComment && !flag_in_pre) {
                 if (inn.charAt(i) == '<') {
                     Left.add(i);
                 } else if (inn.charAt(i) == '>') {

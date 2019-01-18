@@ -229,12 +229,12 @@ public class Test03 {
         for (String x: txtDQ) {
             String dest=x.replace("\"","");
             arrSQ[j]=new String(dest); j++;
-        }
+        }  
+        ///////////////////////////////////////////////////////
+        
+        arrSQ=TestHTM1.SQ(arrSQ);
         TestHTM1.assertSQ(that, arrSQ,true);         
         ///////////////////////////////////////////////////////
-        TestHTM1.assertTAG(that, txtTag, true);
-
-
          
      }
 }

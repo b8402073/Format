@@ -8,6 +8,9 @@ package HTM;
 import Personal.HTML;
 import Personal.Main;
 import Personal.Pair;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -145,7 +148,7 @@ public class TestHTM1 {
             if (debug) {
                 System.out.println("i=" + i);
                 System.out.println("tmp=" + tmp);
-                System.out.println("other=" + Main.SQ(txtSQ[i])); 
+                System.out.println("other=" + txtSQ[i]); 
             }
             assertTrue(tmp.equals(txtSQ[i]));
         }
@@ -163,6 +166,24 @@ public class TestHTM1 {
             assertTrue(txtTag[j].equals(tmp));
         }
     }
+    public static String[] SQ(String[] inn) {
+        if (inn.length>0) {
+            String[] ret=new String[inn.length];
+            for (int i=0; i<inn.length; i++) {
+                ret[i]=Main.SQ(inn[i]);
+            }
+            return ret;
+        }        
+        return new String[0];
+    }
+    @Test
+    public void testSQ() {
+        String[] inn={"A","B","CCC"};
+        String[] oout=SQ(inn);
+        assertTrue(oout[0].equals(Main.SQ(inn[0])));
+                
+    }
+            
 
     @Test
     public void Test1() {

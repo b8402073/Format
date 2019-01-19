@@ -4,16 +4,16 @@
  * and open the template in the editor.
  */
 
-import HTM.CH1.TestJSP1;
-import HTM.CH1.TestJSP2;
-import HTM.CH1.TestJSP3;
-import HTM.CH1.TestJSP4;
-import HTM.CH1.TestJSP5;
-import HTM.CH2.J06;
-import HTM.CH2.J08;
-import HTM.CH2.Test01;
-import HTM.CH2.Test03;
-import HTM.CH2.Weird;
+import JSP.CH1.TestJSP1;
+import JSP.CH1.TestJSP2;
+import JSP.CH1.TestJSP3;
+import JSP.CH1.TestJSP4;
+import JSP.CH1.TestJSP5;
+import JSP.CH2.J06;
+import JSP.CH2.J08;
+import JSP.CH2.Test01;
+import JSP.CH2.Test03;
+import JSP.CH2.Weird;
 import HTM.TestHTM0;
 import HTM.TestHTM1;
 import org.junit.runner.RunWith;

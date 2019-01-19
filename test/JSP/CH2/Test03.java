@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package HTM.CH2;
+package JSP.CH2;
 
 import HTM.TestHTM1;
 import Personal.HTML;

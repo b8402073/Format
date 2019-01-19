@@ -3,54 +3,103 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package HTM.CH2;
+package JSP.CH1;
 
 import HTM.TestHTM1;
 import Personal.HTML;
 import Personal.Main;
 import Personal.Pair;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *　E:/WEBAPPS/JSP_2/CH02/2-08.jsp
+ * //E:\WEBAPPS\JSP_2\CH01\1-01.JSP
+ *
  * @author easterday
  */
-public class J08 {
-    String jsp="<%\n" +
-"out.println(\"<h2>\");\n" +
-"out.println(request.getParameter(\"name\") + \", 你好！<br>\");\n" +
-"out.println(\"你的E-mail帳號是：\");\n" +
-"out.println(request.getParameter(\"e_mail\"));\n" +
-"out.println(\"</h2>\");\n" +
-"%>";
-    public StringBuffer bufJ08;
-    public J08() {
-        bufJ08=new StringBuffer(jsp);
+public class TestJSP2 {
+
+    String sJSP2 = "<%@ page import = \"java.util.Date\"\n"
+            + "    contentType = \"text/html; charset=BIG5\" %>\n"
+            + "<html>\n"
+            + "<head><title>歡迎光臨 (1-01.jsp)</title>\n"
+            + "</head>\n"
+            + "<body>\n"
+            + "<h2>您好，歡迎光臨！<p>\n"
+            + "<% \n"
+            + "   //取得現在日期、時間\n"
+            + "   Date x = new Date(); \n"
+            + "%>\n"
+            + "現在時刻是：<%= x.toLocaleString() %>\n"
+            + "</h2>\n"
+            + "<hr>\n"
+            + "</body>\n"
+            + "</html>";
+    public StringBuffer BufJSP2;
+
+    public TestJSP2() {
+        BufJSP2 = new StringBuffer(sJSP2);
+        for (int x = 0; x < BufJSP2.length(); x++) {
+            System.out.println("x=" + x + "   :" + BufJSP2.codePointAt(x));
+        }
+    }
+
+    @BeforeClass
+    public static void setUpClass() {
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+    }
+
+    @Before
+    public void setUp() {
+    }
+
+    @After
+    public void tearDown() {
     }
 
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
     //
     @Test
-    public void hello() {
-        HTML that = new HTML(bufJ08);
+    public void Test2() {
+        HTML that = new HTML(BufJSP2);
         that.go();
         //that.PrintIssues();
         //TestHTM1.ReportInTest(that, that.MyText);
         assertTrue(that.Left.size() == that.Right.size());
         assertTrue(that.LeftOrRight.size() == that.Right.size() * 2);
         ///////////////////////////////////////////////////////
-        String[] txtDQ={"<h2>","name",", 你好！<br>","你的E-mail帳號是：","e_mail","</h2>"};
-        String S1="<%\n" +"out.println(\"<h2>\");\n" +"out.println(request.getParameter(\"name\") + \", 你好！<br>\");\n" +
-"out.println(\"你的E-mail帳號是：\");\n" +"out.println(request.getParameter(\"e_mail\"));\n" +
-"out.println(\"</h2>\");\n" +"%>";        
-        String[] txtTag={S1};
+        String[] txtDQ={"java.util.Date","text/html; charset=BIG5"};
+        String[] txtTag={"<%@ page import = \"java.util.Date\"\n"+
+"    contentType = \"text/html; charset=BIG5\" %>" ,
+"<html>" ,
+"<head>" ,
+"<title>" ,
+"</title>" ,
+"</head>" ,
+"<body>" ,
+"<h2>" ,
+"<p>" ,
+"<% \n" +
+"   //取得現在日期、時間\n" +
+"   Date x = new Date(); \n" +
+"%>" ,
+"<%= x.toLocaleString() %>" ,
+"</h2>" ,
+"<hr>" ,
+"</body>" ,
+"</html>"};
         ///////////////////////////////////////////////////////
 
        TestHTM1.assertDQ(that,  txtDQ, false);
        TestHTM1.assertTAG(that, txtTag, false);
-       /*
         for (int j = 0, i = 1; i < that.LeftOrRight.size() - 1; i += 2, j++) {
             int Start = that.LeftOrRight.get(i);
             int End = that.LeftOrRight.get(i + 1);
@@ -77,6 +126,6 @@ public class J08 {
                     assertTrue("".equals(tmp));
             }
         }
-        */
+
     }
 }

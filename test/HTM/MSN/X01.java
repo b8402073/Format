@@ -1293,17 +1293,18 @@ String S9="        <ul>\n" +
 "\n" +
 "        \n" +
 "    </li>\n";
-    public StringBuffer bufX01;    
+    public StringBuffer bufX01; 
+    
     public X01() {
         bufX01=new StringBuffer(S1);
         bufX01.append(S2);
-        //bufX01.append(S3);
-        //bufX01.append(S4);
-        //bufX01.append(S5);
-        //bufX01.append(S6);
-        //bufX01.append(S7);
-        //bufX01.append(S8);
-        //bufX01.append(S9);
+        bufX01.append(S3);
+        bufX01.append(S4);
+        bufX01.append(S5);
+        bufX01.append(S6);
+        bufX01.append(S7);
+        bufX01.append(S8);
+        bufX01.append(S9);
 	
     }
 	@Test

@@ -111,6 +111,7 @@ public class HTML {
         boolean flag_in_jsp = false;
         boolean flag_in_htmlComment=false;
         boolean flag_in_pre=false;
+        boolean flag_in_style=false;
         for (int i = 0; i < StringLength; i++) {
             if (inn.substring(i).startsWith("<!--")) {
                 flag_in_htmlComment=true;
@@ -164,9 +165,24 @@ public class HTML {
                     i++;
                 }
                 Right.add(i); continue;
+            }else if (hand.startsWith("<style")) {
+                flag_in_style=true;
+                Left.add(i);
+                while(inn.charAt(i)!='>' ) {
+                    i++;
+                }
+                Right.add(i); continue;
+            }else if ((hand.startsWith("</style"))) {
+                flag_in_style=false;
+                Left.add(i);
+                while(inn.charAt(i)!='>') {
+                    i++;
+                }
+                Right.add(i); continue;
             }
             
-            if (!flag_in_js && !flag_in_jsp && !flag_in_htmlComment && !flag_in_pre) {
+            if (!flag_in_js && !flag_in_jsp && !flag_in_htmlComment 
+                    && !flag_in_pre && !flag_in_style) {
                 if (inn.charAt(i) == '<') {
                     Left.add(i);
                 } else if (inn.charAt(i) == '>') {

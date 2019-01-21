@@ -28,6 +28,28 @@ import JSP.CH3.TestJSP309;
 import JSP.CH3.TestJSP310;
 import JSP.CH3.TestJSP311;
 import JSP.CH3.TestJSP318;
+import JSP.CH4.TestJSP401;
+import JSP.CH4.TestJSP402;
+import JSP.CH4.TestJSP403;
+import JSP.CH4.TestJSP404;
+import JSP.CH4.TestJSP405;
+import JSP.CH4.TestJSP406;
+import JSP.CH4.TestJSP407;
+import JSP.CH4.TestJSP408;
+import JSP.CH4.TestJSP409;
+import JSP.CH4.TestJSP410;
+import JSP.CH4.TestJSP411;
+import JSP.CH4.TestJSP412;
+import JSP.CH4.TestJSP413;
+import JSP.CH4.TestJSP414;
+import JSP.CH4.TestJSP415;
+import JSP.CH4.TestJSP416;
+import JSP.CH4.TestJSP417;
+import JSP.CH4.TestJSP418;
+import JSP.CH4.TestJSP419;
+import JSP.CH4.TestJSP420;
+import JSP.CH4.TestJSP421;
+import JSP.CH4.TestJSP422;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -51,7 +73,13 @@ import org.junit.runners.Suite;
             Test03.class,
             Weird.class,
             TestJSP301.class, TestJSP302.class, TestJSP303.class,TestJSP304.class,TestJSP305.class,TestJSP306.class,
-            TestJSP307.class, TestJSP308.class, TestJSP309.class,TestJSP310.class,TestJSP311.class,TestJSP318.class
+            TestJSP307.class, TestJSP308.class, TestJSP309.class,TestJSP310.class,TestJSP311.class,TestJSP318.class,
+            
+            TestJSP401.class, TestJSP402.class, TestJSP403.class,TestJSP404.class,TestJSP405.class,
+            TestJSP406.class, TestJSP407.class, TestJSP408.class,TestJSP409.class,TestJSP410.class,
+            TestJSP411.class, TestJSP412.class, TestJSP413.class,TestJSP414.class,TestJSP415.class,
+            TestJSP416.class, TestJSP417.class, TestJSP418.class,TestJSP419.class,TestJSP420.class,
+            TestJSP421.class, TestJSP422.class
                 
                 
                 

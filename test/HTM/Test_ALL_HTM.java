@@ -1,3 +1,5 @@
+package HTM;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -14,8 +16,6 @@ import JSP.CH2.J08;
 import JSP.CH2.Test01;
 import JSP.CH2.Test03;
 import JSP.CH2.Weird;
-import HTM.TestHTM0;
-import HTM.TestHTM1;
 import JSP.CH3.TestJSP301;
 import JSP.CH3.TestJSP302;
 import JSP.CH3.TestJSP303;
@@ -50,6 +50,23 @@ import JSP.CH4.TestJSP419;
 import JSP.CH4.TestJSP420;
 import JSP.CH4.TestJSP421;
 import JSP.CH4.TestJSP422;
+import JSP.CH5.TestJSPHello;
+import JSP.CH7.TestJSP706;
+import JSP.CH7.TestJSP707;
+import JSP.CH7.TestJSP708;
+import JSP.CH7.TestJSP709;
+import JSP.CH8.TestJSP801;
+import JSP.CH8.TestJSP802;
+import JSP.CH8.TestJSP803;
+import JSP.CH8.TestJSP804;
+import JSP.CH8.TestJSP805;
+import JSP.CH8.TestJSP806;
+import JSP.CH8.TestJSP810;
+import JSP.CH8.TestJSP811;
+import JSP.CH8.TestJSP812;
+import JSP.CH8.TestJSP813;
+import JSP.CH8.TestJSP817;
+import JSP.CH8.TestJSP824;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -72,15 +89,23 @@ import org.junit.runners.Suite;
             Test01.class,
             Test03.class,
             Weird.class,
+            //CH3
             TestJSP301.class, TestJSP302.class, TestJSP303.class,TestJSP304.class,TestJSP305.class,TestJSP306.class,
             TestJSP307.class, TestJSP308.class, TestJSP309.class,TestJSP310.class,TestJSP311.class,TestJSP318.class,
-            
+            //CH4
             TestJSP401.class, TestJSP402.class, TestJSP403.class,TestJSP404.class,TestJSP405.class,
             TestJSP406.class, TestJSP407.class, TestJSP408.class,TestJSP409.class,TestJSP410.class,
             TestJSP411.class, TestJSP412.class, TestJSP413.class,TestJSP414.class,TestJSP415.class,
             TestJSP416.class, TestJSP417.class, TestJSP418.class,TestJSP419.class,TestJSP420.class,
-            TestJSP421.class, TestJSP422.class
-                
+            TestJSP421.class, TestJSP422.class,
+            //CH5
+            TestJSPHello.class,
+            //CH7
+            TestJSP706.class, TestJSP707.class, TestJSP708.class, TestJSP709.class,
+            //CH8
+            TestJSP801.class, TestJSP802.class, TestJSP803.class, TestJSP804.class, TestJSP805.class, TestJSP806.class,
+            TestJSP810.class, TestJSP810.class, TestJSP811.class, TestJSP812.class, TestJSP813.class,
+            TestJSP817.class, TestJSP824.class
                 
                 
         }

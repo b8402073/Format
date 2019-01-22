@@ -67,6 +67,13 @@ import JSP.CH8.TestJSP812;
 import JSP.CH8.TestJSP813;
 import JSP.CH8.TestJSP817;
 import JSP.CH8.TestJSP824;
+import JSP.CH9.TestJSP901;
+import JSP.CH9.TestJSP902;
+import JSP.CH9.TestJSP903;
+import JSP.CH9.TestJSP904;
+import JSP.CH9.TestJSP905;
+import JSP.CH9.TestJSP906;
+import JSP.CH9.TestJSP933;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -105,7 +112,11 @@ import org.junit.runners.Suite;
             //CH8
             TestJSP801.class, TestJSP802.class, TestJSP803.class, TestJSP804.class, TestJSP805.class, TestJSP806.class,
             TestJSP810.class, TestJSP810.class, TestJSP811.class, TestJSP812.class, TestJSP813.class,
-            TestJSP817.class, TestJSP824.class
+            TestJSP817.class, TestJSP824.class,
+            //CH9
+            TestJSP901.class, TestJSP902.class, TestJSP903.class, TestJSP904.class, TestJSP905.class,
+            TestJSP906.class, 
+            TestJSP933.class
                 
                 
         }

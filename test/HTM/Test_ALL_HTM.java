@@ -11,6 +11,15 @@ import JSP.CH1.TestJSP2;
 import JSP.CH1.TestJSP3;
 import JSP.CH1.TestJSP4;
 import JSP.CH1.TestJSP5;
+import JSP.CH10.TestJSP1001A;
+import JSP.CH10.TestJSP1001B;
+import JSP.CH10.TestJSP1002A;
+import JSP.CH10.TestJSP1002B;
+import JSP.CH10.TestJSP1003;
+import JSP.CH10.TestJSP1004;
+import JSP.CH10.TestJSP1005;
+import JSP.CH10.TestJSP1006;
+import JSP.CH10.TestJSP1017;
 import JSP.CH2.J06;
 import JSP.CH2.J08;
 import JSP.CH2.Test01;
@@ -116,7 +125,11 @@ import org.junit.runners.Suite;
             //CH9
             TestJSP901.class, TestJSP902.class, TestJSP903.class, TestJSP904.class, TestJSP905.class,
             TestJSP906.class, 
-            TestJSP933.class
+            TestJSP933.class,
+            //CH10
+            TestJSP1001A.class, TestJSP1001B.class, 
+            TestJSP1002A.class, TestJSP1002B.class,
+            TestJSP1003.class, TestJSP1004.class, TestJSP1005.class, TestJSP1006.class, TestJSP1017.class
                 
                 
         }

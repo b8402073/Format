@@ -1,7 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+  TestJSP933是直接從課本光碟COPY出來的字串
+  所以用舊的作法不能認為CH9的9-33.jsp是完全合法的(JSP/HTML)
+  所以在這裡用腦子創造很多很極端的狀況
+  然後配合(IE/Chrome)的執行結果來校正我們的HTML類別實作
  */
 package HTM;
 

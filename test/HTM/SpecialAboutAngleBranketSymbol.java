@@ -31,13 +31,17 @@ public class SpecialAboutAngleBranketSymbol {
     public String jsp9="<html><body> <p id='<'  > </body></html>"; //這是<p> tag
     public String jsp10="<html><body> <p id='>' /> </body></html>"; //這是<p> tag
     public String jsp11="<html><body> <p id='<'  /> </body></html>"; //這是<p> tag    
-    public String jsp12="<html><body> < p id='name1 \n"+"'></body></html>"; //這裡沒有SQArea,兩個游離子
-    public String jsp13="<html><body> < p id='name1 \n"+"'></body></html>"; //這裡沒有SQArea,兩個游離子
+    public String jsp12="<html><body> < p id='name1 \n"+"'></body></html>"; //這裡沒有SQArea,4個游離子
+    //                   012345678901234567890123456    78
+    public String jsp13="<html><body> <p id='na>me1\n"+"'></body></html>"; //這裡沒有SQArea,1個tag,2個游離子
+    //                   012345678901234567890123456    78
     public String jsp14="<html><body> <p id='name1 \n"+"'></body></html>"; //這裡沒有SQArea,一個Tag
-    public String jsp15="<html><body> <p id='name1 \n"+"'></body></html>"; //這裡沒有SQArea,一個Tag
+    //                   012345678901234567890123456    789
+    public String jsp15="<html><body>< p id='name1 \n"+"'/></body></html>"; //這裡沒有SQArea,4個游離子
+    //                   
     public String jsp16="<html><body> <p  <!-- GGYY -->   </body></html>"; //一個<p> tag,沒有游離子
     public String jsp17="<html><body> <p  <!-- GGYY --> > </body></html>"; //一個<p> tag,一個游離子>
-    public String jsp18="<html><body> <p  <!-- GGYY --> /></body></html>"; //一個<p> tag,一個游離子/>
+    public String jsp18="<html><body> <p  <!-- GGYY    /></body></html>"; //一個<p> tag
     public String jsp19="<html><body> <p  <!-- GGYY\n -->   </body></html>"; //一個<p> tag,沒有游離子
     public String jsp20="<html><body> <p  <!-- GGYY\n --> > </body></html>"; //一個<p> tag,一個游離子>
     public String jsp21="<html><body> <p  <!-- GGYY\n --> /></body></html>"; //一個<p> tag,一個游離子/>
@@ -337,5 +341,426 @@ public class SpecialAboutAngleBranketSymbol {
         TestHTM1.assertRadical(that, arrRad, true);
         TestHTM1.assertUnFinished(that, arrUN, true);                
     }
+    @Test
+    public void testA10() {
+        StringBuffer buf=new StringBuffer(jsp10);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==1);
+        String[] txtSQ={">"};
+        TestHTM1.assertSQ(that, TestHTM1.SQ(txtSQ), true);
+        String[] txtTag={"<html>" ,"<body>","<p id='>' />" ,"</body>" ,"</html>" };
+        TestHTM1.assertTAG(that, txtTag, true);
+        for (int j=0,i=1; i<that.LeftOrRight.size()-1; i+=2, j++) {
+            int Start= that.LeftOrRight.get(i);
+            int End=that.LeftOrRight.get(i+1);
+            String tmp=Main.ToSTR(new Pair(Start+1,End-1), that.MyText).trim();
+            //System.out.println("j="+j+" :"+tmp);            
+            switch(j) {
+                default:
+                    assertTrue("".equals(tmp));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN=new Integer[0];
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                
+    }
+    @Test
+    public void testA11() {
+        StringBuffer buf=new StringBuffer(jsp11);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==1);
+        String[] txtSQ={"<"};
+        TestHTM1.assertSQ(that, TestHTM1.SQ(txtSQ), true);
+        String[] txtTag={"<html>" ,"<body>","<p id='<'  />" ,"</body>" ,"</html>" };
+        TestHTM1.assertTAG(that, txtTag, true);
+        for (int j=0,i=1; i<that.LeftOrRight.size()-1; i+=2, j++) {
+            int Start= that.LeftOrRight.get(i);
+            int End=that.LeftOrRight.get(i+1);
+            String tmp=Main.ToSTR(new Pair(Start+1,End-1), that.MyText).trim();
+            //System.out.println("j="+j+" :"+tmp);            
+            switch(j) {
+                default:
+                    assertTrue("".equals(tmp));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN=new Integer[0];
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                
+    }
+
+    @Test
+    public void testA12() {
+        StringBuffer buf=new StringBuffer(jsp12);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<body>","</body>" ,"</html>" };
+        TestHTM1.assertTAG(that, txtTag, true);
+        for (int j=0,i=1; i<that.LeftOrRight.size()-1; i+=2, j++) {
+            int Start= that.LeftOrRight.get(i);
+            int End=that.LeftOrRight.get(i+1);
+            String tmp=Main.ToSTR(new Pair(Start+1,End-1), that.MyText).trim();
+            //System.out.println("j="+j+" :"+tmp);            
+            switch(j) {
+                case 1:
+                    assertTrue(("< p id='name1 \n"+"'>").equals(tmp)); break;
+                default:
+                    assertTrue("".equals(tmp));
+            }
+        }
+        Integer[] arrRad={13,20,28,29};
+        Integer[] arrUN=new Integer[0];
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                
+    }
+    @Test
+    public void testA13() {
+        System.out.println(jsp12.equals(jsp13));
+        StringBuffer buf=new StringBuffer(jsp13);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<body>","<p id='na>","</body>" ,"</html>" };
+        TestHTM1.assertTAG(that, txtTag, true);
+        for (int j=0,i=1; i<that.LeftOrRight.size()-1; i+=2, j++) {
+            int Start= that.LeftOrRight.get(i);
+            int End=that.LeftOrRight.get(i+1);
+            String tmp=Main.ToSTR(new Pair(Start+1,End-1), that.MyText).trim();
+            //System.out.println("j="+j+" :"+tmp);            
+            switch(j) {
+                case 2:
+                    assertTrue(("me1\n'>").equals(tmp)); break;
+                default:
+                    assertTrue("".equals(tmp));
+            }
+        }
+        Integer[] arrRad={27,28};
+        Integer[] arrUN=new Integer[0];
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                
+    }
+    @Test
+    public void testA14() {
+        StringBuffer buf=new StringBuffer(jsp14);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<body>","<p id='name1 \n'>","</body>" ,"</html>" };
+        TestHTM1.assertTAG(that, txtTag, true);
+        for (int j=0,i=1; i<that.LeftOrRight.size()-1; i+=2, j++) {
+            int Start= that.LeftOrRight.get(i);
+            int End=that.LeftOrRight.get(i+1);
+            String tmp=Main.ToSTR(new Pair(Start+1,End-1), that.MyText).trim();
+            //System.out.println("j="+j+" :"+tmp);            
+            switch(j) {
+                default:
+                    assertTrue("".equals(tmp));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN=new Integer[0];
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                
+    }   
+    @Test
+    public void testA15() {
+        StringBuffer buf=new StringBuffer(jsp15);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<body>","</body>" ,"</html>" };
+        TestHTM1.assertTAG(that, txtTag, true);
+        for (int j=0,i=1; i<that.LeftOrRight.size()-1; i+=2, j++) {
+            int Start= that.LeftOrRight.get(i);
+            int End=that.LeftOrRight.get(i+1);
+            String tmp=Main.ToSTR(new Pair(Start+1,End-1), that.MyText).trim();
+            //System.out.println("j="+j+" :"+tmp);            
+            switch(j) {
+                case 1:
+                    assertTrue("< p id='name1 \n'/>".equals(tmp)); break;
+                default:
+                    assertTrue("".equals(tmp));
+            }
+        }
+        Integer[] arrRad={12,19,27,29};
+        Integer[] arrUN=new Integer[0];
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                
+    }    
+    @Test
+    public void testA16() {
+        StringBuffer buf=new StringBuffer(jsp16);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<body>","<p  <!-- GGYY -->","</body>" ,"</html>" };
+        TestHTM1.assertTAG(that, txtTag, true);
+        for (int j=0,i=1; i<that.LeftOrRight.size()-1; i+=2, j++) {
+            int Start= that.LeftOrRight.get(i);
+            int End=that.LeftOrRight.get(i+1);
+            String tmp=Main.ToSTR(new Pair(Start+1,End-1), that.MyText).trim();
+            //System.out.println("j="+j+" :"+tmp);            
+            switch(j) {
+                case 1:
+                     break;
+                default:
+                    assertTrue("".equals(tmp));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN=new Integer[0];
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                
+    }    
+    @Test
+    public void testA17() {
+        StringBuffer buf=new StringBuffer(jsp17);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<body>","<p  <!-- GGYY -->","</body>" ,"</html>" };
+        TestHTM1.assertTAG(that, txtTag, true);
+        for (int j=0,i=1; i<that.LeftOrRight.size()-1; i+=2, j++) {
+            int Start= that.LeftOrRight.get(i);
+            int End=that.LeftOrRight.get(i+1);
+            String tmp=Main.ToSTR(new Pair(Start+1,End-1), that.MyText).trim();
+            //System.out.println("j="+j+" :"+tmp);            
+            switch(j) {
+                case 2:
+                     assertTrue(">".equals(tmp));break;
+                default:
+                    assertTrue("".equals(tmp));
+            }
+        }
+        Integer[] arrRad={31};
+        Integer[] arrUN=new Integer[0];
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                
+    }    
+    @Test
+    public void testA18() {
+        StringBuffer buf=new StringBuffer(jsp18);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<body>","<p  <!-- GGYY    />","</body>" ,"</html>" };
+        TestHTM1.assertTAG(that, txtTag, true);
+        for (int j=0,i=1; i<that.LeftOrRight.size()-1; i+=2, j++) {
+            int Start= that.LeftOrRight.get(i);
+            int End=that.LeftOrRight.get(i+1);
+            String tmp=Main.ToSTR(new Pair(Start+1,End-1), that.MyText).trim();
+            //System.out.println("j="+j+" :"+tmp);            
+            switch(j) {
+                case 2:
+                     break;
+                default:
+                    assertTrue("".equals(tmp));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN=new Integer[0];
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                
+    }      
+    @Test
+    public void testA19() {
+        StringBuffer buf=new StringBuffer(jsp19);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<body>","<p  <!-- GGYY\n" +" -->","</body>" ,"</html>" };
+        TestHTM1.assertTAG(that, txtTag, true);
+        for (int j=0,i=1; i<that.LeftOrRight.size()-1; i+=2, j++) {
+            int Start= that.LeftOrRight.get(i);
+            int End=that.LeftOrRight.get(i+1);
+            String tmp=Main.ToSTR(new Pair(Start+1,End-1), that.MyText).trim();
+            //System.out.println("j="+j+" :"+tmp);            
+            switch(j) {
+                case 2:
+                     break;
+                default:
+                    assertTrue("".equals(tmp));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN=new Integer[0];
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                
+    }      
+    @Test
+    public void testA20() {
+        StringBuffer buf=new StringBuffer(jsp20);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<body>","<p  <!-- GGYY\n" +" -->","</body>" ,"</html>" };
+        TestHTM1.assertTAG(that, txtTag, true);
+        for (int j=0,i=1; i<that.LeftOrRight.size()-1; i+=2, j++) {
+            int Start= that.LeftOrRight.get(i);
+            int End=that.LeftOrRight.get(i+1);
+            String tmp=Main.ToSTR(new Pair(Start+1,End-1), that.MyText).trim();
+            //System.out.println("j="+j+" :"+tmp);            
+            switch(j) {
+                case 2:
+                    assertTrue(">".equals(tmp)); break;
+                default:
+                    assertTrue("".equals(tmp));
+            }
+        }
+        Integer[] arrRad={32};
+        Integer[] arrUN=new Integer[0];
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                
+    }      
+
+    @Test
+    public void testA21() {
+        StringBuffer buf=new StringBuffer(jsp21);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<body>","<p  <!-- GGYY\n"+" -->","</body>" ,"</html>" };
+        TestHTM1.assertTAG(that, txtTag, true);
+        for (int j=0,i=1; i<that.LeftOrRight.size()-1; i+=2, j++) {
+            int Start= that.LeftOrRight.get(i);
+            int End=that.LeftOrRight.get(i+1);
+            String tmp=Main.ToSTR(new Pair(Start+1,End-1), that.MyText).trim();
+            //System.out.println("j="+j+" :"+tmp);            
+            switch(j) {
+                case 2:
+                    assertTrue("/>".equals(tmp)); break;
+                default:
+                    assertTrue("".equals(tmp));
+            }
+        }
+        Integer[] arrRad={33};
+        Integer[] arrUN=new Integer[0];
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                
+    }      
+    @Test
+    public void testA22() {
+        StringBuffer buf=new StringBuffer(jsp22);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<body>","<p name=\"GG \n"+" >","</body>" ,"</html>" };
+        TestHTM1.assertTAG(that, txtTag, true);
+        for (int j=0,i=1; i<that.LeftOrRight.size()-1; i+=2, j++) {
+            int Start= that.LeftOrRight.get(i);
+            int End=that.LeftOrRight.get(i+1);
+            String tmp=Main.ToSTR(new Pair(Start+1,End-1), that.MyText).trim();
+            //System.out.println("j="+j+" :"+tmp);            
+            switch(j) {
+                case 2:
+                    assertTrue("\"".equals(tmp)); break;
+                default:
+                    assertTrue("".equals(tmp));
+            }
+        }
+        Integer[] arrRad={28};
+        Integer[] arrUN=new Integer[0];
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                
+    }      
+    @Test
+    public void testA23() {
+        StringBuffer buf=new StringBuffer(jsp23);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<body>","<p name='GG \n"+" >","</body>" ,"</html>" };
+        TestHTM1.assertTAG(that, txtTag, true);
+        for (int j=0,i=1; i<that.LeftOrRight.size()-1; i+=2, j++) {
+            int Start= that.LeftOrRight.get(i);
+            int End=that.LeftOrRight.get(i+1);
+            String tmp=Main.ToSTR(new Pair(Start+1,End-1), that.MyText).trim();
+            //System.out.println("j="+j+" :"+tmp);            
+            switch(j) {
+                case 2:
+                    assertTrue("'".equals(tmp)); break;
+                default:
+                    assertTrue("".equals(tmp));
+            }
+        }
+        Integer[] arrRad={28};
+        Integer[] arrUN=new Integer[0];
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                
+    }      
 
 }

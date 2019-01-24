@@ -194,17 +194,17 @@ public class HTML {
                         Left.add(i);
                         for (; i<StringLength;i++) {
                             if (inn.charAt(i)=='>' && !Main.In(i, DQArea) && !Main.In(i, SQArea)) {
-                                Right.add(i); break;
+                                Right.add(i);break;
                             }
                         }
                     }else {
-                        Radical.add(i);
+                        Radical.add(i); //¬ö¿ý´åÂ÷¤l
                     }
-                } else if (inn.charAt(i) == '>') {
+                } else if (inn.charAt(i) == '>') { //¬ö¿ý´åÂ÷¤l
                     Radical.add(i);
-                } else if (inn.charAt(i)=='\"') {
+                } else if (inn.charAt(i)=='\"') {//¬ö¿ý´åÂ÷¤l
                     Radical.add(i);
-                } else if (inn.charAt(i)=='\'')  {
+                } else if (inn.charAt(i)=='\'')  {//¬ö¿ý´åÂ÷¤l
                     Radical.add(i);
                 }
             

@@ -61,8 +61,9 @@ public class SpecialAboutAngleBranketSymbol {
         that.PrintIssues();
         TestHTM1.ReportInTest(that);
         System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
         assertTrue(that.DQArea.size()==0);
-        assertTrue(that.SQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
         String[] txtTag={"<html>" ,"<body>" ,"</body>" ,"</html>" };
         for (int i=0,j=0; i< that.LeftOrRight.size(); i+=2,j++) {
             int Start= that.LeftOrRight.get(i);

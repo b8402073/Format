@@ -33,6 +33,10 @@ public class HTML {
     public Vector<Integer> Right;
     //琌场
     public Vector<Integer> LeftOrRight;
+    //村瞒(ㄒず甧い<,>,".'单单)
+    public Vector<Integer> Radical;
+    //ゼЧΘTag:[ㄒ<p     ](⊿Τ珹腹)
+    public Vector<Integer> UnFinished;
     
     public void PrintIssues() {
         System.out.println("DQArea="+DQArea.toString());
@@ -51,6 +55,8 @@ public class HTML {
         DQArea = new Vector<Pair>();
         SQArea = new Vector<Pair>();
         CommentArea = new Vector<Pair>();
+        Radical=new Vector<Integer>();
+        UnFinished=new Vector<Integer>();
         JspStatic3.Build_DQ_Area(MyText, DQArea);
         JspStatic3.Build_SQ_Area(MyText, DQArea, SQArea);
         JspStatic3.Build_Comment_Area(MyText, DQArea, SQArea, CommentArea);
@@ -58,7 +64,7 @@ public class HTML {
         Left = new Vector<Integer>();
         Right = new Vector<Integer>();
         LeftOrRight = new Vector<Integer>();
-        Build_Left_and_Right(MyText);
+        Build_Left_and_Right_Radical_UnFinished(MyText);
     }
 
     public void Fix_if_SQDQ_in_CommentArea() {
@@ -105,7 +111,7 @@ public class HTML {
         }
     }
 
-    public void Build_Left_and_Right(StringBuffer inn) {
+    public void Build_Left_and_Right_Radical_UnFinished(StringBuffer inn) {
         final int StringLength = inn.length();
         boolean flag_in_js = false;
         boolean flag_in_jsp = false;
@@ -184,10 +190,24 @@ public class HTML {
             if (!flag_in_js && !flag_in_jsp && !flag_in_htmlComment 
                     && !flag_in_pre && !flag_in_style) {
                 if (inn.charAt(i) == '<') {
-                    Left.add(i);
+                    if (i+1<StringLength && !Character.isWhitespace(inn.charAt(i+1)) ) {
+                        Left.add(i);
+                        for (; i<StringLength;i++) {
+                            if (inn.charAt(i)=='>' && !Main.In(i, DQArea) && !Main.In(i, SQArea)) {
+                                Right.add(i); break;
+                            }
+                        }
+                    }else {
+                        Radical.add(i);
+                    }
                 } else if (inn.charAt(i) == '>') {
-                    Right.add(i);
+                    Radical.add(i);
+                } else if (inn.charAt(i)=='\"') {
+                    Radical.add(i);
+                } else if (inn.charAt(i)=='\'')  {
+                    Radical.add(i);
                 }
+            
             }
         }
         for (Integer e:Left) {

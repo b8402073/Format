@@ -60,6 +60,7 @@ public class SpecialAboutAngleBranketSymbol {
         that.go();
         that.PrintIssues();
         TestHTM1.ReportInTest(that);
+        System.out.println("Radical="+that.Radical.toString());
         assertTrue(that.DQArea.size()==0);
         assertTrue(that.SQArea.size()==0);
         String[] txtTag={"<html>" ,"<body>" ,"</body>" ,"</html>" };
@@ -82,7 +83,6 @@ public class SpecialAboutAngleBranketSymbol {
                 default:
                     assertTrue("".equals(tmp));
             }
-
         }        
     }
     

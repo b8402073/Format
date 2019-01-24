@@ -65,14 +65,7 @@ public class SpecialAboutAngleBranketSymbol {
         assertTrue(that.DQArea.size()==0);
         assertTrue(that.SQArea.size()==0);        
         String[] txtTag={"<html>" ,"<body>" ,"</body>" ,"</html>" };
-        for (int i=0,j=0; i< that.LeftOrRight.size(); i+=2,j++) {
-            int Start= that.LeftOrRight.get(i);
-            int End= that.LeftOrRight.get(i+1);
-            String tmp=Main.ToSTR(new Pair(Start,End), that.MyText);
-            //System.out.println(tmp);
-            //System.out.println(txtTag[j]);
-            assertTrue(txtTag[j].equals(tmp));
-        }
+        TestHTM1.assertTAG(that, txtTag, true);
         for (int j=0,i=1; i<that.LeftOrRight.size()-1; i+=2, j++) {
             int Start= that.LeftOrRight.get(i);
             int End=that.LeftOrRight.get(i+1);
@@ -84,7 +77,45 @@ public class SpecialAboutAngleBranketSymbol {
                 default:
                     assertTrue("".equals(tmp));
             }
-        }        
+        }
+        Integer[] arrRad={13};
+        Integer[] arrUN=new Integer[0];
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);        
+    }
+    
+    @Test
+    public void testA02() {
+        StringBuffer buf=new StringBuffer(jsp2);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);   
+        
+        String[] txtTag={"<html>" ,"<body>" ,"</body>" ,"</html>" };
+        TestHTM1.assertTAG(that, txtTag, true);
+        for (int j=0,i=1; i<that.LeftOrRight.size()-1; i+=2, j++) {
+            int Start= that.LeftOrRight.get(i);
+            int End=that.LeftOrRight.get(i+1);
+            String tmp=Main.ToSTR(new Pair(Start+1,End-1), that.MyText).trim();
+            //System.out.println("j="+j+" :"+tmp);            
+            switch(j) {
+                case 1:
+                    assertTrue(">".equals(tmp)); break;
+                default:
+                    assertTrue("".equals(tmp));
+            }
+        }
+        Integer[] arrRad={13};
+        Integer[] arrUN=new Integer[0];
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);        
+        
+        
     }
     
 }

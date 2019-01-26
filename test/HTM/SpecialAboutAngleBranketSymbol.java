@@ -11,6 +11,7 @@ package HTM;
 import Personal.HTML;
 import Personal.Main;
 import Personal.Pair;
+import java.util.Vector;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -771,20 +772,19 @@ public class SpecialAboutAngleBranketSymbol {
         that.go();
         that.PrintIssues();
         TestHTM1.ReportInTest(that);
+        
         System.out.println("Radical="+that.Radical.toString());
         System.out.println("UnFinished="+that.UnFinished.toString());
         assertTrue(that.DQArea.size()==0);
         assertTrue(that.SQArea.size()==0);        
         String[] txtTag={"<html>" ,"<body>","<p ","</body>" ,"</html>" };
+        System.out.println(that.GetAllTags());
         TestHTM1.assertTAG(that, txtTag, true);
-        for (int j=0,i=1; i<that.LeftOrRight.size()-1; i+=2, j++) {
-            int Start= that.LeftOrRight.get(i);
-            int End=that.LeftOrRight.get(i+1);
-            String tmp=Main.ToSTR(new Pair(Start+1,End-1), that.MyText).trim();
-            //System.out.println("j="+j+" :"+tmp);            
-            switch(j) {
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) {
                 default:
-                    assertTrue("".equals(tmp));
+                    assertTrue("".equals(between.get(i)));
             }
         }
         Integer[] arrRad={};

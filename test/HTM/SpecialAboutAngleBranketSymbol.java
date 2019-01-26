@@ -794,27 +794,27 @@ public class SpecialAboutAngleBranketSymbol {
     }      
     @Test
     public void testAF1() {
+        //public String f1="<html><body>< p </body></html>"; //´åÂ÷¤l<,  ¨S¦³tag        
         StringBuffer buf=new StringBuffer(f1);
         HTML that=new HTML(buf);
         that.go();
         that.PrintIssues();
         TestHTM1.ReportInTest(that);
+        
         System.out.println("Radical="+that.Radical.toString());
         System.out.println("UnFinished="+that.UnFinished.toString());
         assertTrue(that.DQArea.size()==0);
         assertTrue(that.SQArea.size()==0);        
         String[] txtTag={"<html>" ,"<body>","</body>" ,"</html>" };
+        System.out.println(that.GetAllTags());
         TestHTM1.assertTAG(that, txtTag, true);
-        for (int j=0,i=1; i<that.LeftOrRight.size()-1; i+=2, j++) {
-            int Start= that.LeftOrRight.get(i);
-            int End=that.LeftOrRight.get(i+1);
-            String tmp=Main.ToSTR(new Pair(Start+1,End-1), that.MyText).trim();
-            //System.out.println("j="+j+" :"+tmp);            
-            switch(j) {
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) {
                 case 1:
-                    assertTrue("< p".equals(tmp)); break;
+                    assertTrue("< p".equals(between.get(i).trim())); break;
                 default:
-                    assertTrue("".equals(tmp));
+                    assertTrue("".equals(between.get(i).trim()));
             }
         }
         Integer[] arrRad={12};

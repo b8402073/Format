@@ -45,6 +45,8 @@ public class HTML {
         System.out.println("Left="+Left.toString());
         System.out.println("Right="+Right.toString());
         System.out.println("LeftOrRight="+LeftOrRight.toString());
+        System.out.println("Radical="+Radical.toString());
+        System.out.println("UnFinished="+UnFinished.toString());        
     }
     public HTML(StringBuffer inn) {
         MyText = inn;
@@ -121,11 +123,17 @@ public class HTML {
         for (int i = 0; i < StringLength; i++) {
             if (inn.substring(i).startsWith("<!--")) {
                 flag_in_htmlComment=true;
+                if (Right.size()<Left.size())
+                    UnFinished.add(Left.get(Left.size()-1));
                 Left.add(i);
             }else if (inn.substring(i).startsWith("-->")) {
-                flag_in_htmlComment=false;
-                Right.add(i+2);
-                i+=2;                
+                if (Left.size()==Right.size()) {
+                    //這個東西是游離子
+                    Radical.add(i+2); i+=2;
+                }else if (Right.size()<Left.size()) {
+                    flag_in_htmlComment=false;                    
+                    Right.add(i+2);   i+=2;
+                }                    
                 continue;
             }
             
@@ -134,54 +142,79 @@ public class HTML {
             }
             if (inn.substring(i).startsWith("<%")) {
                 flag_in_jsp = true;
+                if (Right.size()<Left.size()) {
+                    UnFinished.add(Left.get(Left.size()-1));
+                }
                 Left.add(i);
             } else if (inn.substring(i).startsWith("%>")) {
-                flag_in_jsp = false; 
-                Right.add(i+1);
-                i+=1;   
+                if (Left.size()==Right.size()) {
+                    //這個東西是游離子
+                    Radical.add(i+1);  i+=1;
+                }else if (Right.size()<Left.size()) {
+                    flag_in_jsp = false; 
+                    Right.add(i+1);    i+=1;                       
+                }
                 continue;
             }
             String hand = inn.substring(i).toLowerCase();
             if (hand.startsWith("<script")) {
                 flag_in_js = true;
+                if (Right.size()<Left.size()) {
+                    UnFinished.add(Left.get(Left.size()-1));
+                }                
                 Left.add(i);
-                while(inn.charAt(i)!='>' ) {
+                while(inn.charAt(i)!='>' || Main.In(i, DQArea) || Main.In(i, DQArea) ) {
                     i++;
                 }
                 Right.add(i);
             } else if (hand.startsWith("</script")) {
                 flag_in_js = false;
+                if (Right.size()<Left.size()) {
+                    UnFinished.add(Left.get(Left.size()-1));
+                }
                 Left.add(i);
-                while(inn.charAt(i)!='>') {
+                while(inn.charAt(i)!='>' || Main.In(i, DQArea) || Main.In(i, SQArea)) {
                     i++;                    
                 }
                 Right.add(i);
                 continue;
             }else if (hand.startsWith("<pre")) {
                 flag_in_pre=true;
+                if (Right.size()<Left.size()) {
+                    UnFinished.add(Left.get(Left.size()-1));
+                }
                 Left.add(i);
-                while(inn.charAt(i)!='>') {
+                while(inn.charAt(i)!='>' || Main.In(i, DQArea) || Main.In(i, SQArea)) {
                     i++;
                 }
                 Right.add(i); continue;
             }else if (hand.startsWith("</pre")) {
                 flag_in_pre=false;
+                if (Right.size()< Left.size()) {
+                    UnFinished.add(Left.get(Left.size()-1));
+                }
                 Left.add(i);
-                while(inn.charAt(i)!='>') {
+                while(inn.charAt(i)!='>'  || Main.In(i, DQArea) || Main.In(i, SQArea)) {
                     i++;
                 }
                 Right.add(i); continue;
             }else if (hand.startsWith("<style")) {
                 flag_in_style=true;
+                if (Right.size()< Left.size()) {
+                    UnFinished.add(Left.get(Left.size()-1));
+                }                
                 Left.add(i);
-                while(inn.charAt(i)!='>' ) {
+                while(inn.charAt(i)!='>' || Main.In(i, DQArea) || Main.In(i, SQArea) ) {
                     i++;
                 }
                 Right.add(i); continue;
             }else if ((hand.startsWith("</style"))) {
                 flag_in_style=false;
+                if (Right.size()< Left.size()) {
+                    UnFinished.add(Left.get(Left.size()-1));
+                }                 
                 Left.add(i);
-                while(inn.charAt(i)!='>') {
+                while(inn.charAt(i)!='>' || Main.In(i, DQArea) || Main.In(i, SQArea)) {
                     i++;
                 }
                 Right.add(i); continue;
@@ -191,8 +224,17 @@ public class HTML {
                     && !flag_in_pre && !flag_in_style) {
                 if (inn.charAt(i) == '<') {
                     if (i+1<StringLength && !Character.isWhitespace(inn.charAt(i+1)) ) {
-                        Left.add(i);
-                        for (; i<StringLength;i++) {
+                        Left.add(i); 
+                        for (i+=1; i<StringLength;i++) {
+                            if (i+1<StringLength && inn.charAt(i)=='<'  && 
+                                    !Character.isWhitespace(inn.charAt(i+1)) &&
+                                    !Main.In(i,DQArea) &&
+                                    !Main.In(i, SQArea)) {
+                                if (Right.size()< Left.size()) {
+                                    UnFinished.add(Left.get(Left.size()-1));
+                                }
+                                Left.add(i);
+                            }                                                       
                             if (inn.charAt(i)=='>' && !Main.In(i, DQArea) && !Main.In(i, SQArea)) {
                                 Right.add(i);break;
                             }
@@ -218,5 +260,34 @@ public class HTML {
         }
         Collections.sort(LeftOrRight);
     }
-
+    public Vector<String> GetAllTags() {
+        Vector<String> ret=new Vector<String>();
+        for (int i=0; i<LeftOrRight.size(); i++) {
+            int Start= LeftOrRight.get(i);
+            int End=(-1);
+            if (i+1<= LeftOrRight.size()-1 )
+                End=LeftOrRight.get(i+1);
+            if (MyText.charAt(Start)=='<') {
+                if (MyText.charAt(End)=='>') {
+                    ret.add(Main.ToSTR(new Pair(Start,End), MyText));
+                }else if (MyText.charAt(End)=='<') {
+                    ret.add(Main.ToSTR(new Pair(Start,End-1), MyText));
+                }else {
+                    assert(false);
+                }
+            }
+        }
+        return ret;
+    }
+    public Vector<String> GetAllBetween() {
+        Vector<String> ret=new Vector<String>();
+        for (int i=0; i<LeftOrRight.size(); i++) {
+            if (MyText.charAt(LeftOrRight.get(i))=='>' && i+1<=LeftOrRight.size()-1) {
+                if (MyText.charAt(LeftOrRight.get(i+1))=='<') {
+                    ret.add(MyText.substring(LeftOrRight.get(i)+1, LeftOrRight.get(i+1)));
+                }
+            }
+        }
+        return ret;
+    }
 }

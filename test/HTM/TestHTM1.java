@@ -10,6 +10,7 @@ import Personal.Main;
 import Personal.Pair;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Vector;
 import java.util.stream.Stream;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -89,34 +90,36 @@ public class TestHTM1 {
     }
     @Deprecated
     public static void PrintTags(HTML inn, StringBuffer buf) {
-        for (int i = 0, j = 0; i < inn.LeftOrRight.size(); i += 2, j++) {
+        for (int i=0; i< inn.LeftOrRight.size(); i++) {
             int Start = inn.LeftOrRight.get(i);
-            int End = inn.LeftOrRight.get(i + 1);
-            String tmp = Main.ToSTR(new Pair(Start, End), buf);
-            System.out.println(tmp);
+            int End=(-1);
+            if (i+1< inn.LeftOrRight.size())
+                End = inn.LeftOrRight.get(i + 1);
+            if (buf.charAt(Start)=='<') {
+                if (buf.charAt(End)=='>') {
+                    String tmp = Main.ToSTR(new Pair(Start, End), buf);
+                    System.out.println(tmp);                    
+                }else if  (buf.charAt(End)=='<') {
+                    String tmp= Main.ToSTR(new Pair(Start,End-1), buf);
+                    System.out.println(tmp);
+                }else {
+                    assertTrue(false);
+                }
+            }
+            
         }
     }
     @Deprecated
     public static void PrintBetween(HTML that, StringBuffer buf) {
-        for (int j = 0, i = 1; i < that.LeftOrRight.size() - 1; i += 2, j++) {
-            int Start = that.LeftOrRight.get(i);
-            int End = that.LeftOrRight.get(i + 1);
-            String tmp = Main.ToSTR(new Pair(Start + 1, End - 1), buf).trim();
-            System.out.println("j=" + j + " :" + tmp);
+        for (int i=0;i<that.LeftOrRight.size(); i++) {
+            if (buf.charAt(that.LeftOrRight.get(i))=='>'  && i+1<=that.LeftOrRight.size()-1) {
+                if (buf.charAt(that.LeftOrRight.get(i+1))=='<') {
+                    System.out.println(""+i+":"+ buf.substring(that.LeftOrRight.get(i)+1,  that.LeftOrRight.get(i+1) )  );
+                }else {
+                    System.out.println(""+i+":");
+                }
+            }
         }
-    }
-    
-    @Deprecated
-    public static void ReportInTest(HTML that, StringBuffer buf) {
-        System.out.println("DQS:");
-        PrintDQS(that, buf);
-        System.out.println("SQS:");
-        PrintSQ(that);
-        System.out.println("TAG:");
-        PrintTags(that, buf);
-        System.out.println("BETWEEN:");
-        PrintBetween(that, buf);
-
     }
     public static void ReportInTest(HTML that) {
         System.out.println("DQS:");
@@ -154,16 +157,34 @@ public class TestHTM1 {
         }
     }
     public static void assertTAG(HTML that,  String[] txtTag, boolean debug) {
-        for (int i = 0, j = 0; i < that.LeftOrRight.size(); i += 2, j++) {
-            int Start = that.LeftOrRight.get(i);
-            int End = that.LeftOrRight.get(i + 1);
-            String tmp = Main.ToSTR(new Pair(Start, End), that.MyText);
+        Vector<String> hand=that.GetAllTags();
+        assertTrue(hand.size()==txtTag.length);
+        for(int i=0; i<hand.size(); i++) {
+            assertTrue(txtTag[i].equals(hand.get(i)));
+        }
+    }
+    public static void assertRadical(HTML that,Integer[] arrRad,boolean debug) {
+        assertTrue(that.Radical.size()== arrRad.length);
+        int length=that.Radical.size();
+        for (int i=0; i< length; i++) {
             if (debug) {
-                System.out.println("i=" + i);
-                System.out.println(tmp);
-                System.out.println(txtTag[j]);                
+                System.out.println("i="+i);
+                System.out.println("arr[i]="+arrRad[i]);
+                System.out.println("that.Radical.get(i)="+that.Radical.get(i));
             }
-            assertTrue(txtTag[j].equals(tmp));
+            assertTrue(arrRad[i]==that.Radical.get(i));
+        }
+    }
+    public static void assertUnFinished(HTML that,Integer[] arrUnFinished,boolean debug) {
+        assertTrue(that.UnFinished.size()==arrUnFinished.length);
+        int len=that.UnFinished.size();
+        for (int i=0; i<len; i++) {
+            if (debug) {
+                System.out.println("i="+i);
+                System.out.println("arr[i]="+arrUnFinished[i]);
+                System.out.println("that.UnFinished.get(i)="+that.UnFinished.get(i));
+            }
+            assertTrue(arrUnFinished[i]==that.UnFinished.get(i));
         }
     }
     public static String[] SQ(String[] inn) {

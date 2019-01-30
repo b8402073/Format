@@ -156,6 +156,15 @@ public class TestHTM1 {
             assertTrue(tmp.equals(txtSQ[i]));
         }
     }
+    public static void assertVecWithArr(Vector<Integer> vec, Integer[] arr,boolean debug) {
+        assertTrue(vec.size()==arr.length);
+        for (int i=0; i<arr.length; i++) {
+            if (debug) {
+                System.out.println("i="+i+"   "+vec.get(i)+"   "+arr[i]);
+            }
+            assertTrue(vec.get(i)==arr[i]);
+        }
+    }
     public static void assertTAG(HTML that,  String[] txtTag, boolean debug) {
         Vector<String> hand=that.GetAllTags();
         assertTrue(hand.size()==txtTag.length);

@@ -70,6 +70,14 @@ public class HTML {
         LeftOrRight = new Vector<Integer>();
         //Build_Left_and_Right_Radical_UnFinished(MyText);
         Build();
+        for (Integer e : Left) {
+            LeftOrRight.add(e);
+        }
+        for (Integer e : Right) {
+            LeftOrRight.add(e);
+        }
+        Collections.sort(LeftOrRight);        
+
     }
 
     public void Fix_if_SQDQ_in_CommentArea() {
@@ -244,8 +252,7 @@ public class HTML {
                             throw new RuntimeException("bad right angle blanket i="+i);
                     }                   
                 }
-            }
-            if (defRadical.contains(MyText.charAt(i))) {
+            }else if (defRadical.contains(MyText.charAt(i))) {
                 Radical.add(i);
             }
 

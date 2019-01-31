@@ -534,6 +534,7 @@ public class SpecialAboutAngleBranketSymbol {
     public void testA13() {
          System.out.println("A13:");       
         StringBuffer buf=new StringBuffer(jsp13);
+//                         01234567890123456789012345678901234567890        
 //    public String jsp13="<html><body> <p id='na>me1\n"+"'></body></html>"; //這裡沒有SQArea,1個tag,2個游離子        
         HTML that=new HTML(buf);
         that.go();
@@ -646,6 +647,7 @@ public class SpecialAboutAngleBranketSymbol {
         System.out.println("A16:");        
         //under construction
         StringBuffer buf=new StringBuffer(jsp16);
+//                         01234567890123456789012345678901234567890123456
 //    public String jsp16="<html><body> <p  <!-- GGYY -->   </body></html>"; //一個<p> tag,沒有游離子
         HTML that=new HTML(buf);
         that.go();
@@ -653,27 +655,25 @@ public class SpecialAboutAngleBranketSymbol {
         TestHTM1.ReportInTest(that);        
         System.out.println("Radical="+that.Radical.toString());
         System.out.println("UnFinished="+that.UnFinished.toString());
-        Integer[] arrL={0,6,13,17,33,40};
+        Integer[] arrL={0,6,13,33,40};
         TestHTM1.assertVecWithArr(that.Left, arrL,true);
         Integer[] arrR={5,11,29,39,46};
         TestHTM1.assertVecWithArr(that.Right,arrR,true);
-        Integer[] arrLR={0, 5, 6, 11, 13, 17,29,  33, 40,46};
+        Integer[] arrLR={0, 5, 6, 11, 13, 29, 33,39, 40,46};
         TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);        
         assertTrue(that.DQArea.size()==0);
         assertTrue(that.SQArea.size()==0);        
-        String[] txtTag={"<html>" ,"<body>","</body>" ,"</html>" };
+        String[] txtTag={"<html>" ,"<body>","<p  <!-- GGYY -->","</body>" ,"</html>" };
         System.out.println(that.GetAllTags());
         TestHTM1.assertTAG(that, txtTag, true);
         Vector<String> between=that.GetAllBetween();
         for (int i=0; i<between.size(); i++) {            
             switch(i) {
-                case 1:
-                    assertTrue(("< p id='name1 \n"+"'/>").equals(between.get(i).trim())); break;
                 default:
                     assertTrue("".equals(between.get(i).trim()));
             }
         }
-        Integer[] arrRad={12,19,27,29};
+        Integer[] arrRad={};
         Integer[] arrUN={};
         TestHTM1.assertRadical(that, arrRad, true);
         TestHTM1.assertUnFinished(that, arrUN, true);    
@@ -691,15 +691,15 @@ public class SpecialAboutAngleBranketSymbol {
         TestHTM1.ReportInTest(that);        
         System.out.println("Radical="+that.Radical.toString());
         System.out.println("UnFinished="+that.UnFinished.toString());
-        Integer[] arrL={0,6,13,17,33,40};
+        Integer[] arrL={0,6,13,33,40};
         TestHTM1.assertVecWithArr(that.Left, arrL,true);
         Integer[] arrR={5,11,29,39,46};
         TestHTM1.assertVecWithArr(that.Right,arrR,true);
-        Integer[] arrLR={0, 5, 6, 11, 13,17, 29,  33, 39,40,46};
+        Integer[] arrLR={0, 5, 6, 11, 13,29,  33, 39,40,46};
         TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);        
         assertTrue(that.DQArea.size()==0);
         assertTrue(that.SQArea.size()==0);        
-        String[] txtTag={"<html>" ,"<body>","<p <!-- GGYY -->","</body>" ,"</html>" };
+        String[] txtTag={"<html>" ,"<body>","<p  <!-- GGYY -->","</body>" ,"</html>" };
         System.out.println(that.GetAllTags());
         TestHTM1.assertTAG(that, txtTag, true);
         Vector<String> between=that.GetAllBetween();
@@ -711,7 +711,7 @@ public class SpecialAboutAngleBranketSymbol {
                     assertTrue("".equals(between.get(i).trim()));
             }
         }
-        Integer[] arrRad={};
+        Integer[] arrRad={31};
         Integer[] arrUN={};
         TestHTM1.assertRadical(that, arrRad, true);
         TestHTM1.assertUnFinished(that, arrUN, true);    

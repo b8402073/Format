@@ -249,11 +249,12 @@ public class HTML {
                     if (Left.size()- UnFinished.size() -Right.size()==1) {
                         Right.add(i);
                     }else  {
-                            throw new RuntimeException("bad right angle blanket i="+i);
+                        Radical.add(i);
                     }                   
                 }
             }else if (defRadical.contains(MyText.charAt(i))) {
-                Radical.add(i);
+                if (Right.size()==Left.size()-UnFinished.size())
+                    Radical.add(i);
             }
 
         }

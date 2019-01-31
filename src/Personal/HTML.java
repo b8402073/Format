@@ -159,13 +159,15 @@ public class HTML {
             int e=(-1);   //應該是對應的右角號位置            
             if (Main.In(i, DQArea) ||  Main.In(i, SQArea))
                 continue;
-            if (MyText.charAt(i) == '<') {
-                if (i + 4 < StringLength && "<!--".equals(MyText.substring(i, i + 4))) {
-                    Focus f = new Focus("<!--", i, i + 1);
-                    stack.push(f);
-                    Left.add(i);
+            if (MyText.charAt(i) == '<') {                                              
+                if (i + 4 < StringLength && "<!--".equals(MyText.substring(i, i + 4))) {       
+                    if (Left.size()- UnFinished.size()-Right.size()==0) {
+                        Focus f = new Focus("<!--", i, i + 1);
+                        stack.push(f);
+                        Left.add(i);
+                    }
                     continue;
-                }
+                } 
                 if (i + 1 < StringLength && MyText.charAt(i + 1) != '/') {
                     Focus f = null;
                     if (i + 7 < StringLength && "<script".equals(MyText.substring(i, i + 7).toLowerCase())) {
@@ -216,7 +218,7 @@ public class HTML {
                     if (i+1<StringLength && Character.isWhitespace(MyText.charAt(i+1))) {
                         Radical.add(i); 
                     }else {
-                        if (Left.size()> Right.size()) {
+                        if (Left.size()-UnFinished.size()- Right.size()==1) {
                             UnFinished.add(Left.get(Left.size()-1));
                         }
                         Left.add(i);
@@ -227,12 +229,16 @@ public class HTML {
                     }                    
                 }
             }else if (MyText.charAt(i)=='-') {
-                  if (i+3<StringLength && "-->".equals(MyText.substring(i,i+3))) {
-                      if (stack.size()>0 && stack.peek().RetString.equals("<!--")) {
-                          stack.pop();
-                          Right.add(i+2);
-                      }
-                  }
+                if (i+3<StringLength && "-->".equals(MyText.substring(i,i+3))) {
+                    if (Left.size()- UnFinished.size()-Right.size()==0) {
+                        if (stack.size()>0 && stack.peek().RetString.equals("<!--")) {
+                            stack.pop();
+                            Right.add(i+2);
+                        }                        
+                    }
+                    //i=i+2;    //也許加這一句會有比較對稱性的結果，但是IE和Chrome不是這樣解析HTML的...
+                    continue;
+                }
             }else if (MyText.charAt(i)=='%') {
                  if (i+2<StringLength && "%>".equals(MyText.substring(i,i+2).toLowerCase())) {
                         if (stack.size()>0 && stack.peek().RetString.equals("<%")) {

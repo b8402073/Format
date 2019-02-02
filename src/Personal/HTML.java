@@ -145,6 +145,10 @@ public class HTML {
         }
         return(-1);
     }
+    private void StackTagRoutine(int i,int e) {
+        Left.add(i);
+        Right.add(e);
+    }
     public void Build() {
         final int StringLength = MyText.length();
         Character[] RadicalSet = {'<', '>', '\'', '"'};
@@ -173,44 +177,54 @@ public class HTML {
                     if (i + 7 < StringLength && "<script".equals(MyText.substring(i, i + 7).toLowerCase())) {
                         f = new Focus("<script", i, i + 7);
                         stack.push(f);
-                        e=searchForRightAngleBranket1(i+7);                        
+                        e=searchForRightAngleBranket1(i+7);
+                        StackTagRoutine(i,e); i=e; continue;
                     } else if (i + 6 < StringLength && "<style".equals(MyText.substring(i, i + 6).toLowerCase())) {
                         f = new Focus("<style", i, i + 6);
                         stack.push(f);
-                        e=searchForRightAngleBranket1(i+6);                                                
+                        e=searchForRightAngleBranket1(i+6);
+                        StackTagRoutine(i,e); i=e; continue;
                     } else if (i + 4 < StringLength && "<pre".equals(MyText.substring(i, i + 4).toLowerCase())) {
                         f = new Focus("<pre", i, i + 4);
                         stack.push(f);
-                        e=searchForRightAngleBranket1(i+4);                                                
+                        e=searchForRightAngleBranket1(i+4);
+                        StackTagRoutine(i,e);  i=e; continue;
                     } else if (i + 2 < StringLength && "<%".equals(MyText.substring(i , i + 2))) {
                         f = new Focus("<%", i, i + 2);
                         stack.push(f);
-                        e=searchForRightAngleBranket2(i+2);                                                
+                        e=searchForRightAngleBranket2(i+2);
+                        StackTagRoutine(i,e); i=e; continue;
                     }
                 } else {
                     if (i + 8 < StringLength && "</script".equals(MyText.substring(i, i + 8).toLowerCase())) {
                         if (stack.size()>0 && stack.peek().RetString.equals("<script")) {
                             stack.pop();
-                            e=searchForRightAngleBranket1(i+8);                                                    
+                            e=searchForRightAngleBranket1(i+8); 
+                            StackTagRoutine(i,e); i=e; continue;
                         } else {
                             //有可能是這份HTML有問題,因為<script> </script>不成對
                             //但是這不是我們工作的重點...所以不理它
+                            throw new RuntimeException("Unpair: </script>");
                         }
                     } else if (i + 7 < StringLength && "</style".equals(MyText.substring(i, i + 7).toLowerCase())) {
                         if (stack.size()>0 && stack.peek().RetString.equals("<style")) {
                             stack.pop();
-                            e=searchForRightAngleBranket1(i+7);                                                    
+                            e=searchForRightAngleBranket1(i+7); 
+                            StackTagRoutine(i,e); i=e; continue;
                         } else {
                             //有可能是這份HTML有問題,因為<style> </stlye>不成對
-                            //但是這不是我們工作的重點...所以不理它                            
+                            //但是這不是我們工作的重點...所以不理它
+                            throw new RuntimeException("Unpair: </style>");
                         }
                     } else if (i + 5 < StringLength && "</pre".equals(MyText.substring(i, i + 5).toLowerCase())) {
                         if (stack.size()>0 && stack.peek().RetString.equals("<pre")) {
                             stack.pop();
-                            e=searchForRightAngleBranket1(i+5);                                                    
+                            e=searchForRightAngleBranket1(i+5);
+                            StackTagRoutine(i,e); i=e; continue;
                         } else {
                             //有可能是這份HTML有問題,因為<pre> </pre>不成對
-                            //但是這不是我們工作的重點...所以不理它                            
+                            //但是這不是我們工作的重點...所以不理它
+                            throw new RuntimeException("Unpair: </pre>");
                         }
                     }                    
                 }
@@ -227,13 +241,14 @@ public class HTML {
                             i=e;
                         }
                     }                    
-                }
+                }                
             }else if (MyText.charAt(i)=='-') {
                 if (i+3<StringLength && "-->".equals(MyText.substring(i,i+3))) {
-                    if (Left.size()- UnFinished.size()-Right.size()==0) {
+                    if (Left.size()- UnFinished.size()-Right.size()==1) {
                         if (stack.size()>0 && stack.peek().RetString.equals("<!--")) {
                             stack.pop();
                             Right.add(i+2);
+                            i=i+2;
                         }                        
                     }
                     //i=i+2;    //也許加這一句會有比較對稱性的結果，但是IE和Chrome不是這樣解析HTML的...
@@ -251,14 +266,14 @@ public class HTML {
                         }                        
                  }
             }else if (MyText.charAt(i)=='>') {  //如果是其他的普通Tag
-                if (stack.empty()) {
-                    if (Left.size()- UnFinished.size() -Right.size()==1) {
+                if (stack.empty()) {                    
+                    if (Left.size() - UnFinished.size()- Right.size()==1) {
                         Right.add(i);
                     }else  {
                         Radical.add(i);
                     }                   
                 }
-            }else if (defRadical.contains(MyText.charAt(i))) {
+            }else if (stack.size()==0 && defRadical.contains(MyText.charAt(i))) {
                 if (Right.size()==Left.size()-UnFinished.size())
                     Radical.add(i);
             }

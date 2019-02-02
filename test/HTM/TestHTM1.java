@@ -246,7 +246,7 @@ public class TestHTM1 {
             "</body>",
             "</html>"};
         assertDQ(that, txtDQS,false);
-        assertTAG(that, txtTags,false);
+        assertTAG(that, txtTags,true);
         for (int j = 0, i = 1; i < that.LeftOrRight.size() - 1; i += 2, j++) {
             int Start = that.LeftOrRight.get(i);
             int End = that.LeftOrRight.get(i + 1);

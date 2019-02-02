@@ -67,6 +67,17 @@ public class SpecialAboutAngleBranketSymbol {
     public String w8="<html><body> <!--  <!--  comment --> --> </body></html>";
     public String w9="<html><body> <p <!-- GGYY <!-- AABB --></body></html>";
     public String w10="<html><body> <!-- </body> </html>";
+    public String w11="<html><body> --> </body></html>";
+    public String w12="<html><style> < </style></html>";
+    public String w13="<html><style> > </style></html>";
+    public String w14="<html><style> <  </html>";
+    public String w15="<html><style> >  </html>";
+    
+    public String w16="<html><%      > %></html>";
+    public String w17="<html><%      < %></html>";
+    public String w18="<html><pre>   > </pre></html>";
+    public String w19="<html><pre>   > </html>";
+    
     public SpecialAboutAngleBranketSymbol() {
     }
     
@@ -914,7 +925,43 @@ public class SpecialAboutAngleBranketSymbol {
     }      
     @Test
     public void testA23() {
-        StringBuffer buf=new StringBuffer(jsp23);        assertTrue(false);
+    //              012345678901234567890123 456789012345678901234
+    //String jsp23="<html><body><p name='GG \n > ' </body></html>";   //一個<p> tag         
+        StringBuffer buf=new StringBuffer(jsp23);     
+        System.out.println("A23:");
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);        
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        Integer[] arrL={0,6,12,30,37};
+        TestHTM1.assertVecWithArr(that.Left, arrL,true);
+        Integer[] arrR={5,11,26,36,43};
+        TestHTM1.assertVecWithArr(that.Right,arrR,true);
+        Integer[] arrLR={0, 5, 6, 11, 12, 26, 30, 36, 37, 43};
+        TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);        
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<body>","<p name='GG \n >","</body>" ,"</html>" };
+        System.out.println(that.GetAllTags());
+        TestHTM1.assertTAG(that, txtTag, true);
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) { 
+                case 2:
+                    //System.out.println("\\\"");
+                    //System.out.println(between.get(i));
+                    assertTrue("\'".equals(between.get(i).trim())); break;
+                default:
+                    assertTrue("".equals(between.get(i).trim()));
+            }
+        }
+        Integer[] arrRad={28};
+        Integer[] arrUN={};
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);    
+        
     }      
     @Test
     public void testAF0() {
@@ -1095,7 +1142,76 @@ public class SpecialAboutAngleBranketSymbol {
         TestHTM1.assertRadical(that, arrRad, true);
         TestHTM1.assertUnFinished(that, arrUN, true);    
     }      
-
+    @Test
+    public void testW1() {
+        System.out.println("W01:");
+    //public String jsp1="<html><body> < </body></html>";  //遇到游離子要單獨對待            
+        StringBuffer buf=new StringBuffer(jsp1);  assertTrue(false);
+        
+    }
+    @Test
+    public void testW2() {
+        System.out.println("W02:");
+    //public String jsp1="<html><body> < </body></html>";  //遇到游離子要單獨對待            
+        StringBuffer buf=new StringBuffer(jsp1);  assertTrue(false);
+                
+    }
+    @Test
+    public void testW3() {
+        System.out.println("W03:");
+    //public String jsp1="<html><body> < </body></html>";  //遇到游離子要單獨對待            
+        StringBuffer buf=new StringBuffer(jsp1);  assertTrue(false);
+        
+    }
+    @Test
+    public void testW4() {
+        System.out.println("W04:");
+    //public String jsp1="<html><body> < </body></html>";  //遇到游離子要單獨對待            
+        StringBuffer buf=new StringBuffer(jsp1);  assertTrue(false)''
+    }
+    @Test
+    public void testW5() {
+        System.out.println("W05:");
+    //public String jsp1="<html><body> < </body></html>";  //遇到游離子要單獨對待            
+        StringBuffer buf=new StringBuffer(jsp1);  assertTrue(false)''
+        
+    }
+    @Test
+    public void testW6(){
+        System.out.println("W06:");
+    //public String jsp1="<html><body> < </body></html>";  //遇到游離子要單獨對待            
+        StringBuffer buf=new StringBuffer(jsp1);  assertTrue(false)''
+        
+    }
+    @Test
+    public void testW7() {
+        System.out.println("W07:");
+    //public String jsp1="<html><body> < </body></html>";  //遇到游離子要單獨對待            
+        StringBuffer buf=new StringBuffer(jsp1);  assertTrue(false)''
+        
+    }
+    @Test
+    public void testW8() {
+        System.out.println("W08:");
+    //public String jsp1="<html><body> < </body></html>";  //遇到游離子要單獨對待            
+        StringBuffer buf=new StringBuffer(jsp1);  assertTrue(false);
+        
+    }
+    @Test
+    public void testW9() {
+        System.out.println("W09:");
+    //public String jsp1="<html><body> < </body></html>";  //遇到游離子要單獨對待            
+        StringBuffer buf=new StringBuffer(jsp1);assertTrue(false);
+        
+    }
+    @Test
+    public void testW10() {
+        System.out.println("W10:");
+    //public String jsp1="<html><body> < </body></html>";  //遇到游離子要單獨對待            
+        StringBuffer buf=new StringBuffer(jsp1);assertTrue(false);
+        
+    }
+    
     
     
 }

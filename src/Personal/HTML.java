@@ -182,7 +182,7 @@ public class HTML {
                         f = new Focus("<pre", i, i + 4);
                         stack.push(f);
                         e=searchForRightAngleBranket1(i+4);                                                
-                    } else if (i + 2 < StringLength && "<%".equals(MyText.substring(i + i + 2))) {
+                    } else if (i + 2 < StringLength && "<%".equals(MyText.substring(i , i + 2))) {
                         f = new Focus("<%", i, i + 2);
                         stack.push(f);
                         e=searchForRightAngleBranket2(i+2);                                                

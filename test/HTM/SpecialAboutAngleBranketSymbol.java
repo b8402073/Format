@@ -49,6 +49,9 @@ public class SpecialAboutAngleBranketSymbol {
     public String jsp22="<html><body><p name=\"GG \n > \" </body></html>";   //一個<p> tag 
     public String jsp23="<html><body><p name='GG \n > ' </body></html>";   //一個<p> tag 
     public String jsp24="<html><script> if (a<3) a=4; </script></html>";
+    public String jsp25="<html><pre> 1--<>3 </pre> </html>";
+    public String jsp26="<html><style> 1--<>3 </style></html>";
+    
     
     //                0123456789012345678901234567
     public String f0="<html><body><p </body></html>";  //unfinished tag
@@ -997,6 +1000,86 @@ public class SpecialAboutAngleBranketSymbol {
                     //System.out.println("\\\"");
                     //System.out.println(between.get(i));
                     assertTrue("if (a<3) a=4;".equals(between.get(i).trim())); break;
+                default:
+                    assertTrue("".equals(between.get(i).trim()));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN={};
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);    
+        
+    }      
+    @Test
+    public void testA25() {
+    //              012345678901234567890123456789012345678901234
+    //       jsp25="<html><pre> 1--<>3 </pre> </html>";
+        StringBuffer buf=new StringBuffer(jsp25);     
+        System.out.println("A25:");
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);        
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        Integer[] arrL={0,6,19,26};
+        TestHTM1.assertVecWithArr(that.Left, arrL,true);
+        Integer[] arrR={5,10,24,32};
+        TestHTM1.assertVecWithArr(that.Right,arrR,true);
+        Integer[] arrLR={0, 5, 6, 10,19,24,26,32};
+        TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);        
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>","<pre>","</pre>","</html>" };
+        System.out.println(that.GetAllTags());
+        TestHTM1.assertTAG(that, txtTag, true);
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) { 
+                case 1:
+                    //System.out.println("\\\"");
+                    //System.out.println(between.get(i));
+                    assertTrue("1--<>3".equals(between.get(i).trim())); break;
+                default:
+                    assertTrue("".equals(between.get(i).trim()));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN={};
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);    
+        
+    }      
+    @Test
+    public void testA26() {
+    //              012345678901234567890123456789012345678901234
+    //       jsp26="<html><style> 1--<>3 </style></html>";
+        StringBuffer buf=new StringBuffer(jsp26);     
+        System.out.println("A26:");
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);        
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        Integer[] arrL={0,6,21,29};
+        TestHTM1.assertVecWithArr(that.Left, arrL,true);
+        Integer[] arrR={5,12,28,35};
+        TestHTM1.assertVecWithArr(that.Right,arrR,true);
+        Integer[] arrLR={0, 5, 6,12, 21, 28,29, 35};
+        TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);        
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>","<style>","</style>","</html>" };
+        System.out.println(that.GetAllTags());
+        TestHTM1.assertTAG(that, txtTag, true);
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) { 
+                case 1:
+                    //System.out.println("\\\"");
+                    //System.out.println(between.get(i));
+                    assertTrue("1--<>3".equals(between.get(i).trim())); break;
                 default:
                     assertTrue("".equals(between.get(i).trim()));
             }

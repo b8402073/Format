@@ -77,8 +77,7 @@ public class SpecialAboutAngleBranketSymbol {
     public String w12="<html><style> < </style></html>";
     public String w13="<html><style> > </style></html>";
     public String w14="<html><style> <  </html>";
-    public String w15="<html><style> >  </html>";
-    
+    public String w15="<html><style> >  </html>";    
     public String w16="<html><%      > %></html>";
     public String w17="<html><%      < %></html>";
     public String w18="<html><pre>   > </pre></html>";
@@ -669,6 +668,7 @@ public class SpecialAboutAngleBranketSymbol {
         StringBuffer buf=new StringBuffer(jsp16);
 //                         01234567890123456789012345678901234567890123456
 //    public String jsp16="<html><body> <p  <!-- GGYY -->   </body></html>"; //一個<p> tag,沒有游離子
+
         HTML that=new HTML(buf);
         that.go();
         that.PrintIssues();
@@ -679,7 +679,7 @@ public class SpecialAboutAngleBranketSymbol {
         TestHTM1.assertVecWithArr(that.Left, arrL,true);
         Integer[] arrR={5,11,29,39,46};
         TestHTM1.assertVecWithArr(that.Right,arrR,true);
-        Integer[] arrLR={0, 5, 6, 11, 13, 29, 33,39, 40,46};
+        Integer[] arrLR={0, 5, 6, 11, 13,29, 33,39, 40,46};
         TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);        
         assertTrue(that.DQArea.size()==0);
         assertTrue(that.SQArea.size()==0);        
@@ -1311,71 +1311,354 @@ public class SpecialAboutAngleBranketSymbol {
     
     @Test
     public void testW1() {
+//                      01234567890123456789012345678901234567890123        
+    //public String w1="<html><body> <!-- 123 >  -->  </body></html>";             
         System.out.println("W01:");
-    //public String jsp1="<html><body> < </body></html>";  //遇到游離子要單獨對待            
-        StringBuffer buf=new StringBuffer(jsp1);  assertTrue(false);
+        StringBuffer buf=new StringBuffer(w1);  
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);
+        
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        Integer[] arrL={0,6,13,30,37};
+        TestHTM1.assertVecWithArr(that.Left, arrL,true);
+        Integer[] arrR={5,11,27,36,43};
+        TestHTM1.assertVecWithArr(that.Right,arrR,true);
+        Integer[] arrLR={0, 5, 6,11,13,27,30,36,37,43};
+        TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);          
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<body>","<!-- 123 >  -->","</body>" ,"</html>" };
+        System.out.println(that.GetAllTags());
+        TestHTM1.assertTAG(that, txtTag, true);
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) {
+                default:
+                    assertTrue("".equals(between.get(i).trim()));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN={};
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);    
+        
         
     }
     @Test
     public void testW2() {
         System.out.println("W02:");
-    //public String jsp1="<html><body> < </body></html>";  //遇到游離子要單獨對待            
-        StringBuffer buf=new StringBuffer(jsp1);  assertTrue(false);
+    //                  0123456789012345678901234567890123456789012345
+    //public String w2="<html><body> <!-- 123 >56  -->  </body></html>"; 
+        StringBuffer buf=new StringBuffer(w2); 
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);
+        
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        Integer[] arrL={0,6,13,32,39};
+        TestHTM1.assertVecWithArr(that.Left, arrL,true);
+        Integer[] arrR={5,11,29,38,45};
+        TestHTM1.assertVecWithArr(that.Right,arrR,true);
+        Integer[] arrLR={0, 5, 6,11,13,29,32,38,39,45};
+        TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);          
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<body>","<!-- 123 >56  -->","</body>" ,"</html>" };
+        System.out.println(that.GetAllTags());
+        TestHTM1.assertTAG(that, txtTag, true);
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) {
+                default:
+                    assertTrue("".equals(between.get(i).trim()));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN={};
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);    
+        
                 
     }
     @Test
     public void testW3() {
         System.out.println("W03:");
-    //public String jsp1="<html><body> < </body></html>";  //遇到游離子要單獨對待            
-        StringBuffer buf=new StringBuffer(jsp1);  assertTrue(false);
+//                      012345678901234567890123456789012345678901        
+//    public String w3="<html><body> <!-- <p>  -->  </body></html>";
+        StringBuffer buf=new StringBuffer(w3);  
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);
+        
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        Integer[] arrL={0,6,13,28,35};
+        TestHTM1.assertVecWithArr(that.Left, arrL,true);
+        Integer[] arrR={5,11,25,34,41};
+        TestHTM1.assertVecWithArr(that.Right,arrR,true);
+        Integer[] arrLR={0, 5, 6,11,13,25,28,34,35,41};
+        TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);          
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<body>","<!-- <p>  -->","</body>" ,"</html>" };
+        System.out.println(that.GetAllTags());
+        TestHTM1.assertTAG(that, txtTag, true);
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) {
+                default:
+                    assertTrue("".equals(between.get(i).trim()));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN={};
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);    
         
     }
     @Test
     public void testW4() {
         System.out.println("W04:");
-    //public String jsp1="<html><body> < </body></html>";  //遇到游離子要單獨對待            
-        StringBuffer buf=new StringBuffer(jsp1);  assertTrue(false)''
+//                      01234567890123456789012345678901234567890123456789        
+//    public String w4="<html><body> <!-- <p>123</p>  -->  </body></html>";
+        StringBuffer buf=new StringBuffer(w4);  
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);
+        
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        Integer[] arrL={0,6,13,35,42};
+        TestHTM1.assertVecWithArr(that.Left, arrL,true);
+        Integer[] arrR={5,11,32,41,48};
+        TestHTM1.assertVecWithArr(that.Right,arrR,true);
+        Integer[] arrLR={0, 5, 6,11,13,32,35,41,42,48};
+        TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);          
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<body>","<!-- <p>123</p>  -->","</body>" ,"</html>" };
+        System.out.println(that.GetAllTags());
+        TestHTM1.assertTAG(that, txtTag, true);
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) {
+                default:
+                    assertTrue("".equals(between.get(i).trim()));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN={};
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);    
+        
     }
     @Test
     public void testW5() {
         System.out.println("W05:");
-    //public String jsp1="<html><body> < </body></html>";  //遇到游離子要單獨對待            
-        StringBuffer buf=new StringBuffer(jsp1);  assertTrue(false)''
-        
+    //            012345678901234567890123456789012345678901234567890123456789012345678901234567890123    
+    // String w5="<html><body> <script name='<'>  if (3<4) var i=1;  </script name='<' ></body></html>";
+        StringBuffer buf=new StringBuffer(w5);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);        
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        Integer[] arrL={0,6,13,51,70,77};
+        TestHTM1.assertVecWithArr(that.Left, arrL,true);
+        Integer[] arrR={5,11,29,69,76,83};
+        TestHTM1.assertVecWithArr(that.Right,arrR,true);
+        Integer[] arrLR={0, 5, 6,11,13,29,51,69,70,76,77,83};
+        TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);          
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==2);        
+        String[] txtTag={"<html>" ,"<body>","<script name='<'>","</script name='<' >","</body>" ,"</html>" };
+        System.out.println(that.GetAllTags());
+        TestHTM1.assertTAG(that, txtTag, true);
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) {
+                case 2:
+                    assertTrue("if (3<4) var i=1;".equals(between.get(i).trim())); break;
+                default:
+                    assertTrue("".equals(between.get(i).trim()));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN={};
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                           
     }
     @Test
     public void testW6(){
         System.out.println("W06:");
-    //public String jsp1="<html><body> < </body></html>";  //遇到游離子要單獨對待            
-        StringBuffer buf=new StringBuffer(jsp1);  assertTrue(false)''
+//                  012345678901234567890123456789012345678901234567890123456789012345678901234567890123        
+//public String w6="<html><body> <script name='>'>  if (3>4) var i=1;  </script name='>' ></body></html>";    
+        StringBuffer buf=new StringBuffer(w6);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);        
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        Integer[] arrL={0,6,13,51,70,77};
+        TestHTM1.assertVecWithArr(that.Left, arrL,true);
+        Integer[] arrR={5,11,29,69,76,83};
+        TestHTM1.assertVecWithArr(that.Right,arrR,true);
+        Integer[] arrLR={0, 5, 6,11,13,29,51,69,70,76,77,83};
+        TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);          
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==2);        
+        String[] txtTag={"<html>" ,"<body>","<script name='>'>","</script name='>' >","</body>" ,"</html>" };
+        System.out.println(that.GetAllTags());
+        TestHTM1.assertTAG(that, txtTag, true);
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) {
+                case 2:
+                    assertTrue("if (3>4) var i=1;".equals(between.get(i).trim())); break;
+                default:
+                    assertTrue("".equals(between.get(i).trim()));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN={};
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                           
+        
         
     }
     @Test
     public void testW7() {
         System.out.println("W07:");
-    //public String jsp1="<html><body> < </body></html>";  //遇到游離子要單獨對待            
-        StringBuffer buf=new StringBuffer(jsp1);  assertTrue(false)''
+// public Str jsp16="<html><body> <p  <!-- GGYY -->   </body></html>"; //一個<p> tag,沒有游離子        
+// public Str jsp17="<html><body> <p  <!-- GGYY --> > </body></html>"; //一個<p> tag,一個游離子>        
+//                   01234567890123456789012345678901234567890123456789        
+ //public String w7="<html><body> <p   <!-- GGYY -->  ></body></html>";        
+        StringBuffer buf=new StringBuffer(w7);
+        HTML that=new HTML(buf);
+            that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);        
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        Integer[] arrL={0,6,13,34,41};
+        TestHTM1.assertVecWithArr(that.Left, arrL,true);
+        Integer[] arrR={5,11,30,40,47};
+        TestHTM1.assertVecWithArr(that.Right,arrR,true);
+        Integer[] arrLR={0, 5, 6,11,13,30,34,40,41,47};
+        TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);          
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<body>","<p   <!-- GGYY -->","</body>" ,"</html>" };
+        System.out.println(that.GetAllTags());
+        TestHTM1.assertTAG(that, txtTag, true);
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) {
+                case 2:
+                    assertTrue(">".equals(between.get(i).trim())); break;
+                default:
+                    assertTrue("".equals(between.get(i).trim()));
+            }
+        }
+        Integer[] arrRad={33};
+        Integer[] arrUN={};
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                           
+                
         
     }
     @Test
     public void testW8() {
         System.out.println("W08:");
-    //public String jsp1="<html><body> < </body></html>";  //遇到游離子要單獨對待            
-        StringBuffer buf=new StringBuffer(jsp1);  assertTrue(false);
+//                      0123456789012345678901234567890123456789012345678901234        
+//    public String w8="<html><body> <!--  <!--  comment --> --> </body></html>";
+        StringBuffer buf=new StringBuffer(w8);  
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);        
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        Integer[] arrL={0,6,13,41,48};
+        TestHTM1.assertVecWithArr(that.Left, arrL,true);
+        Integer[] arrR={5,11,35,47,54};
+        TestHTM1.assertVecWithArr(that.Right,arrR,true);
+        Integer[] arrLR={0, 5, 6,11,13,35,41,47,48,54};
+        TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);          
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<body>","<!--  <!--  comment -->","</body>" ,"</html>" };
+        System.out.println(that.GetAllTags());
+        TestHTM1.assertTAG(that, txtTag, true);
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) {
+                case 2:
+                    assertTrue("-->".equals(between.get(i).trim())); break;
+                default:
+                    assertTrue("".equals(between.get(i).trim()));
+            }
+        }
+        Integer[] arrRad={39};
+        Integer[] arrUN={};
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                           
+                
         
     }
     @Test
     public void testW9() {
         System.out.println("W09:");
-    //public String jsp1="<html><body> < </body></html>";  //遇到游離子要單獨對待            
-        StringBuffer buf=new StringBuffer(jsp1);assertTrue(false);
+//                  012345678901234567890123456789012345678901234567890123        
+//public String w9="<html><body> <p <!-- GGYY <!-- AABB --></body></html>";        
+        StringBuffer buf=new StringBuffer(w9);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);        
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        Integer[] arrL={0,6,13,39,46};
+        TestHTM1.assertVecWithArr(that.Left, arrL,true);
+        Integer[] arrR={5,11,38,45,52};
+        TestHTM1.assertVecWithArr(that.Right,arrR,true);
+        Integer[] arrLR={0, 5, 6,11,13,38,39,45,46,52};
+        TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);          
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<body>","<p <!-- GGYY <!-- AABB -->","</body>" ,"</html>" };
+        System.out.println(that.GetAllTags());
+        TestHTM1.assertTAG(that, txtTag, true);
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) {
+                default:
+                    assertTrue("".equals(between.get(i).trim()));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN={};
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                           
+                       
         
     }
     @Test
     public void testW10() {
         System.out.println("W10:");
-    //public String jsp1="<html><body> < </body></html>";  //遇到游離子要單獨對待            
-        StringBuffer buf=new StringBuffer(jsp1);assertTrue(false);
+//                   012345678901234567890123456789012        
+//public String w10="<html><body> <!-- </body> </html>";  //依Chrome的解析結果是<!-- </body></html> -->
+        StringBuffer buf=new StringBuffer(w10);
+        
         
     }
     

@@ -142,8 +142,8 @@ public class HTML {
             if (Main.In(i, DQArea) || Main.In(i, SQArea) || Main.In(i, CommentArea)) {
                 continue;
             } else {
-                if (MyText.charAt(i) == '>') {
-                    return i;
+                if (MyText.charAt(i) == '%' && MyText.charAt(i+1)=='>') {
+                    return i+1;
                 }
             }
         }
@@ -206,8 +206,13 @@ public class HTML {
                         f = new Focus("<%", i, i + 2);
                         stack.push(f);
                         e = searchForRightAngleBranket2(i + 2);
-                        StackTagRoutine(i, e);
-                        i = e;
+                        if (e>=0) {
+                            StackTagRoutine(i, e);
+                            i = e;
+                            stack.pop();
+                        }else {                            
+                            break;
+                        }
                         continue;
                     }
                 } else {
@@ -247,7 +252,7 @@ public class HTML {
                             //但是這不是我們工作的重點...所以不理它
                             throw new RuntimeException("Unpair: </pre>");
                         }
-                    }
+                    }                                            
                 }
                 if (stack.empty()) {
                     if (i + 1 < StringLength && Character.isWhitespace(MyText.charAt(i + 1))) {
@@ -305,7 +310,9 @@ public class HTML {
             }
 
         }
-        if (stack.size() == 1 && stack.peek().RetString.equals("<!--")) {
+        if (stack.size() == 1 && stack.peek().RetString.equals("<!--")) {           
+            UnFinished.add(Left.get(Left.size() - 1));
+        }else if (stack.size()==1 &&  stack.peek().RetString.equals("<%")) {
             UnFinished.add(Left.get(Left.size() - 1));
         }
     }

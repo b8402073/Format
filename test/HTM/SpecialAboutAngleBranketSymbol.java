@@ -76,12 +76,12 @@ public class SpecialAboutAngleBranketSymbol {
     public String w11="<html><body> --> </body></html>";
     public String w12="<html><style> < </style></html>";
     public String w13="<html><style> > </style></html>";
-    public String w14="<html><style> <  </html>";
-    public String w15="<html><style> >  </html>";    
-    public String w16="<html><%      > %></html>";
-    public String w17="<html><%      < %></html>";
-    public String w18="<html><pre>   > </pre></html>";
-    public String w19="<html><pre>   > </html>";
+    public String w14="<html><style> <p>  </html>";
+    public String w15="<html><style> < p>  </html>";    
+    public String w16="<html><%  <p>   %></html>";
+    public String w17="<html><%  < p>  %></html>";
+    public String w18="<html><pre>   <p> </pre></html>";
+    public String w19="<html><pre>   <p> </html>";
     
     public SpecialAboutAngleBranketSymbol() {
     }
@@ -1690,47 +1690,332 @@ public class SpecialAboutAngleBranketSymbol {
     @Test
     public void testW11() {
         System.out.println("W11:");
-        assertTrue(false);
+//              0123456789012345678901234567890
+//  String w11="<html><body> --> </body></html>";
+        StringBuffer buf=new StringBuffer(w11);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);        
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        Integer[] arrL={0,6,17,24};
+        TestHTM1.assertVecWithArr(that.Left, arrL,true);
+        Integer[] arrR={5,11,23,30};
+        TestHTM1.assertVecWithArr(that.Right,arrR,true);
+        Integer[] arrLR={0, 5, 6,11,17,23,24,30};
+        TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);          
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<body>","</body>","</html>" };
+        System.out.println(that.GetAllTags());
+        TestHTM1.assertTAG(that, txtTag, true);
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) {
+                case 1:
+                    assertTrue("-->".equals(between.get(i).trim())); break;
+                default:
+                    assertTrue("".equals(between.get(i).trim()));
+            }
+        }
+        Integer[] arrRad={15};
+        Integer[] arrUN={};
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                                                   
+        
     }
     @Test
     public void testW12() {
         System.out.println("W12:");
-        assertTrue(false);
+//                       0123456789012345678901234567890
+//    public String w12="<html><style> < </style></html>";  //確定這裡沒有Radical
+        StringBuffer buf=new StringBuffer(w12);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);        
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        Integer[] arrL={0,6,16,24};
+        TestHTM1.assertVecWithArr(that.Left, arrL,true);
+        Integer[] arrR={5,12,23,30};
+        TestHTM1.assertVecWithArr(that.Right,arrR,true);
+        Integer[] arrLR={0, 5, 6,12,16,23,24,30};
+        TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);          
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<style>","</style>","</html>" };
+        System.out.println(that.GetAllTags());
+        TestHTM1.assertTAG(that, txtTag, true);
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) {
+                case 1:
+                    assertTrue("<".equals(between.get(i).trim())); break;
+                default:
+                    assertTrue("".equals(between.get(i).trim()));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN={};
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                                                   
+        
     }    @Test
     public void testW13() {
         System.out.println("W13:");
-        assertTrue(false);
+//                       0123456789012345678901234567890        
+//    public String w13="<html><style> > </style></html>";//確定這裡沒有Radical
+        StringBuffer buf=new StringBuffer(w13);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);        
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        Integer[] arrL={0,6,16,24};
+        TestHTM1.assertVecWithArr(that.Left, arrL,true);
+        Integer[] arrR={5,12,23,30};
+        TestHTM1.assertVecWithArr(that.Right,arrR,true);
+        Integer[] arrLR={0, 5, 6,12,16,23,24,30};
+        TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);          
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<style>","</style>","</html>" };
+        System.out.println(that.GetAllTags());
+        TestHTM1.assertTAG(that, txtTag, true);
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) {
+                case 1:
+                    assertTrue(">".equals(between.get(i).trim())); break;
+                default:
+                    assertTrue("".equals(between.get(i).trim()));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN={};
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                                                   
+        
     }
     @Test
     public void testW14() {
         System.out.println("W14:");
-        assertTrue(false);
+//                       01234567890123456789012345        
+//    public String w14="<html><style> <p>  </html>"; ////確定這裡沒有Radical
+        StringBuffer buf=new StringBuffer(w14);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);        
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        Integer[] arrL={0,6};
+        TestHTM1.assertVecWithArr(that.Left, arrL,true);
+        Integer[] arrR={5,12};
+        TestHTM1.assertVecWithArr(that.Right,arrR,true);
+        Integer[] arrLR={0, 5, 6,12};
+        TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);          
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<style>" };
+        System.out.println(that.GetAllTags());
+        TestHTM1.assertTAG(that, txtTag, true);
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) {
+                default:
+                    assertTrue("".equals(between.get(i).trim()));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN={};
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                                                   
+        
     }
     @Test
     public void testW15() {
         System.out.println("W15:");
-        assertTrue(false);
+//                       012345678901234567890123456
+//    public String w15="<html><style> < p>  </html>";//確定這裡沒有Radical    
+        StringBuffer buf=new StringBuffer(w15);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);        
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        Integer[] arrL={0,6};
+        TestHTM1.assertVecWithArr(that.Left, arrL,true);
+        Integer[] arrR={5,12};
+        TestHTM1.assertVecWithArr(that.Right,arrR,true);
+        Integer[] arrLR={0, 5, 6,12};
+        TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);          
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<style>" };
+        System.out.println(that.GetAllTags());
+        TestHTM1.assertTAG(that, txtTag, true);
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) {
+                default:
+                    assertTrue("".equals(between.get(i).trim()));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN={};
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                                                   
+        
     }
     @Test
     public void testW16() {
         System.out.println("W16:");
-        assertTrue(false);
+//                       0123456789012345678901234        
+//    public String w16="<html><%  <p>   %></html>";//確定這裡沒有Radical        
+        StringBuffer buf=new StringBuffer(w16);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);        
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        Integer[] arrL={0,6,18};
+        TestHTM1.assertVecWithArr(that.Left, arrL,true);
+        Integer[] arrR={5,17,24};
+        TestHTM1.assertVecWithArr(that.Right,arrR,true);
+        Integer[] arrLR={0, 5, 6,17,18,24};
+        TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);          
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<%  <p>   %>","</html>" };
+        System.out.println(that.GetAllTags());
+        TestHTM1.assertTAG(that, txtTag, true);
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) {
+                default:
+                    assertTrue("".equals(between.get(i).trim()));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN={};
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                                                   
+        
     }
     @Test
     public void testW17() {
         System.out.println("W17:");
+//    public String w17="<html><%  < p>  %></html>";
         assertTrue(false);
+        StringBuffer buf=new StringBuffer(w10);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);        
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        Integer[] arrL={0,6,13};
+        TestHTM1.assertVecWithArr(that.Left, arrL,true);
+        Integer[] arrR={5,11};
+        TestHTM1.assertVecWithArr(that.Right,arrR,true);
+        Integer[] arrLR={0, 5, 6,11,13};
+        TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);          
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<body>","<!-- </body> </html>" };
+        System.out.println(that.GetAllTags());
+        TestHTM1.assertTAG(that, txtTag, true);
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) {
+                default:
+                    assertTrue("".equals(between.get(i).trim()));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN={13};
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                                                   
+        
     }
 
     @Test
     public void testW18() {
-        System.out.println("W18:");
+        System.out.println("W18:");  
+//  public String w18="<html><pre>   <p> </pre></html>";
         assertTrue(false);
+        StringBuffer buf=new StringBuffer(w18);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);        
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        Integer[] arrL={0,6,13};
+        TestHTM1.assertVecWithArr(that.Left, arrL,true);
+        Integer[] arrR={5,11};
+        TestHTM1.assertVecWithArr(that.Right,arrR,true);
+        Integer[] arrLR={0, 5, 6,11,13};
+        TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);          
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<body>","<!-- </body> </html>" };
+        System.out.println(that.GetAllTags());
+        TestHTM1.assertTAG(that, txtTag, true);
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) {
+                default:
+                    assertTrue("".equals(between.get(i).trim()));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN={13};
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                                                   
+        
     }
     @Test
     public void testW19() {
         System.out.println("W19:");
+//    public String w19="<html><pre>   <p> </html>";
         assertTrue(false);
+        StringBuffer buf=new StringBuffer(w10);
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);        
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        Integer[] arrL={0,6,13};
+        TestHTM1.assertVecWithArr(that.Left, arrL,true);
+        Integer[] arrR={5,11};
+        TestHTM1.assertVecWithArr(that.Right,arrR,true);
+        Integer[] arrLR={0, 5, 6,11,13};
+        TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);          
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<body>","<!-- </body> </html>" };
+        System.out.println(that.GetAllTags());
+        TestHTM1.assertTAG(that, txtTag, true);
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) {
+                default:
+                    assertTrue("".equals(between.get(i).trim()));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN={13};
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                                                   
+        
     }
     @Test
     public void testW20() {

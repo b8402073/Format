@@ -210,7 +210,8 @@ public class HTML {
                             StackTagRoutine(i, e);
                             i = e;
                             stack.pop();
-                        }else {                            
+                        }else { 
+                            Left.add(i);
                             break;
                         }
                         continue;

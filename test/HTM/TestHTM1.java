@@ -95,16 +95,21 @@ public class TestHTM1 {
             int End=(-1);
             if (i+1< inn.LeftOrRight.size())
                 End = inn.LeftOrRight.get(i + 1);
-            if (buf.charAt(Start)=='<') {
-                if (buf.charAt(End)=='>') {
-                    String tmp = Main.ToSTR(new Pair(Start, End), buf);
-                    System.out.println(tmp);                    
-                }else if  (buf.charAt(End)=='<') {
-                    String tmp= Main.ToSTR(new Pair(Start,End-1), buf);
-                    System.out.println(tmp);
-                }else {
-                    assertTrue(false);
-                }
+            if (End>=0) {
+                if (buf.charAt(Start)=='<') {
+                    if (buf.charAt(End)=='>') {
+                        String tmp = Main.ToSTR(new Pair(Start, End), buf);
+                        System.out.println(tmp);                    
+                    }else if  (buf.charAt(End)=='<') {
+                        String tmp= Main.ToSTR(new Pair(Start,End-1), buf);
+                        System.out.println(tmp);
+                    }else {
+                        assertTrue(false);
+                    }
+                }                
+            }else {
+                String tmp=(Main.ToSTR(new Pair(Start,buf.length()-1), buf));
+                System.out.println(tmp);
             }
             
         }

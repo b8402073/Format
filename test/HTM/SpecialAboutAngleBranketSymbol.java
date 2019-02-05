@@ -1658,10 +1658,85 @@ public class SpecialAboutAngleBranketSymbol {
 //                   012345678901234567890123456789012        
 //public String w10="<html><body> <!-- </body> </html>";  //依Chrome的解析結果是<!-- </body></html> -->
         StringBuffer buf=new StringBuffer(w10);
-        
-        
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);        
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        Integer[] arrL={0,6,13};
+        TestHTM1.assertVecWithArr(that.Left, arrL,true);
+        Integer[] arrR={5,11};
+        TestHTM1.assertVecWithArr(that.Right,arrR,true);
+        Integer[] arrLR={0, 5, 6,11,13};
+        TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);          
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==0);        
+        String[] txtTag={"<html>" ,"<body>","<!-- </body> </html>" };
+        System.out.println(that.GetAllTags());
+        TestHTM1.assertTAG(that, txtTag, true);
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) {
+                default:
+                    assertTrue("".equals(between.get(i).trim()));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN={13};
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);                                                   
     }
-    
+    @Test
+    public void testW11() {
+        System.out.println("W11:");
+        assertTrue(false);
+    }
+    @Test
+    public void testW12() {
+        System.out.println("W12:");
+        assertTrue(false);
+    }    @Test
+    public void testW13() {
+        System.out.println("W13:");
+        assertTrue(false);
+    }
+    @Test
+    public void testW14() {
+        System.out.println("W14:");
+        assertTrue(false);
+    }
+    @Test
+    public void testW15() {
+        System.out.println("W15:");
+        assertTrue(false);
+    }
+    @Test
+    public void testW16() {
+        System.out.println("W16:");
+        assertTrue(false);
+    }
+    @Test
+    public void testW17() {
+        System.out.println("W17:");
+        assertTrue(false);
+    }
+
+    @Test
+    public void testW18() {
+        System.out.println("W18:");
+        assertTrue(false);
+    }
+    @Test
+    public void testW19() {
+        System.out.println("W19:");
+        assertTrue(false);
+    }
+    @Test
+    public void testW20() {
+        System.out.println("W20:");
+        assertTrue(false);
+    }
     
     
 }

@@ -272,7 +272,7 @@ public class HTML {
             } else if (MyText.charAt(i) == '-') {
                 if (i + 3 < StringLength && "-->".equals(MyText.substring(i, i + 3))) {
                     if (Left.size() - UnFinished.size() - Right.size() == 1) {
-                        if (stack.size() == 1 && stack.peek().RetString.equals("<!--")) {
+                        if (stack.size() >0 && stack.peek().RetString.equals("<!--")) {
                             stack.pop();
                             Right.add(i + 2);
                             i = i + 2;

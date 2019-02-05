@@ -57,30 +57,13 @@ public class TestJSP3 {
         }
     }
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
 
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
     @Test
     public void Test3() {
         HTML that = new HTML(BufJSP3);
         that.go();
-        //that.PrintIssues();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);   
         //TestHTM1.ReportInTest(that, that.MyText);
         assertTrue(that.Left.size() == that.Right.size());
         assertTrue(that.LeftOrRight.size() == that.Right.size() * 2);

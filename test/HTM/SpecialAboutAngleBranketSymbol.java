@@ -51,6 +51,8 @@ public class SpecialAboutAngleBranketSymbol {
     public String jsp24="<html><script> if (a<3) a=4; </script></html>";
     public String jsp25="<html><pre> 1--<>3 </pre> </html>";
     public String jsp26="<html><style> 1--<>3 </style></html>";
+    public String jsp27="<html><script src='java.js' /> GG>YY </html>";
+    public String jsp28="<html><script src='java.js' /> GG<YY </html>";
     
     
     //                0123456789012345678901234567
@@ -1092,6 +1094,80 @@ public class SpecialAboutAngleBranketSymbol {
         
     }      
 
+    @Test
+    public void testA27() {
+//                         01234567890123456789012345678901234567890123        
+//    public String jsp27="<html><script src='java.js' /> GG>YY </html>"; //這句話把 GG>YY </html> 當成script一部分;至少Chrome的行為是這樣
+//    public String jsp28="<html><script src='java.js' /> GG<YY </html>";        
+        StringBuffer buf=new StringBuffer(jsp27);     
+        System.out.println("A27:");
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);        
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        Integer[] arrL={0,6};
+        TestHTM1.assertVecWithArr(that.Left, arrL,true);
+        Integer[] arrR={5,29};
+        TestHTM1.assertVecWithArr(that.Right,arrR,true);
+        Integer[] arrLR={0, 5, 6,29,};
+        TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);        
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==1);        
+        String[] txtTag={"<html>","<script src='java.js' />" };
+        System.out.println(that.GetAllTags());
+        TestHTM1.assertTAG(that, txtTag, true);
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) { 
+                default:
+                    assertTrue("".equals(between.get(i).trim()));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN={};
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);    
+                
+    }
+    @Test
+    public void testA28() {
+//                         01234567890123456789012345678901234567890123        
+//    public String jsp27="<html><script src='java.js' /> GG>YY </html>";
+//    public String jsp28="<html><script src='java.js' /> GG<YY </html>";//這句話把 GG<YY </html> 當成script一部分;至少Chrome的行為是這樣        
+        StringBuffer buf=new StringBuffer(jsp28);     
+        System.out.println("A28:");
+        HTML that=new HTML(buf);
+        that.go();
+        that.PrintIssues();
+        TestHTM1.ReportInTest(that);        
+        System.out.println("Radical="+that.Radical.toString());
+        System.out.println("UnFinished="+that.UnFinished.toString());
+        Integer[] arrL={0,6};
+        TestHTM1.assertVecWithArr(that.Left, arrL,true);
+        Integer[] arrR={5,29};
+        TestHTM1.assertVecWithArr(that.Right,arrR,true);
+        Integer[] arrLR={0, 5, 6,29};
+        TestHTM1.assertVecWithArr(that.LeftOrRight,arrLR,true);        
+        assertTrue(that.DQArea.size()==0);
+        assertTrue(that.SQArea.size()==1);        
+        String[] txtTag={"<html>","<script src='java.js' />" };
+        System.out.println(that.GetAllTags());
+        TestHTM1.assertTAG(that, txtTag, true);
+        Vector<String> between=that.GetAllBetween();
+        for (int i=0; i<between.size(); i++) {            
+            switch(i) { 
+                default:
+                    assertTrue("".equals(between.get(i).trim()));
+            }
+        }
+        Integer[] arrRad={};
+        Integer[] arrUN={};
+        TestHTM1.assertRadical(that, arrRad, true);
+        TestHTM1.assertUnFinished(that, arrUN, true);    
+                
+    }    
 
     @Test
     public void testAF0() {

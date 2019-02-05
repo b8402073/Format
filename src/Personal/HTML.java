@@ -185,6 +185,14 @@ public class HTML {
                         f = new Focus("<script", i, i + 7);
                         stack.push(f);
                         e = searchForRightAngleBranket1(i + 7);
+                        /*
+                        //這一句可以在面對<script />之後的文字
+                          視為"不是在<script></script>"之間
+                          但是這種行為不是Chrome的行為...
+                        if (MyText.substring(e-1,e+1).equals("/>")) {
+                            stack.pop();
+                        }
+                        */
                         StackTagRoutine(i, e);
                         i = e;
                         continue;

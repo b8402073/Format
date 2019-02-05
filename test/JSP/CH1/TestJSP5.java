@@ -76,7 +76,7 @@ public class TestJSP5 {
         HTML that=new HTML(BufJSP5);
         that.go();
         that.PrintIssues();
-        TestHTM1.ReportInTest(that, that.MyText);
+        TestHTM1.ReportInTest(that);   
         assertTrue(that.Left.size()==that.Right.size());
         assertTrue(that.LeftOrRight.size()==that.Right.size()*2);
         ///////////////////////////////////////////////////////

@@ -923,5 +923,50 @@ public class CompactString_SpecialAboutAngleBranket {
         assertTrue(result2.equals(alt.toCompactString(false, false))); 
         
         
-    }      
+    } 
+    
+    @Test
+    public void TestJ27() {        
+//    public String jsp27="<html><script src='java.js' /> GG>YY </html>";
+        StringBuffer buf=new StringBuffer(jsp27);
+        HTML that = new HTML(buf);        
+        that.go();
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE:");
+        System.out.println(that.toCompactString(true, true));
+        System.out.println("TranslateRadical=TRUE, Finishing=false:");
+        System.out.println(that.toCompactString(true, false));
+        System.out.println("TranslateRadical=false, Finishing=TRUE:");
+        System.out.println(that.toCompactString(false, true));
+        System.out.println("TranslateRadical=false, Finishing=false:");
+        System.out.println(that.toCompactString(false, false));
+        String result1="<html><script src='java.js'/> GG>YY </html>";
+        String result2=result1;
+        
+        assertTrue(result1.equals(that.toCompactString(true, true)));
+        assertTrue(result1.equals(that.toCompactString(true, false)));
+        assertTrue(result2.equals(that.toCompactString(false, true)));
+        assertTrue(result2.equals(that.toCompactString(false, false)));              
+        
+        System.out.println("ALT:");
+        HTML alt=new HTML(buf);
+        alt.defRadical.add(' ');
+        alt.go();
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE:");
+        System.out.println(alt.toCompactString(true, true));
+        System.out.println("TranslateRadical=TRUE, Finishing=false:");
+        System.out.println(alt.toCompactString(true, false));
+        System.out.println("TranslateRadical=false, Finishing=TRUE:");
+        System.out.println(alt.toCompactString(false, true));
+        System.out.println("TranslateRadical=false, Finishing=false:");
+        System.out.println(alt.toCompactString(false, false));
+        String result3=result1;
+        
+        
+        assertTrue(result3.equals(alt.toCompactString(true, true)));
+        assertTrue(result3.equals(alt.toCompactString(true, false)));
+        assertTrue(result2.equals(alt.toCompactString(false, true)));
+        assertTrue(result2.equals(alt.toCompactString(false, false))); 
+        
+        
+    }    
 }

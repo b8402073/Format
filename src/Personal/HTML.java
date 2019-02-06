@@ -40,6 +40,8 @@ public class HTML {
     public Vector<Integer> UnFinished;
     //設定準備要翻譯的特殊符號  
     public Vector<Character> defRadical;
+    //視為空白的符號集合
+    public static final String White=" |\t|\r|\n|\000";
 
     public void PrintIssues() {
         System.out.println("DQArea=" + DQArea.toString());
@@ -427,7 +429,7 @@ public class HTML {
         if (Tag.size() - Between.size() == 1) {
             for (int i = 0; i < Tag.size(); i++) {
                 that = Tag.get(i);
-                ret.append(that);
+                ret.append(ToCompactOneTag(that));
                 if (Finishing) {
                     if (!that.endsWith(">")) {
                         String append;
@@ -467,6 +469,28 @@ public class HTML {
 
         return ret.toString();
 
+    }
+    public static String ToCompactOneTag(String Tag) {
+        if (Tag.startsWith("<!--") || Tag.startsWith("<%") ) {
+            return Tag;
+        }
+        StringBuffer orig=new StringBuffer(Tag);
+        Vector<Pair> localDQ=new Vector<Pair>();
+        Vector<Pair> localSQ=new Vector<Pair>();
+        JspStatic3.Build_DQ_Area(orig, localDQ);
+        JspStatic3.Build_SQ_Area(orig, localDQ, localSQ);        
+        StringBuffer ret=new StringBuffer();
+        String[] lines= Tag.split(HTML.White);
+        ret.append(lines[0].trim());
+        for(int i=1; i<lines.length; i++) {
+            String ins=lines[i].trim();
+            if (ins.length()>0) {
+                if (!ins.endsWith(">"))
+                    ret.append(' ');
+                ret.append(ins);
+            }
+        }
+        return ret.toString();
     }
 
 }

@@ -479,18 +479,56 @@ public class HTML {
         Vector<Pair> localSQ=new Vector<Pair>();
         JspStatic3.Build_DQ_Area(orig, localDQ);
         JspStatic3.Build_SQ_Area(orig, localDQ, localSQ);        
+        Stack<String> stack=new Stack<String>();
         StringBuffer ret=new StringBuffer();
         for (int i=0; i<orig.length(); i++) {
-            if (Main.In(i, localSQ) || Main.In(i, localDQ))
+            int sq=Main.Exist(i, localSQ);
+            if (sq>=0)  {
+                ret.append(Main.ToSTR(localSQ.get(sq), orig));
+                i=localSQ.get(sq).getEnd();
                 continue;
+            }            
+            int dq=Main.Exist(i, localDQ);
+            if (dq>=0) {
+                ret.append(Main.ToSTR(localDQ.get(dq), orig));
+                i=localDQ.get(dq).getEnd();
+                continue;
+            }
+            switch(orig.charAt(i)) {
+                case '\'':  
+                    if (stack.empty())
+                        stack.push("SQ"); 
+                    else
+                        stack.pop();
+                    break;
+                case '\"':   
+                    if (stack.empty())
+                        stack.push("DQ"); 
+                    else
+                        stack.pop();
+                    break;
+            }
             if (HTML.White.contains(""+orig.charAt(i))) {
-                while(HTML.White.contains(""+orig.charAt(i))) {
+                while(i<orig.length() && HTML.White.contains(""+orig.charAt(i))) {
+                    if (orig.charAt(i)=='\n' && !stack.empty()) {
+                        ret.append("\n");  stack.clear();
+                    }
                     i++;
                 }
                 ret.append(' ');
             }
-            ret.append(orig.charAt(i));
-            
+            if (i<orig.length())
+                ret.append(orig.charAt(i));            
+        }
+        int idx1=ret.lastIndexOf(">");
+        if (idx1>=0 && ret.charAt(idx1-1)==' ') {
+            ret.deleteCharAt(idx1-1);
+            return ret.toString();
+        }
+        int idx2=ret.lastIndexOf("/>");
+        if (idx2>=0 && ret.charAt(idx2-1)==' ') {
+            ret.deleteCharAt(idx2-1);
+            return ret.toString();
         }        
         return ret.toString();
     }

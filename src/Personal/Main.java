@@ -78,7 +78,17 @@ public class Main {
 		}
 		return (-1);
 	}
-
+        // NO TEST
+        public static int Exist(Integer inn,Vector<Pair> that) {
+            if (inn>=0) {
+                for (int i=0; i<that.size(); i++) {
+                    Pair p=that.get(i);
+                    if (inn>=p.getStart() && inn<=p.getEnd())
+                        return i;
+                }
+            }
+            return -1;
+        }
 	// NO TEST
 	public static boolean In(Integer inn, Vector<Pair> that) {
 		if (inn >= 0) {

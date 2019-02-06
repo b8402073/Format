@@ -398,20 +398,20 @@ public class HTML {
     }
 
     public static void InsertToStringBuffer(StringBuffer buf, String Txt, Vector<Character> defR, boolean translateRadical) {
+        StringBuffer ret=new StringBuffer();
         for (int i = 0; i < Txt.length(); i++) {
             if (translateRadical) {
                 if (defR.contains(Txt.charAt(i))) {
-                    buf.append(translate(Txt.charAt(i)).trim());
+                    ret.append(translate(Txt.charAt(i)));
                 } else {
-                    String ins = ("" + Txt.charAt(i));
-                    buf.append(ins.trim());
+                    ret.append(Txt.charAt(i));
                 }
 
             } else {
-                String ins=(""+Txt.charAt(i));
-                buf.append(ins.trim());
+                buf.append(Txt.charAt(i));
             }
         }
+        buf.append(ret.toString().trim());
     }
 
     public String toCompactString(boolean translateRadical, boolean Finishing) {
@@ -442,7 +442,7 @@ public class HTML {
                 }
                 if (i <= Between.size() - 1) {
                     that = Between.get(i);
-                    InsertToStringBuffer(ret, that, defRadical, translateRadical);
+                    InsertToStringBuffer(ret, that.trim(), defRadical, translateRadical);
                 }
             }
         }

@@ -608,4 +608,28 @@ public class CompactString_SpecialAboutAngleBranket {
         
         
     }     
+       
+     @Test
+    public void TestJ18() {        
+//    public String jsp18="<html><body> <p  <!-- GGYY    /></body></html>"; //¤@­Ó<p> tag
+        StringBuffer buf=new StringBuffer(jsp18);
+        HTML that = new HTML(buf);        
+        that.go();
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE:");
+        System.out.println(that.toCompactString(true, true));
+        System.out.println("TranslateRadical=TRUE, Finishing=false:");
+        System.out.println(that.toCompactString(true, false));
+        System.out.println("TranslateRadical=false, Finishing=TRUE:");
+        System.out.println(that.toCompactString(false, true));
+        System.out.println("TranslateRadical=false, Finishing=false:");
+        System.out.println(that.toCompactString(false, false));
+        String result1="<html><body><p <!-- GGYY/></body></html>";
+        
+        assertTrue(result1.equals(that.toCompactString(true, true)));
+        assertTrue(result1.equals(that.toCompactString(true, false)));
+        assertTrue(result1.equals(that.toCompactString(false, true)));
+        assertTrue(result1.equals(that.toCompactString(false, false)));              
+        
+        
+    }         
 }

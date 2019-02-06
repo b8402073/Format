@@ -20,7 +20,6 @@ import org.junit.Test;
  * @author easterday
  */
 public class SpecialAboutAngleBranketSymbol {
-    public String[] jsp=new String[100];
     public String jsp1="<html><body> < </body></html>";  //遇到游離子要單獨對待    
     public String jsp2="<html><body> > </body></html>";  //遇到游離子要單獨對待
     public String jsp3="<html><body> <p  ></body></html>"; //這是一個<p> tag

@@ -422,6 +422,7 @@ public class HTML {
         }
         Vector<String> Tag = GetAllTags();
         Vector<String> Between = GetAllBetween();
+        Stack<String> stack=new Stack();
         String that;
         if (Tag.size() - Between.size() == 1) {
             for (int i = 0; i < Tag.size(); i++) {
@@ -440,9 +441,18 @@ public class HTML {
                         ret.append(append);
                     }
                 }
+                if (that.startsWith("<script") || that.startsWith("<pre") || that.startsWith("<style")) {
+                    stack.push(that);
+                }else if (stack.size()>0 && that.startsWith("</")) {
+                    stack.pop();
+                }
                 if (i <= Between.size() - 1) {
-                    that = Between.get(i);
-                    InsertToStringBuffer(ret, that.trim(), defRadical, translateRadical);
+                    that = Between.get(i);                    
+                    if (stack.empty()) {
+                        InsertToStringBuffer(ret, that.trim(), defRadical, translateRadical);                        
+                    }else {
+                        InsertToStringBuffer(ret, that.trim(), defRadical, false);
+                    }
                 }
             }
         }

@@ -125,6 +125,16 @@ public class CompactString_SpecialAboutAngleBranket {
     }
     @Test
     public void TestJ3() {
+        String try1= HTML.ToCompactOneTag("<p   />");
+        String try2= HTML.ToCompactOneTag("<p  src='abc' >");
+        String try3= HTML.ToCompactOneTag("<p  src=\"ABC\"  >");
+        String try4= HTML.ToCompactOneTag("<p>");
+        String try5= HTML.ToCompactOneTag("<p/>");
+        String try6= HTML.ToCompactOneTag("<p      ");
+        String try7= HTML.ToCompactOneTag("<p    aabb >");
+                
+        
+        
 //    public String jsp3="<html><body> <p  ></body></html>"; //這是一個<p> tag      
       StringBuffer buf=new StringBuffer(jsp3);
         HTML that = new HTML(buf);        

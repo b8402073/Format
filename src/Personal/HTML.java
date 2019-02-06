@@ -480,16 +480,18 @@ public class HTML {
         JspStatic3.Build_DQ_Area(orig, localDQ);
         JspStatic3.Build_SQ_Area(orig, localDQ, localSQ);        
         StringBuffer ret=new StringBuffer();
-        String[] lines= Tag.split(HTML.White);
-        ret.append(lines[0].trim());
-        for(int i=1; i<lines.length; i++) {
-            String ins=lines[i].trim();
-            if (ins.length()>0) {
-                if (!ins.endsWith(">"))
-                    ret.append(' ');
-                ret.append(ins);
+        for (int i=0; i<orig.length(); i++) {
+            if (Main.In(i, localSQ) || Main.In(i, localDQ))
+                continue;
+            if (HTML.White.contains(""+orig.charAt(i))) {
+                while(HTML.White.contains(""+orig.charAt(i))) {
+                    i++;
+                }
+                ret.append(' ');
             }
-        }
+            ret.append(orig.charAt(i));
+            
+        }        
         return ret.toString();
     }
 

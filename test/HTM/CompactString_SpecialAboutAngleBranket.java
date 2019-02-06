@@ -340,7 +340,7 @@ public class CompactString_SpecialAboutAngleBranket {
 
      @Test
     public void TestJ10() {        
-
+//public String jsp10="<html><body> <p id='>' /> </body></html>"; //³o¬O<p> tag
       StringBuffer buf=new StringBuffer(jsp10);
         HTML that = new HTML(buf);        
         that.go();
@@ -352,7 +352,7 @@ public class CompactString_SpecialAboutAngleBranket {
         System.out.println(that.toCompactString(false, true));
         System.out.println("TranslateRadical=false, Finishing=false:");
         System.out.println(that.toCompactString(false, false));
-        String result1="<html><body><p id='<'></body></html>";
+        String result1="<html><body><p id='>'/></body></html>";
         
         assertTrue(result1.equals(that.toCompactString(true, true)));
         assertTrue(result1.equals(that.toCompactString(true, false)));

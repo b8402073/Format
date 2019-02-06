@@ -583,5 +583,29 @@ public class CompactString_SpecialAboutAngleBranket {
         assertTrue(result1.equals(that.toCompactString(false, false)));              
         
         
-    }      
+    }   
+        
+     @Test
+    public void TestJ17() {        
+//public String jsp17="<html><body> <p  <!-- GGYY --> > </body></html>"; //一個<p> tag,一個游離子>
+        StringBuffer buf=new StringBuffer(jsp17);
+        HTML that = new HTML(buf);        
+        that.go();
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE:");
+        System.out.println(that.toCompactString(true, true));
+        System.out.println("TranslateRadical=TRUE, Finishing=false:");
+        System.out.println(that.toCompactString(true, false));
+        System.out.println("TranslateRadical=false, Finishing=TRUE:");
+        System.out.println(that.toCompactString(false, true));
+        System.out.println("TranslateRadical=false, Finishing=false:");
+        System.out.println(that.toCompactString(false, false));
+        String result1="<html><body><p <!-- GGYY -->&gt;</body></html>";
+        String result2="<html><body><p <!-- GGYY -->></body></html>";
+        assertTrue(result1.equals(that.toCompactString(true, true)));
+        assertTrue(result1.equals(that.toCompactString(true, false)));
+        assertTrue(result2.equals(that.toCompactString(false, true)));
+        assertTrue(result2.equals(that.toCompactString(false, false)));              
+        
+        
+    }     
 }

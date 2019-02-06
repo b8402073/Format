@@ -390,17 +390,26 @@ public class HTML {
                 return "&apos;";
             case '&':
                 return "&amp;";
+            case ' ':
+                return "&nbsp;";
             default:
-                return "";
+                return (input.toString());
         }
     }
 
-    public static void InsertToStringBuffer(StringBuffer buf, String Txt, boolean translateRadical) {
+    public static void InsertToStringBuffer(StringBuffer buf, String Txt, Vector<Character> defR, boolean translateRadical) {
         for (int i = 0; i < Txt.length(); i++) {
             if (translateRadical) {
-                buf.append(translate(Txt.charAt(i)));
+                if (defR.contains(Txt.charAt(i))) {
+                    buf.append(translate(Txt.charAt(i)).trim());
+                } else {
+                    String ins = ("" + Txt.charAt(i));
+                    buf.append(ins.trim());
+                }
+
             } else {
-                buf.append(Txt.charAt(i));
+                String ins=(""+Txt.charAt(i));
+                buf.append(ins.trim());
             }
         }
     }
@@ -409,7 +418,7 @@ public class HTML {
         StringBuffer ret = new StringBuffer();
         if (LeftOrRight.size() > 0) {
             String startTxt = MyText.substring(0, LeftOrRight.get(0));
-            InsertToStringBuffer(ret, startTxt, translateRadical);
+            InsertToStringBuffer(ret, startTxt, defRadical, translateRadical);
         }
         Vector<String> Tag = GetAllTags();
         Vector<String> Between = GetAllBetween();
@@ -433,17 +442,17 @@ public class HTML {
                 }
                 if (i <= Between.size() - 1) {
                     that = Between.get(i);
-                    InsertToStringBuffer(ret, that, translateRadical);
+                    InsertToStringBuffer(ret, that, defRadical, translateRadical);
                 }
             }
         }
-        int LastBranket=LeftOrRight.get(LeftOrRight.size()-1);
-        if (LastBranket< MyText.length()) {
+        int LastBranket = LeftOrRight.get(LeftOrRight.size() - 1);
+        if (LastBranket < MyText.length()) {
             if (MyText.charAt(LastBranket) == '<') {
                 //do nothing;
             } else if (MyText.charAt(LastBranket) == '>') {
-                InsertToStringBuffer(ret, MyText.substring(LastBranket+1,MyText.length()),translateRadical  );
-            }                        
+                InsertToStringBuffer(ret, MyText.substring(LastBranket + 1, MyText.length()), defRadical, translateRadical);
+            }
         }
 
         return ret.toString();

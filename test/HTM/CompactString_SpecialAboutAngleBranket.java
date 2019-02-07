@@ -1438,4 +1438,76 @@ public class CompactString_SpecialAboutAngleBranket {
         assertTrue(result2.equals(that.toCompactString(false, false,false)));             
         
     }        
+    @Test
+    public void TestW5() {
+//    public String w5="<html><body> <script name='<'>  if (3<4) var i=1;  </script name='<' ></body></html>";
+      StringBuffer buf=new StringBuffer(w5);
+        HTML that = new HTML(buf);        
+        that.go();
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE, RemoveComment=TRUE:");
+        System.out.println(that.toCompactString(true, true,true));
+        System.out.println("TranslateRadical=TRUE, Finishing=false,  RemoveComment=TRUE:");
+        System.out.println(that.toCompactString(true, false,true));
+        System.out.println("TranslateRadical=false, Finishing=TRUE, RemoveComment=TRUE:");
+        System.out.println(that.toCompactString(false, true,true));
+        System.out.println("TranslateRadical=false, Finishing=false, RemoveComment=TRUE:");
+        System.out.println(that.toCompactString(false, false,true));
+        
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE, RemoveComment=false:");
+        System.out.println(that.toCompactString(true, true,false));
+        System.out.println("TranslateRadical=TRUE, Finishing=false,  RemoveComment=false:");
+        System.out.println(that.toCompactString(true, false,false));
+        System.out.println("TranslateRadical=false, Finishing=TRUE, RemoveComment=false:");
+        System.out.println(that.toCompactString(false, true,false));
+        System.out.println("TranslateRadical=false, Finishing=false, RemoveComment=false:");
+        System.out.println(that.toCompactString(false, false,false));
+        
+        String result1="<html><body><script name='<'>if (3<4) var i=1;</script name='<'></body></html>";
+        String result2=result1;
+        assertTrue(result1.equals(that.toCompactString(true, true,true)));
+        assertTrue(result1.equals(that.toCompactString(true, false,true)));
+        assertTrue(result1.equals(that.toCompactString(false, true,true)));
+        assertTrue(result1.equals(that.toCompactString(false, false,true)));             
+        assertTrue(result2.equals(that.toCompactString(true, true,false)));
+        assertTrue(result2.equals(that.toCompactString(true, false,false)));
+        assertTrue(result2.equals(that.toCompactString(false, true,false)));
+        assertTrue(result2.equals(that.toCompactString(false, false,false)));             
+        
+    }        
+    @Test
+    public void TestW6() {
+//    public String w6="<html><body> <script name='>'>  if (3>4) var i=1;  </script name='>' ></body></html>";    
+      StringBuffer buf=new StringBuffer(w6);
+        HTML that = new HTML(buf);        
+        that.go();
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE, RemoveComment=TRUE:");
+        System.out.println(that.toCompactString(true, true,true));
+        System.out.println("TranslateRadical=TRUE, Finishing=false,  RemoveComment=TRUE:");
+        System.out.println(that.toCompactString(true, false,true));
+        System.out.println("TranslateRadical=false, Finishing=TRUE, RemoveComment=TRUE:");
+        System.out.println(that.toCompactString(false, true,true));
+        System.out.println("TranslateRadical=false, Finishing=false, RemoveComment=TRUE:");
+        System.out.println(that.toCompactString(false, false,true));
+        
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE, RemoveComment=false:");
+        System.out.println(that.toCompactString(true, true,false));
+        System.out.println("TranslateRadical=TRUE, Finishing=false,  RemoveComment=false:");
+        System.out.println(that.toCompactString(true, false,false));
+        System.out.println("TranslateRadical=false, Finishing=TRUE, RemoveComment=false:");
+        System.out.println(that.toCompactString(false, true,false));
+        System.out.println("TranslateRadical=false, Finishing=false, RemoveComment=false:");
+        System.out.println(that.toCompactString(false, false,false));
+        
+        String result1="<html><body><script name='>'>if (3>4) var i=1;</script name='>'></body></html>";
+        String result2=result1;
+        assertTrue(result1.equals(that.toCompactString(true, true,true)));
+        assertTrue(result1.equals(that.toCompactString(true, false,true)));
+        assertTrue(result1.equals(that.toCompactString(false, true,true)));
+        assertTrue(result1.equals(that.toCompactString(false, false,true)));             
+        assertTrue(result2.equals(that.toCompactString(true, true,false)));
+        assertTrue(result2.equals(that.toCompactString(true, false,false)));
+        assertTrue(result2.equals(that.toCompactString(false, true,false)));
+        assertTrue(result2.equals(that.toCompactString(false, false,false)));             
+        
+    }     
 }

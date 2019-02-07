@@ -1130,5 +1130,46 @@ public class CompactString_SpecialAboutAngleBranket {
         assertTrue(result2.equals(alt.toCompactString(true, false)));
         assertTrue(result1.equals(alt.toCompactString(false, true)));
         assertTrue(result2.equals(alt.toCompactString(false, false)));                 
-    }       
+    } 
+    @Test
+    public void TestF3() {        
+//    public String f3="<html><body><p name='GGYY'  </body></html>"; //unfinished tag
+        StringBuffer buf=new StringBuffer(f3);
+        HTML that = new HTML(buf);        
+        that.go();
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE:");
+        System.out.println(that.toCompactString(true, true));
+        System.out.println("TranslateRadical=TRUE, Finishing=false:");
+        System.out.println(that.toCompactString(true, false));
+        System.out.println("TranslateRadical=false, Finishing=TRUE:");
+        System.out.println(that.toCompactString(false, true));
+        System.out.println("TranslateRadical=false, Finishing=false:");
+        System.out.println(that.toCompactString(false, false));
+        String result1="<html><body><p name='GGYY' /></body></html>";
+        String result2="<html><body><p name='GGYY' </body></html>";
+        
+        assertTrue(result1.equals(that.toCompactString(true, true)));
+        assertTrue(result2.equals(that.toCompactString(true, false)));
+        assertTrue(result1.equals(that.toCompactString(false, true)));
+        assertTrue(result2.equals(that.toCompactString(false, false)));              
+        
+        System.out.println("ALT:");
+        HTML alt=new HTML(buf);
+        alt.defRadical.add(' ');
+        alt.go();
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE:");
+        System.out.println(alt.toCompactString(true, true));
+        System.out.println("TranslateRadical=TRUE, Finishing=false:");
+        System.out.println(alt.toCompactString(true, false));
+        System.out.println("TranslateRadical=false, Finishing=TRUE:");
+        System.out.println(alt.toCompactString(false, true));
+        System.out.println("TranslateRadical=false, Finishing=false:");
+        System.out.println(alt.toCompactString(false, false));
+        
+                
+        assertTrue(result1.equals(alt.toCompactString(true, true)));
+        assertTrue(result2.equals(alt.toCompactString(true, false)));
+        assertTrue(result1.equals(alt.toCompactString(false, true)));
+        assertTrue(result2.equals(alt.toCompactString(false, false)));                 
+    }      
 }

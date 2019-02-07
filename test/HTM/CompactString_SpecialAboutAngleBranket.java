@@ -1264,20 +1264,35 @@ public class CompactString_SpecialAboutAngleBranket {
       StringBuffer buf=new StringBuffer(w0);
         HTML that = new HTML(buf);        
         that.go();
-        System.out.println("TranslateRadical=TRUE, Finishing=TRUE:");
-        System.out.println(that.toCompactString(true, true));
-        System.out.println("TranslateRadical=TRUE, Finishing=false:");
-        System.out.println(that.toCompactString(true, false));
-        System.out.println("TranslateRadical=false, Finishing=TRUE:");
-        System.out.println(that.toCompactString(false, true));
-        System.out.println("TranslateRadical=false, Finishing=false:");
-        System.out.println(that.toCompactString(false, false));
-        String result1="<html><body>&lt;</body></html>";
-        String result2="<html><body><</body></html>";
-        assertTrue(result1.equals(that.toCompactString(true, true)));
-        assertTrue(result1.equals(that.toCompactString(true, false)));
-        assertTrue(result2.equals(that.toCompactString(false, true)));
-        assertTrue(result2.equals(that.toCompactString(false, false)));             
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE, RemoveComment=TRUE:");
+        System.out.println(that.toCompactString(true, true,true));
+        System.out.println("TranslateRadical=TRUE, Finishing=false,  RemoveComment=TRUE:");
+        System.out.println(that.toCompactString(true, false,true));
+        System.out.println("TranslateRadical=false, Finishing=TRUE, RemoveComment=TRUE:");
+        System.out.println(that.toCompactString(false, true,true));
+        System.out.println("TranslateRadical=false, Finishing=false, RemoveComment=TRUE:");
+        System.out.println(that.toCompactString(false, false,true));
+        
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE, RemoveComment=false:");
+        System.out.println(that.toCompactString(true, true,false));
+        System.out.println("TranslateRadical=TRUE, Finishing=false,  RemoveComment=false:");
+        System.out.println(that.toCompactString(true, false,false));
+        System.out.println("TranslateRadical=false, Finishing=TRUE, RemoveComment=false:");
+        System.out.println(that.toCompactString(false, true,false));
+        System.out.println("TranslateRadical=false, Finishing=false, RemoveComment=false:");
+        System.out.println(that.toCompactString(false, false,false));
+        
+        String result1="<html><!-- content --></html>";
+        String result2="<html></html>";
+        assertTrue(result2.equals(that.toCompactString(true, true,true)));
+        assertTrue(result2.equals(that.toCompactString(true, false,true)));
+        assertTrue(result2.equals(that.toCompactString(false, true,true)));
+        assertTrue(result2.equals(that.toCompactString(false, false,true)));             
+        assertTrue(result1.equals(that.toCompactString(true, true,false)));
+        assertTrue(result1.equals(that.toCompactString(true, false,false)));
+        assertTrue(result1.equals(that.toCompactString(false, true,false)));
+        assertTrue(result1.equals(that.toCompactString(false, false,false)));             
+        
     }
     
 }

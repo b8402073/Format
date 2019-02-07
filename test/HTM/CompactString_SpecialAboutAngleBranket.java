@@ -56,6 +56,8 @@ public class CompactString_SpecialAboutAngleBranket {
     //                01234567890123456789012345678901234567890
     public String f3="<html><body><p name='GGYY'  </body></html>"; //unfinished tag
     public String f4="<html><body><p name=\"GGYY\"   </body></html>"; //unfinished tag
+    public String f5="<html><body><script name=\"GGYY\"   </body></html>";
+    
 
     public String w0="<html> <!-- content --> </html>";
     public String w1="<html><body> <!-- 123 >  -->  </body></html>"; 
@@ -1023,7 +1025,7 @@ public class CompactString_SpecialAboutAngleBranket {
         System.out.println(that.toCompactString(false, true));
         System.out.println("TranslateRadical=false, Finishing=false:");
         System.out.println(that.toCompactString(false, false));
-        String result1="<html><body><p /></body></html>";
+        String result1="<html><body><p/></body></html>";
         String result2="<html><body><p </body></html>";
         
         assertTrue(result1.equals(that.toCompactString(true, true)));
@@ -1104,7 +1106,7 @@ public class CompactString_SpecialAboutAngleBranket {
         System.out.println(that.toCompactString(false, true));
         System.out.println("TranslateRadical=false, Finishing=false:");
         System.out.println(that.toCompactString(false, false));
-        String result1="<html><body><p /></body></html>";
+        String result1="<html><body><p/></body></html>";
         String result2="<html><body><p </body></html>";
         
         assertTrue(result1.equals(that.toCompactString(true, true)));
@@ -1145,7 +1147,7 @@ public class CompactString_SpecialAboutAngleBranket {
         System.out.println(that.toCompactString(false, true));
         System.out.println("TranslateRadical=false, Finishing=false:");
         System.out.println(that.toCompactString(false, false));
-        String result1="<html><body><p name='GGYY' /></body></html>";
+        String result1="<html><body><p name='GGYY'/></body></html>";
         String result2="<html><body><p name='GGYY' </body></html>";
         
         assertTrue(result1.equals(that.toCompactString(true, true)));
@@ -1172,4 +1174,110 @@ public class CompactString_SpecialAboutAngleBranket {
         assertTrue(result1.equals(alt.toCompactString(false, true)));
         assertTrue(result2.equals(alt.toCompactString(false, false)));                 
     }      
+    @Test
+    public void TestF4() {        
+//public String f4="<html><body><p name=\"GGYY\"   </body></html>"; //unfinished tag
+        StringBuffer buf=new StringBuffer(f4);
+        HTML that = new HTML(buf);        
+        that.go();
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE:");
+        System.out.println(that.toCompactString(true, true));
+        System.out.println("TranslateRadical=TRUE, Finishing=false:");
+        System.out.println(that.toCompactString(true, false));
+        System.out.println("TranslateRadical=false, Finishing=TRUE:");
+        System.out.println(that.toCompactString(false, true));
+        System.out.println("TranslateRadical=false, Finishing=false:");
+        System.out.println(that.toCompactString(false, false));
+        String result1="<html><body><p name=\"GGYY\"/></body></html>";
+        String result2="<html><body><p name=\"GGYY\" </body></html>";
+        
+        assertTrue(result1.equals(that.toCompactString(true, true)));
+        assertTrue(result2.equals(that.toCompactString(true, false)));
+        assertTrue(result1.equals(that.toCompactString(false, true)));
+        assertTrue(result2.equals(that.toCompactString(false, false)));              
+        
+        System.out.println("ALT:");
+        HTML alt=new HTML(buf);
+        alt.defRadical.add(' ');
+        alt.go();
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE:");
+        System.out.println(alt.toCompactString(true, true));
+        System.out.println("TranslateRadical=TRUE, Finishing=false:");
+        System.out.println(alt.toCompactString(true, false));
+        System.out.println("TranslateRadical=false, Finishing=TRUE:");
+        System.out.println(alt.toCompactString(false, true));
+        System.out.println("TranslateRadical=false, Finishing=false:");
+        System.out.println(alt.toCompactString(false, false));
+        
+                
+        assertTrue(result1.equals(alt.toCompactString(true, true)));
+        assertTrue(result2.equals(alt.toCompactString(true, false)));
+        assertTrue(result1.equals(alt.toCompactString(false, true)));
+        assertTrue(result2.equals(alt.toCompactString(false, false)));                 
+    }      
+    @Test
+    public void TestF5() {        
+//    public String f5="<html><body><script name=\"GGYY\"   </body></html>";  
+//µø¬°                              <script name="GGYY" </body    >
+
+        StringBuffer buf=new StringBuffer(f5);
+        HTML that = new HTML(buf);        
+        that.go();
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE:");
+        System.out.println(that.toCompactString(true, true));
+        System.out.println("TranslateRadical=TRUE, Finishing=false:");
+        System.out.println(that.toCompactString(true, false));
+        System.out.println("TranslateRadical=false, Finishing=TRUE:");
+        System.out.println(that.toCompactString(false, true));
+        System.out.println("TranslateRadical=false, Finishing=false:");
+        System.out.println(that.toCompactString(false, false));
+        String result1="<html><body><script name=\"GGYY\" </body></html>";
+        
+        
+        assertTrue(result1.equals(that.toCompactString(true, true)));
+        assertTrue(result1.equals(that.toCompactString(true, false)));
+        assertTrue(result1.equals(that.toCompactString(false, true)));
+        assertTrue(result1.equals(that.toCompactString(false, false)));              
+        
+        System.out.println("ALT:");
+        HTML alt=new HTML(buf);
+        alt.defRadical.add(' ');
+        alt.go();
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE:");
+        System.out.println(alt.toCompactString(true, true));
+        System.out.println("TranslateRadical=TRUE, Finishing=false:");
+        System.out.println(alt.toCompactString(true, false));
+        System.out.println("TranslateRadical=false, Finishing=TRUE:");
+        System.out.println(alt.toCompactString(false, true));
+        System.out.println("TranslateRadical=false, Finishing=false:");
+        System.out.println(alt.toCompactString(false, false));
+        
+                
+        assertTrue(result1.equals(alt.toCompactString(true, true)));
+        assertTrue(result1.equals(alt.toCompactString(true, false)));
+        assertTrue(result1.equals(alt.toCompactString(false, true)));
+        assertTrue(result1.equals(alt.toCompactString(false, false)));                 
+    }      
+    @Test
+    public void TestW0() {
+//    public String w0="<html> <!-- content --> </html>";
+      StringBuffer buf=new StringBuffer(w0);
+        HTML that = new HTML(buf);        
+        that.go();
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE:");
+        System.out.println(that.toCompactString(true, true));
+        System.out.println("TranslateRadical=TRUE, Finishing=false:");
+        System.out.println(that.toCompactString(true, false));
+        System.out.println("TranslateRadical=false, Finishing=TRUE:");
+        System.out.println(that.toCompactString(false, true));
+        System.out.println("TranslateRadical=false, Finishing=false:");
+        System.out.println(that.toCompactString(false, false));
+        String result1="<html><body>&lt;</body></html>";
+        String result2="<html><body><</body></html>";
+        assertTrue(result1.equals(that.toCompactString(true, true)));
+        assertTrue(result1.equals(that.toCompactString(true, false)));
+        assertTrue(result2.equals(that.toCompactString(false, true)));
+        assertTrue(result2.equals(that.toCompactString(false, false)));             
+    }
+    
 }

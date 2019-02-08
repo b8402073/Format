@@ -415,8 +415,7 @@ public class HTML {
         }
         buf.append(ret.toString().trim());
     }
-
-    public String toCompactString(boolean translateRadical, boolean Finishing) {
+    public String toCompactString(boolean translateRadical, boolean Finishing,boolean RemoveHTMLComment) {
         StringBuffer ret = new StringBuffer();
         if (LeftOrRight.size() > 0) {
             String startTxt = MyText.substring(0, LeftOrRight.get(0));
@@ -426,22 +425,26 @@ public class HTML {
         Vector<String> Between = GetAllBetween();
         Stack<String> stack=new Stack();
         String that;
-        if (Tag.size() - Between.size() == 1) {
+        if (Tag.size()-UnFinished.size() - Between.size() == 1) {
             for (int i = 0; i < Tag.size(); i++) {
                 that = Tag.get(i);
-                ret.append(ToCompactOneTag(that));
+                //ret.append(ToCompactOneTag(that));
                 if (Finishing) {
                     if (!that.endsWith(">")) {
-                        String append;
                         if (that.startsWith("<!--")) {
-                            append = "-->";
+                            that += "-->";
                         } else if (that.startsWith("<%")) {
-                            append = "%>";
+                            that += "%>";
                         } else {
-                            append = "/>";
-                        }
-                        ret.append(append);
+                            that += "/>";
+                        }                        
                     }
+                }
+                if (!RemoveHTMLComment || !that.startsWith("<!--")) {
+                    if (that.startsWith("<!--"))
+                        ret.append(that);
+                    else
+                        ret.append(ToCompactOneTag(that));
                 }
                 if (that.startsWith("<script") || that.startsWith("<pre") || that.startsWith("<style")) {
                     stack.push(that);
@@ -457,13 +460,18 @@ public class HTML {
                     }
                 }
             }
+        }else {
+            assert(false);
         }
         int LastBranket = LeftOrRight.get(LeftOrRight.size() - 1);
         if (LastBranket < MyText.length()) {
             if (MyText.charAt(LastBranket) == '<') {
                 //do nothing;
             } else if (MyText.charAt(LastBranket) == '>') {
-                InsertToStringBuffer(ret, MyText.substring(LastBranket + 1, MyText.length()), defRadical, translateRadical);
+                if (stack.empty())
+                    InsertToStringBuffer(ret, MyText.substring(LastBranket + 1, MyText.length()), defRadical, translateRadical);
+                else
+                    InsertToStringBuffer(ret, MyText.substring(LastBranket + 1, MyText.length()), defRadical, false);
             }
         }
 

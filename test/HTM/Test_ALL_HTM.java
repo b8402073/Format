@@ -93,9 +93,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses (
         {
-            TestHTM0.class,
-            TestHTM1.class,
-            TestJSP1.class,
+            CompactString_SpecialAboutAngleBranket.class,
+            CompactOneTag.class,
             TestJSP2.class,
             TestJSP3.class,
             TestJSP4.class,

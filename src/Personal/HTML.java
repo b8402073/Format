@@ -415,6 +415,16 @@ public class HTML {
         }
         buf.append(ret.toString().trim());
     }
+    private int CorrectNumBecauseOfUnFinished() {
+        int ret=0;
+        int Last=LeftOrRight.get(LeftOrRight.size()-1);
+        if (MyText.charAt(Last)=='<') {
+            if (UnFinished.contains(Last)) {
+                ret=1;
+            }
+        }
+        return ret;
+    }
     public String toCompactString(boolean translateRadical, boolean Finishing,boolean RemoveHTMLComment) {
         StringBuffer ret = new StringBuffer();
         if (LeftOrRight.size() > 0) {
@@ -425,11 +435,13 @@ public class HTML {
         Vector<String> Between = GetAllBetween();
         Stack<String> stack=new Stack();
         String that;
-        if (Tag.size()-UnFinished.size() - Between.size() == 1) {
+        int Count=CorrectNumBecauseOfUnFinished();
+
+        if (Tag.size()-UnFinished.size() - Between.size()+Count == 1) {
             for (int i = 0; i < Tag.size(); i++) {
                 that = Tag.get(i);
                 if (Finishing) {
-                    if (!that.endsWith(">")) {
+                    if (!that.endsWith(">")) {   //針對TestW10,這個If可能要拿掉...
                         if (that.startsWith("<!--")) {
                             that += "-->";
                         } else if (that.startsWith("<%")) {

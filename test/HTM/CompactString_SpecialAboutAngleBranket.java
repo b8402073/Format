@@ -1570,16 +1570,19 @@ public class CompactString_SpecialAboutAngleBranket {
         System.out.println("TranslateRadical=false, Finishing=false, RemoveComment=false:");
         System.out.println(that.toCompactString(false, false,false));
         
-        String result1="<html><body><p <!-- GGYY -->&gt;</body></html>";
-        String result2="<html><body><p <!-- GGYY -->></body></html>";
+        String result1="<html><body>--&gt;</body></html>";
+        String result2="<html><body>--></body></html>";
+        String result3="<html><body><!--  <!--  comment -->--&gt;</body></html>";
+        String result4="<html><body><!--  <!--  comment -->--></body></html>";
         assertTrue(result1.equals(that.toCompactString(true, true,true)));
         assertTrue(result1.equals(that.toCompactString(true, false,true)));
         assertTrue(result2.equals(that.toCompactString(false, true,true)));
         assertTrue(result2.equals(that.toCompactString(false, false,true)));             
-        assertTrue(result1.equals(that.toCompactString(true, true,false)));
-        assertTrue(result1.equals(that.toCompactString(true, false,false)));
-        assertTrue(result2.equals(that.toCompactString(false, true,false)));
-        assertTrue(result2.equals(that.toCompactString(false, false,false)));             
+        
+        assertTrue(result3.equals(that.toCompactString(true, true,false)));
+        assertTrue(result3.equals(that.toCompactString(true, false,false)));
+        assertTrue(result4.equals(that.toCompactString(false, true,false)));
+        assertTrue(result4.equals(that.toCompactString(false, false,false)));             
         
     }       
 }

@@ -130,13 +130,13 @@ public class TestJSP3 {
         HTML that = new HTML(BufJSP3);        
         that.go();
         System.out.println("TranslateRadical=TRUE, Finishing=TRUE:");
-        System.out.println(that.toCompactString(true, true));
+        System.out.println(that.toCompactString(true, true,false));
         System.out.println("TranslateRadical=TRUE, Finishing=false:");
-        System.out.println(that.toCompactString(true, false));
+        System.out.println(that.toCompactString(true, false,false));
         System.out.println("TranslateRadical=false, Finishing=TRUE:");
-        System.out.println(that.toCompactString(false, true));
+        System.out.println(that.toCompactString(false, true,false));
         System.out.println("TranslateRadical=false, Finishing=false:");
-        System.out.println(that.toCompactString(false, false));
+        System.out.println(that.toCompactString(false, false,false));
         String result="<html><head><meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=big5\"><title>問候語--HTML版 (1-02.htm)</title><script Language=\"JavaScript\"><!--\n" +
 "function checkNow()\n" +
 "{\n" +
@@ -152,10 +152,10 @@ public class TestJSP3 {
 "  document.write(strMsg);\n" +
 "}\n" +
 "// --></script></head><body onLoad=\"checkNow()\"></body></html>";
-        assertTrue(result.equals(that.toCompactString(true, true)));
-        assertTrue(result.equals(that.toCompactString(true, false)));
-        assertTrue(result.equals(that.toCompactString(false, true)));
-        assertTrue(result.equals(that.toCompactString(false, false)));
+        assertTrue(result.equals(that.toCompactString(true, true,false)));
+        assertTrue(result.equals(that.toCompactString(true, false,false)));
+        assertTrue(result.equals(that.toCompactString(false, true,false)));
+        assertTrue(result.equals(that.toCompactString(false, false,false)));
         
     }    
     public String modifiedJSP3 = "<html>\n"
@@ -188,13 +188,13 @@ public class TestJSP3 {
         HTML that = new HTML(new StringBuffer(modifiedJSP3));        
         that.go();
         System.out.println("TranslateRadical=TRUE, Finishing=TRUE:");
-        System.out.println(that.toCompactString(true, true));
+        System.out.println(that.toCompactString(true, true,false));
         System.out.println("TranslateRadical=TRUE, Finishing=false:");
-        System.out.println(that.toCompactString(true, false));
+        System.out.println(that.toCompactString(true, false,false));
         System.out.println("TranslateRadical=false, Finishing=TRUE:");
-        System.out.println(that.toCompactString(false, true));
+        System.out.println(that.toCompactString(false, true,false));
         System.out.println("TranslateRadical=false, Finishing=false:");
-        System.out.println(that.toCompactString(false, false));
+        System.out.println(that.toCompactString(false, false,false));
         String result="<html><head><meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=big5\"><title>問候語--HTML版 (1-02.htm)</title><script Language=\"JavaScript\">function checkNow()\n" +
 "{\n" +
 "  myDate = new Date();\n" +
@@ -208,10 +208,10 @@ public class TestJSP3 {
 "  strMsg += \"，歡迎光臨！<p>現在時刻：\" + myDate.toLocaleTimeString() + \"</h2><hr>\";\n" +
 "  document.write(strMsg);\n" +
 "}</script></head><body onLoad=\"checkNow()\"></body></html>";
-        assertTrue(result.equals(that.toCompactString(true, true)));
-        assertTrue(result.equals(that.toCompactString(true, false)));
-        assertTrue(result.equals(that.toCompactString(false, true)));
-        assertTrue(result.equals(that.toCompactString(false, false)));
+        assertTrue(result.equals(that.toCompactString(true, true,false)));
+        assertTrue(result.equals(that.toCompactString(true, false,false)));
+        assertTrue(result.equals(that.toCompactString(false, true,false)));
+        assertTrue(result.equals(that.toCompactString(false, false,false)));
         
     }    
     

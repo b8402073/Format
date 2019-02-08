@@ -428,7 +428,6 @@ public class HTML {
         if (Tag.size()-UnFinished.size() - Between.size() == 1) {
             for (int i = 0; i < Tag.size(); i++) {
                 that = Tag.get(i);
-                //ret.append(ToCompactOneTag(that));
                 if (Finishing) {
                     if (!that.endsWith(">")) {
                         if (that.startsWith("<!--")) {

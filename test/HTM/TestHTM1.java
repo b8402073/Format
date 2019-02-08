@@ -256,18 +256,18 @@ public class TestHTM1 {
         HTML that = new HTML(BufHTM1);        
         that.go();
         System.out.println("TranslateRadical=TRUE, Finishing=TRUE:");
-        System.out.println(that.toCompactString(true, true));
+        System.out.println(that.toCompactString(true, true,false));
         System.out.println("TranslateRadical=TRUE, Finishing=false:");
-        System.out.println(that.toCompactString(true, false));
+        System.out.println(that.toCompactString(true, false,false));
         System.out.println("TranslateRadical=false, Finishing=TRUE:");
-        System.out.println(that.toCompactString(false, true));
+        System.out.println(that.toCompactString(false, true,false));
         System.out.println("TranslateRadical=false, Finishing=false:");
-        System.out.println(that.toCompactString(false, false));
+        System.out.println(that.toCompactString(false, false,false));
         String result="<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><meta http-equiv=\"X-UA-Compatible\" content=\"ie=edge\"><title>scriptº–≈“</title><script async type=\"text/javascript\" src=\"./js/01.js\"></script><script async type=\"text/javascript\" src=\"./js/02.js\"></script></head><body><!-- content --><script type=\"text/javascript\" src=\"./js/03.js\"></script></body></html>";
-        assertTrue(result.equals(that.toCompactString(true, true)));
-        assertTrue(result.equals(that.toCompactString(true, false)));
-        assertTrue(result.equals(that.toCompactString(false, true)));
-        assertTrue(result.equals(that.toCompactString(false, false)));
+        assertTrue(result.equals(that.toCompactString(true, true,false)));
+        assertTrue(result.equals(that.toCompactString(true, false,false)));
+        assertTrue(result.equals(that.toCompactString(false, true,false)));
+        assertTrue(result.equals(that.toCompactString(false, false,false)));
         
     }
 

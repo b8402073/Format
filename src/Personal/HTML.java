@@ -552,4 +552,31 @@ public class HTML {
         return ret.toString();
     }
 
+    public boolean CheckWhetherThisTagIsUnFinished(int TagNumber) {
+        int i,j,k;
+        i=0;j=1;
+        int idx=0;
+        if (TagNumber==LeftOrRight.size()-1) {
+            if (MyText.charAt(LeftOrRight.get(TagNumber))=='<')
+                return true;
+            else
+                return false;
+        }
+        while(i<=TagNumber && i<LeftOrRight.size() && j<LeftOrRight.size() ) {
+            char L=MyText.charAt(LeftOrRight.get(i));
+            char R=MyText.charAt(LeftOrRight.get(j));
+            if (L=='<' && R=='>') {
+                if (TagNumber==idx) {
+                    return false;
+                }
+                idx+=1;
+                i+=2; j+=2;
+            }else if (L=='<' && R=='<') {
+                if (TagNumber==idx) {
+                    return true;
+                }
+            }                
+        }
+        return false;
+    }
 }

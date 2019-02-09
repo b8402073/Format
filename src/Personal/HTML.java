@@ -440,8 +440,8 @@ public class HTML {
         if (Tag.size()-UnFinished.size() - Between.size()+Count == 1) {
             for (int i = 0; i < Tag.size(); i++) {
                 that = Tag.get(i);
-                if (Finishing) {
-                    if (!that.endsWith(">")) {   //針對TestW10,這個If可能要拿掉...
+                if (Finishing && this.CheckWhetherThisTagIsUnFinished(i)) {
+//                    if (!that.endsWith(">")) {   //針對TestW10,這個If可能要拿掉...
                         if (that.startsWith("<!--")) {
                             that += "-->";
                         } else if (that.startsWith("<%")) {
@@ -449,7 +449,7 @@ public class HTML {
                         } else {
                             that += "/>";
                         }                        
-                    }
+//                    }
                 }
                 if (!RemoveHTMLComment || !that.startsWith("<!--")) {
                     if (that.startsWith("<!--"))
@@ -556,15 +556,16 @@ public class HTML {
         int i,j,k;
         i=0;j=1;
         int idx=0;
-        if (TagNumber==LeftOrRight.size()-1) {
-            if (MyText.charAt(LeftOrRight.get(TagNumber))=='<')
-                return true;
-            else
-                return false;
-        }
-        while(i<=TagNumber && i<LeftOrRight.size() && j<LeftOrRight.size() ) {
+        while(idx<=TagNumber && i<LeftOrRight.size()  ) {
             char L=MyText.charAt(LeftOrRight.get(i));
-            char R=MyText.charAt(LeftOrRight.get(j));
+            char R='@';
+            if  (j<LeftOrRight.size())
+                R=MyText.charAt(LeftOrRight.get(j));
+            else if (j+1 >= LeftOrRight.size()) {
+                if (L=='<')
+                    return true;
+            }else 
+                break;
             if (L=='<' && R=='>') {
                 if (TagNumber==idx) {
                     return false;
@@ -575,6 +576,7 @@ public class HTML {
                 if (TagNumber==idx) {
                     return true;
                 }
+                i++; j++; idx++;
             }                
         }
         return false;

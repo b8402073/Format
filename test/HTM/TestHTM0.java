@@ -169,6 +169,39 @@ public class TestHTM0 {
         assertTrue(result2.equals(that.toCompactString(false,false,false)));
           
         
-    }    
+    }
+    @Test
+    public void testOneTagOneLine() {
+        HTML that = new HTML(BufHTM0);
+        that.go();        
+        String result="<!DOCTYPE html>\n" +
+"<html lang=\"en\">\n" +
+"<head>\n" +
+"<meta charset=\"UTF-8\">\n" +
+"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+"<meta http-equiv=\"X-UA-Compatible\" content=\"ie=edge\">\n" +
+"<title>\n" +
+"Dom\n" +
+"</title>\n" +
+"</head>\n" +
+"<body>\n" +
+"<div>\n" +
+"hello,javascript\n" +
+"</div>\n" +
+"</body>\n" +
+"</html>\n";
+
+        String ans=that.toOneTagOneLineString(true, true, true, "\n");
+        System.out.println("ans.len="+ans.length());        
+        System.out.println("result.len="+result.length());
+        for (int i=0; i<result.length(); i++) {
+            if (ans.charAt(i)!= result.charAt(i))
+                System.out.println("A["+i+"]="+ans.charAt(i)+"   R[i]="+result.charAt(i)+"   eq="+(ans.charAt(i)==result.charAt(i)));
+        }
+        System.out.println("ans15="+ans.codePointAt(15));
+        System.out.println("ans269="+ans.codePointAt(269) );
+        System.out.println(that.toOneTagOneLineString(true, true, true, "\n"));
+        assertTrue(result.equals(that.toOneTagOneLineString(true, true, true, "\n")));
+    }
 
 }

@@ -1777,5 +1777,118 @@ public class CompactString_SpecialAboutAngleBranket {
         assertTrue(result1.equals(that.toCompactString(false, false,false)));             
         
     }       
+    @Test
+    public void TestW14() {
+//    public String w14="<html><style> <p>  </html>";
+      StringBuffer buf=new StringBuffer(w14);
+        HTML that = new HTML(buf);        
+        that.go();
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE, RemoveComment=TRUE:");
+        System.out.println(that.toCompactString(true, true,true));
+        System.out.println("TranslateRadical=TRUE, Finishing=false,  RemoveComment=TRUE:");
+        System.out.println(that.toCompactString(true, false,true));
+        System.out.println("TranslateRadical=false, Finishing=TRUE, RemoveComment=TRUE:");
+        System.out.println(that.toCompactString(false, true,true));
+        System.out.println("TranslateRadical=false, Finishing=false, RemoveComment=TRUE:");
+        System.out.println(that.toCompactString(false, false,true));
+        
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE, RemoveComment=false:");
+        System.out.println(that.toCompactString(true, true,false));
+        System.out.println("TranslateRadical=TRUE, Finishing=false,  RemoveComment=false:");
+        System.out.println(that.toCompactString(true, false,false));
+        System.out.println("TranslateRadical=false, Finishing=TRUE, RemoveComment=false:");
+        System.out.println(that.toCompactString(false, true,false));
+        System.out.println("TranslateRadical=false, Finishing=false, RemoveComment=false:");
+        System.out.println(that.toCompactString(false, false,false));
+        
+        String result1="<html><style> <p>  </html>"; //<style>之後視為css碼，不壓縮
+        //(至少在HTML這層不處裡<pre>, <style> , <script>這些指令碼
+        //即使以後要處理也會把程式碼寫在HTML的子類別裡面
+
+        assertTrue(result1.equals(that.toCompactString(true, true,true)));
+        assertTrue(result1.equals(that.toCompactString(true, false,true)));
+        assertTrue(result1.equals(that.toCompactString(false, true,true)));
+        assertTrue(result1.equals(that.toCompactString(false, false,true)));             
+        
+        assertTrue(result1.equals(that.toCompactString(true, true,false)));
+        assertTrue(result1.equals(that.toCompactString(true, false,false)));
+        assertTrue(result1.equals(that.toCompactString(false, true,false)));
+        assertTrue(result1.equals(that.toCompactString(false, false,false)));             
+        
+    }       
+    @Test
+    public void TestW15() {
+//    public String w15="<html><style> < p>  </html>";    
+      StringBuffer buf=new StringBuffer(w15);
+        HTML that = new HTML(buf);        
+        that.go();
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE, RemoveComment=TRUE:");
+        System.out.println(that.toCompactString(true, true,true));
+        System.out.println("TranslateRadical=TRUE, Finishing=false,  RemoveComment=TRUE:");
+        System.out.println(that.toCompactString(true, false,true));
+        System.out.println("TranslateRadical=false, Finishing=TRUE, RemoveComment=TRUE:");
+        System.out.println(that.toCompactString(false, true,true));
+        System.out.println("TranslateRadical=false, Finishing=false, RemoveComment=TRUE:");
+        System.out.println(that.toCompactString(false, false,true));
+        
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE, RemoveComment=false:");
+        System.out.println(that.toCompactString(true, true,false));
+        System.out.println("TranslateRadical=TRUE, Finishing=false,  RemoveComment=false:");
+        System.out.println(that.toCompactString(true, false,false));
+        System.out.println("TranslateRadical=false, Finishing=TRUE, RemoveComment=false:");
+        System.out.println(that.toCompactString(false, true,false));
+        System.out.println("TranslateRadical=false, Finishing=false, RemoveComment=false:");
+        System.out.println(that.toCompactString(false, false,false));
+        
+        String result1="<html><style> < p>  </html>";
+
+        assertTrue(result1.equals(that.toCompactString(true, true,true)));
+        assertTrue(result1.equals(that.toCompactString(true, false,true)));
+        assertTrue(result1.equals(that.toCompactString(false, true,true)));
+        assertTrue(result1.equals(that.toCompactString(false, false,true)));             
+        
+        assertTrue(result1.equals(that.toCompactString(true, true,false)));
+        assertTrue(result1.equals(that.toCompactString(true, false,false)));
+        assertTrue(result1.equals(that.toCompactString(false, true,false)));
+        assertTrue(result1.equals(that.toCompactString(false, false,false)));             
+        
+    }       
+    @Test
+    public void TestW16() {
+//    public String w16="<html><%  <p>   %></html>";
+      StringBuffer buf=new StringBuffer(w16);
+        HTML that = new HTML(buf);        
+        that.go();
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE, RemoveComment=TRUE:");
+        System.out.println(that.toCompactString(true, true,true));
+        System.out.println("TranslateRadical=TRUE, Finishing=false,  RemoveComment=TRUE:");
+        System.out.println(that.toCompactString(true, false,true));
+        System.out.println("TranslateRadical=false, Finishing=TRUE, RemoveComment=TRUE:");
+        System.out.println(that.toCompactString(false, true,true));
+        System.out.println("TranslateRadical=false, Finishing=false, RemoveComment=TRUE:");
+        System.out.println(that.toCompactString(false, false,true));
+        
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE, RemoveComment=false:");
+        System.out.println(that.toCompactString(true, true,false));
+        System.out.println("TranslateRadical=TRUE, Finishing=false,  RemoveComment=false:");
+        System.out.println(that.toCompactString(true, false,false));
+        System.out.println("TranslateRadical=false, Finishing=TRUE, RemoveComment=false:");
+        System.out.println(that.toCompactString(false, true,false));
+        System.out.println("TranslateRadical=false, Finishing=false, RemoveComment=false:");
+        System.out.println(that.toCompactString(false, false,false));
+        
+        String result1="<html><%  <p>   %></html>";
+
+        assertTrue(result1.equals(that.toCompactString(true, true,true)));
+        assertTrue(result1.equals(that.toCompactString(true, false,true)));
+        assertTrue(result1.equals(that.toCompactString(false, true,true)));
+        assertTrue(result1.equals(that.toCompactString(false, false,true)));             
+        
+        assertTrue(result1.equals(that.toCompactString(true, true,false)));
+        assertTrue(result1.equals(that.toCompactString(true, false,false)));
+        assertTrue(result1.equals(that.toCompactString(false, true,false)));
+        assertTrue(result1.equals(that.toCompactString(false, false,false)));             
+        
+    }       
         
 }

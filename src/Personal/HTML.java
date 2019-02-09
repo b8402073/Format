@@ -41,7 +41,7 @@ public class HTML {
     //設定準備要翻譯的特殊符號  
     public Vector<Character> defRadical;
     //視為空白的符號集合
-    public static final String White=" |\t|\r|\n|\000";
+    public static final String White = " |\t|\r|\n|\000";
 
     public void PrintIssues() {
         System.out.println("DQArea=" + DQArea.toString());
@@ -400,7 +400,7 @@ public class HTML {
     }
 
     public static void InsertToStringBuffer(StringBuffer buf, String Txt, Vector<Character> defR, boolean translateRadical) {
-        StringBuffer ret=new StringBuffer();
+        StringBuffer ret = new StringBuffer();
         for (int i = 0; i < Txt.length(); i++) {
             if (translateRadical) {
                 if (defR.contains(Txt.charAt(i))) {
@@ -415,17 +415,19 @@ public class HTML {
         }
         buf.append(ret.toString().trim());
     }
-    private int CorrectNumBecauseOfUnFinished() {
-        int ret=0;
-        int Last=LeftOrRight.get(LeftOrRight.size()-1);
-        if (MyText.charAt(Last)=='<') {
+
+    public int CorrectNumBecauseOfUnFinished() {
+        int ret = 0;
+        int Last = LeftOrRight.get(LeftOrRight.size() - 1);
+        if (MyText.charAt(Last) == '<') {
             if (UnFinished.contains(Last)) {
-                ret=1;
+                ret = 1;
             }
         }
         return ret;
     }
-    public String toCompactString(boolean translateRadical, boolean Finishing,boolean RemoveHTMLComment) {
+
+    public String toCompactString(boolean translateRadical, boolean Finishing, boolean RemoveHTMLComment) {
         StringBuffer ret = new StringBuffer();
         if (LeftOrRight.size() > 0) {
             String startTxt = MyText.substring(0, LeftOrRight.get(0));
@@ -433,152 +435,229 @@ public class HTML {
         }
         Vector<String> Tag = GetAllTags();
         Vector<String> Between = GetAllBetween();
-        Stack<String> stack=new Stack();
+        Stack<String> stack = new Stack<String>();
         String that;
-        int Count=CorrectNumBecauseOfUnFinished();
+        int Count = CorrectNumBecauseOfUnFinished();
 
-        if (Tag.size()-UnFinished.size() - Between.size()+Count == 1) {
+        if (Tag.size() - UnFinished.size() - Between.size() + Count == 1) {
             for (int i = 0; i < Tag.size(); i++) {
                 that = Tag.get(i);
                 if (Finishing && this.CheckWhetherThisTagIsUnFinished(i)) {
-//                    if (!that.endsWith(">")) {   //針對TestW10,這個If可能要拿掉...
-                        if (that.startsWith("<!--")) {
-                            that += "-->";
-                        } else if (that.startsWith("<%")) {
-                            that += "%>";
-                        } else {
-                            that += "/>";
-                        }                        
-//                    }
+
+                    if (that.startsWith("<!--")) {
+                        that += "-->";
+                    } else if (that.startsWith("<%")) {
+                        that += "%>";
+                    } else {
+                        that += "/>";
+                    }
+
                 }
                 if (!RemoveHTMLComment || !that.startsWith("<!--")) {
-                    if (that.startsWith("<!--"))
+                    if (that.startsWith("<!--")) {
                         ret.append(that);
-                    else
+                    } else {
                         ret.append(ToCompactOneTag(that));
+                    }
+                }
+                if (that.startsWith("<script") || that.startsWith("<pre") || that.startsWith("<style")) {
+                    stack.push(that);
+                } else if (stack.size() > 0 && that.startsWith("</")) {
+                    stack.pop();
+                }
+                if (i <= Between.size() - 1) {
+                    that = Between.get(i);
+                    if (stack.empty()) {
+                        InsertToStringBuffer(ret, that.trim(), defRadical, translateRadical);
+                    } else {
+                        InsertToStringBuffer(ret, that.trim(), defRadical, false);
+                    }
+                }
+            }
+        } else {
+            assert (false);
+        }
+        int LastBranket = LeftOrRight.get(LeftOrRight.size() - 1);
+        if (LastBranket < MyText.length()) {
+            if (MyText.charAt(LastBranket) == '<') {
+                //do nothing; //因為這裡的內容已經加入ret了
+            } else if (MyText.charAt(LastBranket) == '>') {
+                if (stack.empty()) {
+                    InsertToStringBuffer(ret, MyText.substring(LastBranket + 1, MyText.length()), defRadical, translateRadical);
+                } else {
+                    InsertToStringBuffer(ret, MyText.substring(LastBranket + 1, MyText.length()), defRadical, false);
+                }
+            }
+        }
+
+        return ret.toString();
+
+    }
+
+    public static String ToCompactOneTag(String Tag) {
+        if (Tag.startsWith("<!--") || Tag.startsWith("<%")) {
+            return Tag;
+        }
+        StringBuffer orig = new StringBuffer(Tag);
+        Vector<Pair> localDQ = new Vector<Pair>();
+        Vector<Pair> localSQ = new Vector<Pair>();
+        JspStatic3.Build_DQ_Area(orig, localDQ);
+        JspStatic3.Build_SQ_Area(orig, localDQ, localSQ);
+        Stack<String> stack = new Stack<String>();
+        StringBuffer ret = new StringBuffer();
+        for (int i = 0; i < orig.length(); i++) {
+            int sq = Main.Exist(i, localSQ);
+            if (sq >= 0) {
+                ret.append(Main.ToSTR(localSQ.get(sq), orig));
+                i = localSQ.get(sq).getEnd();
+                continue;
+            }
+            int dq = Main.Exist(i, localDQ);
+            if (dq >= 0) {
+                ret.append(Main.ToSTR(localDQ.get(dq), orig));
+                i = localDQ.get(dq).getEnd();
+                continue;
+            }
+            switch (orig.charAt(i)) {
+                case '\'':
+                    if (stack.empty()) {
+                        stack.push("SQ");
+                    } else {
+                        stack.pop();
+                    }
+                    break;
+                case '\"':
+                    if (stack.empty()) {
+                        stack.push("DQ");
+                    } else {
+                        stack.pop();
+                    }
+                    break;
+            }
+            if (HTML.White.contains("" + orig.charAt(i))) {
+                while (i < orig.length() && HTML.White.contains("" + orig.charAt(i))) {
+                    if (orig.charAt(i) == '\n' && !stack.empty()) {
+                        ret.append("\n");
+                        stack.clear();
+                    }
+                    i++;
+                }
+                ret.append(' ');
+            }
+            if (i < orig.length()) {
+                ret.append(orig.charAt(i));
+            }
+        }
+        int idx1 = ret.lastIndexOf(">");
+        if (idx1 >= 0 && ret.charAt(idx1 - 1) == ' ') {
+            ret.deleteCharAt(idx1 - 1);
+            return ret.toString();
+        }
+        int idx2 = ret.lastIndexOf("/>");
+        if (idx2 >= 0 && ret.charAt(idx2 - 1) == ' ') {
+            ret.deleteCharAt(idx2 - 1);
+            return ret.toString();
+        }
+        return ret.toString();
+    }
+
+    public boolean CheckWhetherThisTagIsUnFinished(int TagNumber) {
+        int i, j, k;
+        i = 0;
+        j = 1;
+        int idx = 0;
+        while (idx <= TagNumber && i < LeftOrRight.size()) {
+            char L = MyText.charAt(LeftOrRight.get(i));
+            char R = '@';
+            if (j < LeftOrRight.size()) {
+                R = MyText.charAt(LeftOrRight.get(j));
+            } else if (j + 1 >= LeftOrRight.size()) {
+                if (L == '<') {
+                    return true;
+                }
+            } else {
+                break;
+            }
+            if (L == '<' && R == '>') {
+                if (TagNumber == idx) {
+                    return false;
+                }
+                idx += 1;
+                i += 2;
+                j += 2;
+            } else if (L == '<' && R == '<') {
+                if (TagNumber == idx) {
+                    return true;
+                }
+                i++;
+                j++;
+                idx++;
+            }
+        }
+        return false;
+    }
+
+    public String toOneTagOneLineString(boolean translateRadical, boolean Finishing, boolean RemoveHTMLComment, String changeLine) {
+        StringBuffer ret = new StringBuffer();
+        if (LeftOrRight.size() > 0) {
+            String startTxt = MyText.substring(0, LeftOrRight.get(0));
+            String[] lines = startTxt.split("\n");
+            for (String str : lines) {
+                InsertToStringBuffer(ret, str + changeLine, defRadical, translateRadical);
+            }
+        }
+        Vector<String> Tag = GetAllTags();
+        Vector<String> Between = GetAllBetween();
+        Stack<String> stack = new Stack<String>();
+        String that;
+        int Count = CorrectNumBecauseOfUnFinished();
+        if (Tag.size() - UnFinished.size() - Between.size() + Count == 1) {
+            for (int i = 0; i < Tag.size(); i++) {
+                that = Tag.get(i);
+                if (Finishing && this.CheckWhetherThisTagIsUnFinished(i)) {
+                    if (that.startsWith("<!--")) {
+                        that += "-->";
+                    } else if (that.startsWith("<%")) {
+                        that += "%>";
+                    } else {
+                        that += "/>";
+                    }                                        
+                }
+                if (!RemoveHTMLComment || !that.startsWith("<!--")) {
+                    if (that.startsWith("<!--")) {
+                        ret.append(that+changeLine);
+                    }else {
+                        ret.append(ToCompactOneTag(that)+changeLine);
+                    }
                 }
                 if (that.startsWith("<script") || that.startsWith("<pre") || that.startsWith("<style")) {
                     stack.push(that);
                 }else if (stack.size()>0 && that.startsWith("</")) {
                     stack.pop();
                 }
-                if (i <= Between.size() - 1) {
-                    that = Between.get(i);                    
+                if (i<= Between.size()-1) {
+                    that=Between.get(i);
                     if (stack.empty()) {
-                        InsertToStringBuffer(ret, that.trim(), defRadical, translateRadical);                        
+                        InsertToStringBuffer(ret,that.trim(), defRadical,translateRadical);
                     }else {
-                        InsertToStringBuffer(ret, that.trim(), defRadical, false);
+                        InsertToStringBuffer(ret,that.trim(), defRadical,false);
                     }
+                    ret.append(changeLine);
                 }
             }
         }else {
             assert(false);
         }
-        int LastBranket = LeftOrRight.get(LeftOrRight.size() - 1);
-        if (LastBranket < MyText.length()) {
-            if (MyText.charAt(LastBranket) == '<') {
-                //do nothing;
-            } else if (MyText.charAt(LastBranket) == '>') {
-                if (stack.empty())
-                    InsertToStringBuffer(ret, MyText.substring(LastBranket + 1, MyText.length()), defRadical, translateRadical);
-                else
-                    InsertToStringBuffer(ret, MyText.substring(LastBranket + 1, MyText.length()), defRadical, false);
-            }
-        }
-
-        return ret.toString();
-
-    }
-    public static String ToCompactOneTag(String Tag) {
-        if (Tag.startsWith("<!--") || Tag.startsWith("<%") ) {
-            return Tag;
-        }
-        StringBuffer orig=new StringBuffer(Tag);
-        Vector<Pair> localDQ=new Vector<Pair>();
-        Vector<Pair> localSQ=new Vector<Pair>();
-        JspStatic3.Build_DQ_Area(orig, localDQ);
-        JspStatic3.Build_SQ_Area(orig, localDQ, localSQ);        
-        Stack<String> stack=new Stack<String>();
-        StringBuffer ret=new StringBuffer();
-        for (int i=0; i<orig.length(); i++) {
-            int sq=Main.Exist(i, localSQ);
-            if (sq>=0)  {
-                ret.append(Main.ToSTR(localSQ.get(sq), orig));
-                i=localSQ.get(sq).getEnd();
-                continue;
-            }            
-            int dq=Main.Exist(i, localDQ);
-            if (dq>=0) {
-                ret.append(Main.ToSTR(localDQ.get(dq), orig));
-                i=localDQ.get(dq).getEnd();
-                continue;
-            }
-            switch(orig.charAt(i)) {
-                case '\'':  
-                    if (stack.empty())
-                        stack.push("SQ"); 
-                    else
-                        stack.pop();
-                    break;
-                case '\"':   
-                    if (stack.empty())
-                        stack.push("DQ"); 
-                    else
-                        stack.pop();
-                    break;
-            }
-            if (HTML.White.contains(""+orig.charAt(i))) {
-                while(i<orig.length() && HTML.White.contains(""+orig.charAt(i))) {
-                    if (orig.charAt(i)=='\n' && !stack.empty()) {
-                        ret.append("\n");  stack.clear();
-                    }
-                    i++;
+        int LastBranket=LeftOrRight.get(LeftOrRight.size()-1);
+        if (LastBranket< MyText.length()) {
+            if (MyText.charAt(LastBranket)=='>') {
+                if (stack.empty()) {
+                    InsertToStringBuffer(ret,MyText.substring(LastBranket+1,MyText.length()).trim(),defRadical,translateRadical);
+                }else {
+                    InsertToStringBuffer(ret,MyText.substring(LastBranket+1,MyText.length()).trim(),defRadical,false);
                 }
-                ret.append(' ');
-            }
-            if (i<orig.length())
-                ret.append(orig.charAt(i));            
-        }
-        int idx1=ret.lastIndexOf(">");
-        if (idx1>=0 && ret.charAt(idx1-1)==' ') {
-            ret.deleteCharAt(idx1-1);
-            return ret.toString();
-        }
-        int idx2=ret.lastIndexOf("/>");
-        if (idx2>=0 && ret.charAt(idx2-1)==' ') {
-            ret.deleteCharAt(idx2-1);
-            return ret.toString();
-        }        
-        return ret.toString();
-    }
-
-    public boolean CheckWhetherThisTagIsUnFinished(int TagNumber) {
-        int i,j,k;
-        i=0;j=1;
-        int idx=0;
-        while(idx<=TagNumber && i<LeftOrRight.size()  ) {
-            char L=MyText.charAt(LeftOrRight.get(i));
-            char R='@';
-            if  (j<LeftOrRight.size())
-                R=MyText.charAt(LeftOrRight.get(j));
-            else if (j+1 >= LeftOrRight.size()) {
-                if (L=='<')
-                    return true;
-            }else 
-                break;
-            if (L=='<' && R=='>') {
-                if (TagNumber==idx) {
-                    return false;
-                }
-                idx+=1;
-                i+=2; j+=2;
-            }else if (L=='<' && R=='<') {
-                if (TagNumber==idx) {
-                    return true;
-                }
-                i++; j++; idx++;
             }                
         }
-        return false;
+        return ret.toString();
     }
 }

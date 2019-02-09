@@ -1787,7 +1787,20 @@ public class CompactString_SpecialAboutAngleBranket {
         assertTrue(result1.equals(that.toCompactString(true, true,false)));
         assertTrue(result2.equals(that.toCompactString(true, false,false)));
         assertTrue(result1.equals(that.toCompactString(false, true,false)));
-        assertTrue(result2.equals(that.toCompactString(false, false,false)));              
+        assertTrue(result2.equals(that.toCompactString(false, false,false))); 
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE:");
+        System.out.println(that.toCompactString(true, true,true));
+        System.out.println("TranslateRadical=TRUE, Finishing=false:");
+        System.out.println(that.toCompactString(true, false,true));
+        System.out.println("TranslateRadical=false, Finishing=TRUE:");
+        System.out.println(that.toCompactString(false, true,true));
+        System.out.println("TranslateRadical=false, Finishing=false:");
+        System.out.println(that.toCompactString(false, false,true));
+
+        assertTrue(result1.equals(that.toCompactString(true, true,true)));
+        assertTrue(result2.equals(that.toCompactString(true, false,true)));
+        assertTrue(result1.equals(that.toCompactString(false, true,true)));
+        assertTrue(result2.equals(that.toCompactString(false,false,true)));         
         
         System.out.println("ALT:");
         HTML alt=new HTML(buf);
@@ -1806,7 +1819,20 @@ public class CompactString_SpecialAboutAngleBranket {
         assertTrue(result1.equals(alt.toCompactString(true, true,false)));
         assertTrue(result2.equals(alt.toCompactString(true, false,false)));
         assertTrue(result1.equals(alt.toCompactString(false, true,false)));
-        assertTrue(result2.equals(alt.toCompactString(false, false,false)));                 
+        assertTrue(result2.equals(alt.toCompactString(false, false,false)));
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE:");
+        System.out.println(alt.toCompactString(true, true,true));
+        System.out.println("TranslateRadical=TRUE, Finishing=false:");
+        System.out.println(alt.toCompactString(true, false,true));
+        System.out.println("TranslateRadical=false, Finishing=TRUE:");
+        System.out.println(alt.toCompactString(false, true,true));
+        System.out.println("TranslateRadical=false, Finishing=false:");
+        System.out.println(alt.toCompactString(false, false,true));
+
+        assertTrue(result1.equals(alt.toCompactString(true, true,true)));
+        assertTrue(result2.equals(alt.toCompactString(true, false,true)));
+        assertTrue(result1.equals(alt.toCompactString(false, true,true)));
+        assertTrue(result2.equals(alt.toCompactString(false,false,true)));         
     }      
     @Test
     public void TestF4() {        
@@ -1828,7 +1854,20 @@ public class CompactString_SpecialAboutAngleBranket {
         assertTrue(result1.equals(that.toCompactString(true, true,false)));
         assertTrue(result2.equals(that.toCompactString(true, false,false)));
         assertTrue(result1.equals(that.toCompactString(false, true,false)));
-        assertTrue(result2.equals(that.toCompactString(false, false,false)));              
+        assertTrue(result2.equals(that.toCompactString(false, false,false))); 
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE:");
+        System.out.println(that.toCompactString(true, true,true));
+        System.out.println("TranslateRadical=TRUE, Finishing=false:");
+        System.out.println(that.toCompactString(true, false,true));
+        System.out.println("TranslateRadical=false, Finishing=TRUE:");
+        System.out.println(that.toCompactString(false, true,true));
+        System.out.println("TranslateRadical=false, Finishing=false:");
+        System.out.println(that.toCompactString(false, false,true));
+
+        assertTrue(result1.equals(that.toCompactString(true, true,true)));
+        assertTrue(result2.equals(that.toCompactString(true, false,true)));
+        assertTrue(result1.equals(that.toCompactString(false, true,true)));
+        assertTrue(result2.equals(that.toCompactString(false,false,true)));         
         
         System.out.println("ALT:");
         HTML alt=new HTML(buf);
@@ -1848,6 +1887,19 @@ public class CompactString_SpecialAboutAngleBranket {
         assertTrue(result2.equals(alt.toCompactString(true, false,false)));
         assertTrue(result1.equals(alt.toCompactString(false, true,false)));
         assertTrue(result2.equals(alt.toCompactString(false, false,false)));                 
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE:");
+        System.out.println(alt.toCompactString(true, true,true));
+        System.out.println("TranslateRadical=TRUE, Finishing=false:");
+        System.out.println(alt.toCompactString(true, false,true));
+        System.out.println("TranslateRadical=false, Finishing=TRUE:");
+        System.out.println(alt.toCompactString(false, true,true));
+        System.out.println("TranslateRadical=false, Finishing=false:");
+        System.out.println(alt.toCompactString(false, false,true));
+
+        assertTrue(result1.equals(alt.toCompactString(true, true,true)));
+        assertTrue(result2.equals(alt.toCompactString(true, false,true)));
+        assertTrue(result1.equals(alt.toCompactString(false, true,true)));
+        assertTrue(result2.equals(alt.toCompactString(false,false,true)));         
     }      
     @Test
     public void TestF5() {        

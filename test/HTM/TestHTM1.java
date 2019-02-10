@@ -195,6 +195,19 @@ public class TestHTM1 {
         }        
         return new String[0];
     }
+    public static boolean ReportStringDiff(String result,String ans) {
+        result=result.trim();
+        ans=ans.trim();        
+        System.out.println("ans.len="+ans.length());        
+        System.out.println("result.len="+result.length());
+        for (int i=0; i<result.length(); i++) {
+            if (ans.charAt(i)!= result.charAt(i)) {
+                System.out.println("A["+i+"]="+ans.charAt(i)+"   R[i]="+result.charAt(i)+"   eq="+(ans.charAt(i)==result.charAt(i)));
+                return false;
+            }
+        }    
+        return true;
+    }
     @Test
     public void testSQ() {
         String[] inn={"A","B","CCC"};
@@ -270,5 +283,77 @@ public class TestHTM1 {
         assertTrue(result.equals(that.toCompactString(false, false,false)));
         
     }
-
+    @Test
+    public void testOneTagOneLine() {
+        HTML that = new HTML(BufHTM1);        
+        that.go();
+   
+        
+        String result1="<!DOCTYPE html>\n" +
+"<html lang=\"en\">\n" +
+"<head>\n" +
+"<meta charset=\"UTF-8\">\n" +
+"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+"<meta http-equiv=\"X-UA-Compatible\" content=\"ie=edge\">\n" +
+"<title>\n" +
+"scriptº–≈“\n" +
+"</title>\n" +
+"<script async type=\"text/javascript\" src=\"./js/01.js\">\n" +
+"</script>\n" +
+"<script async type=\"text/javascript\" src=\"./js/02.js\">\n" +
+"</script>\n" +
+"</head>\n" +
+"<body>\n" +
+"<!-- content -->\n" +
+"<script type=\"text/javascript\" src=\"./js/03.js\">\n" +
+"</script>\n" +
+"</body>\n" +
+"</html>";
+        String result2="<!DOCTYPE html>\n" +
+"<html lang=\"en\">\n" +
+"<head>\n" +
+"<meta charset=\"UTF-8\">\n" +
+"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+"<meta http-equiv=\"X-UA-Compatible\" content=\"ie=edge\">\n" +
+"<title>\n" +
+"scriptº–≈“\n" +
+"</title>\n" +
+"<script async type=\"text/javascript\" src=\"./js/01.js\">\n" +
+"</script>\n" +
+"<script async type=\"text/javascript\" src=\"./js/02.js\">\n" +
+"</script>\n" +
+"</head>\n" +
+"<body>\n" +
+"<script type=\"text/javascript\" src=\"./js/03.js\">\n" +
+"</script>\n" +
+"</body>\n" +
+"</html>";
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE  removeHTMLcomment=false :");
+        System.out.println(that.toOneTagOneLineString(true, true,false,"\n"));
+        System.out.println("TranslateRadical=TRUE, Finishing=false removeHTMLcomment=false :");
+        System.out.println(that.toOneTagOneLineString(true, false,false,"\n"));
+        System.out.println("TranslateRadical=false, Finishing=TRUE removeHTMLcomment=false :");
+        System.out.println(that.toOneTagOneLineString(false, true,false,"\n"));
+        System.out.println("TranslateRadical=false, Finishing=false removeHTMLcomment=false :");
+        System.out.println(that.toOneTagOneLineString(false, false,false,"\n"));        
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE  removeHTMLcomment=true :");
+        System.out.println(that.toOneTagOneLineString(true, true,true,"\n"));
+        System.out.println("TranslateRadical=TRUE, Finishing=false removeHTMLcomment=true :");
+        System.out.println(that.toOneTagOneLineString(true, false,true,"\n"));
+        System.out.println("TranslateRadical=false, Finishing=TRUE removeHTMLcomment=true :");
+        System.out.println(that.toOneTagOneLineString(false, true,true,"\n"));
+        System.out.println("TranslateRadical=false, Finishing=false removeHTMLcomment=true :");
+        System.out.println(that.toOneTagOneLineString(false, false,true,"\n"));         
+        assertTrue(result1.trim().equals(that.toOneTagOneLineString(false,false,false,"\n").trim()));
+        assertTrue(result2.trim().equals(that.toOneTagOneLineString(false,false,true,"\n").trim()));
+        assertTrue(result1.trim().equals(that.toOneTagOneLineString(false,true,false,"\n").trim()));
+        assertTrue(result2.trim().equals(that.toOneTagOneLineString(false,true,true,"\n").trim()));
+        
+        assertTrue(result1.trim().equals(that.toOneTagOneLineString(true,false,false,"\n").trim()));
+        assertTrue(result2.trim().equals(that.toOneTagOneLineString(true,false,true,"\n").trim()));
+        assertTrue(result1.trim().equals(that.toOneTagOneLineString(true,true,false,"\n").trim()));
+        assertTrue(result2.trim().equals(that.toOneTagOneLineString(true,true,true,"\n").trim()));
+        
+    }
+    
 }

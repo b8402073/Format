@@ -227,29 +227,27 @@ public class TestJSP3 {
 "問候語--HTML版 (1-02.htm)\n" +
 "</title>\n" +
 "<script Language=\"JavaScript\">\n" +
+"<!--\n" +
+"function checkNow()\n" +
+"{\n" +
+"  myDate = new Date();\n" +
+"  h = myDate.getHours();\n" +
+"  var strMsg;\n" +
+"  if ((h > 12) && (h < 18)) {\n" +
+"     strMsg = \"<h2>午安\";\n" +
+"  } else {\n" +
+"     strMsg = \"<h2>您好\";\n" +
+"  }\n" +
+"  strMsg += \"，歡迎光臨！<p>現在時刻：\" + myDate.toLocaleTimeString() + \"</h2><hr>\";\n" +
+"  document.write(strMsg);\n" +
+"}\n" +
+"// -->\n" +
 "</script>\n" +
 "</head>\n" +
 "<body onLoad=\"checkNow()\">\n" +
 "</body>\n" +
-"</html>\n" +
-"\n" +
-"TranslateRadical=false, Finishing=false removeHTMLcomment=true :\n" +
-"\n" +
-"<html>\n" +
-"<head>\n" +
-"<meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=big5\">\n" +
-"<title>\n" +
-"問候語--HTML版 (1-02.htm)\n" +
-"</title>\n" +
-"<script Language=\"JavaScript\">\n" +
-"</script>\n" +
-"</head>\n" +
-"<body onLoad=\"checkNow()\">\n" +
-"</body>\n" +
-"</html>\n" +
-"\n" +
-"";
-        
+"</html>";
+
         System.out.println("TranslateRadical=TRUE, Finishing=TRUE  removeHTMLcomment=false :");
         System.out.println(that.toOneTagOneLineString(true, true,false,"\n"));
         System.out.println("TranslateRadical=TRUE, Finishing=false removeHTMLcomment=false :");

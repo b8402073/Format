@@ -453,7 +453,7 @@ public class HTML {
                     }
 
                 }
-                if (!RemoveHTMLComment || !that.startsWith("<!--")) {
+                if (!RemoveHTMLComment || !that.startsWith("<!--") || !stack.empty()) {
                     if (that.startsWith("<!--")) {
                         ret.append(that);
                     } else {
@@ -623,7 +623,7 @@ public class HTML {
                         that += "/>";
                     }                                        
                 }
-                if (!RemoveHTMLComment || !that.startsWith("<!--")) {
+                if (!RemoveHTMLComment || !that.startsWith("<!--") || !stack.empty()) {
                     if (that.startsWith("<!--")) {
                         ret.append(that+changeLine);
                     }else {
@@ -636,13 +636,15 @@ public class HTML {
                     stack.pop();
                 }
                 if (i<= Between.size()-1) {
-                    that=Between.get(i);
-                    if (stack.empty()) {
-                        InsertToStringBuffer(ret,that.trim(), defRadical,translateRadical);
-                    }else {
-                        InsertToStringBuffer(ret,that.trim(), defRadical,false);
+                    that=Between.get(i).trim();
+                    if (that.length()>0) {
+                        if (stack.empty()) {
+                            InsertToStringBuffer(ret,that.trim(), defRadical,translateRadical);
+                        }else {
+                            InsertToStringBuffer(ret,that.trim(), defRadical,false);
+                        }
+                        ret.append(changeLine);
                     }
-                    ret.append(changeLine);
                 }
             }
         }else {

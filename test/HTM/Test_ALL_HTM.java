@@ -95,6 +95,7 @@ import org.junit.runners.Suite;
         {
             CompactString_SpecialAboutAngleBranket.class,
             CompactOneTag.class,
+            SpecialAboutAngleBranketSymbol.class,
             TestJSP2.class,
             TestJSP3.class,
             TestJSP4.class,

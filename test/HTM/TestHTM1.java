@@ -343,7 +343,8 @@ public class TestHTM1 {
         System.out.println("TranslateRadical=false, Finishing=TRUE removeHTMLcomment=true :");
         System.out.println(that.toOneTagOneLineString(false, true,true,"\n"));
         System.out.println("TranslateRadical=false, Finishing=false removeHTMLcomment=true :");
-        System.out.println(that.toOneTagOneLineString(false, false,true,"\n"));         
+        System.out.println(that.toOneTagOneLineString(false, false,true,"\n"));       
+        
         assertTrue(result1.trim().equals(that.toOneTagOneLineString(false,false,false,"\n").trim()));
         assertTrue(result2.trim().equals(that.toOneTagOneLineString(false,false,true,"\n").trim()));
         assertTrue(result1.trim().equals(that.toOneTagOneLineString(false,true,false,"\n").trim()));

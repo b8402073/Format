@@ -190,18 +190,26 @@ public class TestHTM0 {
 "</div>\n" +
 "</body>\n" +
 "</html>\n";
-
-        String ans=that.toOneTagOneLineString(true, true, true, "\n");
+        result=result.trim();
+        String ans=that.toOneTagOneLineString(false, false, false, "\n").trim();
         System.out.println("ans.len="+ans.length());        
         System.out.println("result.len="+result.length());
         for (int i=0; i<result.length(); i++) {
             if (ans.charAt(i)!= result.charAt(i))
                 System.out.println("A["+i+"]="+ans.charAt(i)+"   R[i]="+result.charAt(i)+"   eq="+(ans.charAt(i)==result.charAt(i)));
         }
-        System.out.println("ans15="+ans.codePointAt(15));
-        System.out.println("ans269="+ans.codePointAt(269) );
-        System.out.println(that.toOneTagOneLineString(true, true, true, "\n"));
-        assertTrue(result.equals(that.toOneTagOneLineString(true, true, true, "\n")));
+        //System.out.println("ans15="+ans.codePointAt(15));
+        //System.out.println("ans269="+ans.codePointAt(269) );
+       // System.out.println(that.toOneTagOneLineString(false, false, false, "\n"));
+        
+        assertTrue(result.equals(that.toOneTagOneLineString(true, true, true, "\n").trim()));
+        assertTrue(result.equals(that.toOneTagOneLineString(true,true,false,"\n").trim()));
+        assertTrue(result.equals(that.toOneTagOneLineString(true,false,true,"\n").trim()));
+        assertTrue(result.equals(that.toOneTagOneLineString(true,false,false,"\n").trim()));
+        assertTrue(result.equals(that.toOneTagOneLineString(false,false,false,"\n").trim()));
+        assertTrue(result.equals(that.toOneTagOneLineString(false,false,true,"\n").trim()));
+        assertTrue(result.equals(that.toOneTagOneLineString(false,true,false,"\n").trim()));
+        assertTrue(result.equals(that.toOneTagOneLineString(false,true,true,"\n").trim()));
     }
 
 }

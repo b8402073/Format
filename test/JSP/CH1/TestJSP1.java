@@ -174,4 +174,86 @@ public class TestJSP1 {
 
         }         
     }
+    @Test
+    public void testOneTagOneLine() {
+        HTML that = new HTML(BufJSP1);        
+        that.go();
+   
+        
+        String result1="<%@ page contentType=\"text/html; charset=big5\" %>\n" +
+"<html>\n" +
+"<head>\n" +
+"<title>\n" +
+"基本觀念的建立\n" +
+"</title>\n" +
+"</head>\n" +
+"<body bgcolor=\"white\">\n" +
+"<jsp:include page=\"/public/header.inc\"/>\n" +
+"<h2 align=\"center\">\n" +
+"Ch01 -- 基本觀念的建立\n" +
+"</h2>\n" +
+"<div align=\"center\">\n" +
+"<center>\n" +
+"<table border=\"1\">\n" +
+"<tr bgcolor=\"lightblue\" align=\"center\">\n" +
+"<td height=\"16\" width=\"357\">\n" +
+"<p align=\"left\">\n" +
+"<a href=\"1-01.jsp\">\n" +
+"歡迎光臨\n" +
+"</a>\n" +
+"</td>\n" +
+"<td height=\"16\" width=\"357\">\n" +
+"<p align=\"left\">\n" +
+"<a href=\"1-02.htm\">\n" +
+"歡迎光臨--JavaScript版\n" +
+"</a>\n" +
+"</td>\n" +
+"</tr>\n" +
+"<tr align=\"center\">\n" +
+"<td height=\"16\" width=\"357\">\n" +
+"<p align=\"left\">\n" +
+"<a href=\"1-03.jsp\">\n" +
+"問候語--JSP版\n" +
+"</a>\n" +
+"</td>\n" +
+"<td height=\"16\" width=\"357\">\n" +
+"<p align=\"left\">\n" +
+"</a>\n" +
+"</td>\n" +
+"</tr>\n" +
+"</table>\n" +
+"</center>\n" +
+"</div>\n" +
+"<jsp:include page=\"/public/footer.inc\"/>\n" +
+"</body>\n" +
+"</html>";
+        String result2="";
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE  removeHTMLcomment=false :");
+        System.out.println(that.toOneTagOneLineString(true, true,false,"\n"));
+        System.out.println("TranslateRadical=TRUE, Finishing=false removeHTMLcomment=false :");
+        System.out.println(that.toOneTagOneLineString(true, false,false,"\n"));
+        System.out.println("TranslateRadical=false, Finishing=TRUE removeHTMLcomment=false :");
+        System.out.println(that.toOneTagOneLineString(false, true,false,"\n"));
+        System.out.println("TranslateRadical=false, Finishing=false removeHTMLcomment=false :");
+        System.out.println(that.toOneTagOneLineString(false, false,false,"\n"));        
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE  removeHTMLcomment=true :");
+        System.out.println(that.toOneTagOneLineString(true, true,true,"\n"));
+        System.out.println("TranslateRadical=TRUE, Finishing=false removeHTMLcomment=true :");
+        System.out.println(that.toOneTagOneLineString(true, false,true,"\n"));
+        System.out.println("TranslateRadical=false, Finishing=TRUE removeHTMLcomment=true :");
+        System.out.println(that.toOneTagOneLineString(false, true,true,"\n"));
+        System.out.println("TranslateRadical=false, Finishing=false removeHTMLcomment=true :");
+        System.out.println(that.toOneTagOneLineString(false, false,true,"\n"));       
+        
+        assertTrue(result1.trim().equals(that.toOneTagOneLineString(false,false,false,"\n").trim()));
+        assertTrue(result1.trim().equals(that.toOneTagOneLineString(false,false,true,"\n").trim()));
+        assertTrue(result1.trim().equals(that.toOneTagOneLineString(false,true,false,"\n").trim()));
+        assertTrue(result1.trim().equals(that.toOneTagOneLineString(false,true,true,"\n").trim()));
+        
+        assertTrue(result1.trim().equals(that.toOneTagOneLineString(true,false,false,"\n").trim()));
+        assertTrue(result1.trim().equals(that.toOneTagOneLineString(true,false,true,"\n").trim()));
+        assertTrue(result1.trim().equals(that.toOneTagOneLineString(true,true,false,"\n").trim()));
+        assertTrue(result1.trim().equals(that.toOneTagOneLineString(true,true,true,"\n").trim()));
+        
+    }    
 }

@@ -128,4 +128,61 @@ public class TestJSP2 {
         }
 
     }
+    @Test
+    public void testOneTagOneLine() {
+        HTML that = new HTML(BufJSP2);        
+        that.go();
+   
+        
+        String result1="<%@ page import = \"java.util.Date\"\n" +
+"    contentType = \"text/html; charset=BIG5\" %>\n" +
+"<html>\n" +
+"<head>\n" +
+"<title>\n" +
+"歡迎光臨 (1-01.jsp)\n" +
+"</title>\n" +
+"</head>\n" +
+"<body>\n" +
+"<h2>\n" +
+"您好，歡迎光臨！\n" +
+"<p>\n" +
+"<% \n" +
+"   //取得現在日期、時間\n" +
+"   Date x = new Date(); \n" +
+"%>\n" +
+"現在時刻是：\n" +
+"<%= x.toLocaleString() %>\n" +
+"</h2>\n" +
+"<hr>\n" +
+"</body>\n" +
+"</html>";
+        
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE  removeHTMLcomment=false :");
+        System.out.println(that.toOneTagOneLineString(true, true,false,"\n"));
+        System.out.println("TranslateRadical=TRUE, Finishing=false removeHTMLcomment=false :");
+        System.out.println(that.toOneTagOneLineString(true, false,false,"\n"));
+        System.out.println("TranslateRadical=false, Finishing=TRUE removeHTMLcomment=false :");
+        System.out.println(that.toOneTagOneLineString(false, true,false,"\n"));
+        System.out.println("TranslateRadical=false, Finishing=false removeHTMLcomment=false :");
+        System.out.println(that.toOneTagOneLineString(false, false,false,"\n"));        
+        System.out.println("TranslateRadical=TRUE, Finishing=TRUE  removeHTMLcomment=true :");
+        System.out.println(that.toOneTagOneLineString(true, true,true,"\n"));
+        System.out.println("TranslateRadical=TRUE, Finishing=false removeHTMLcomment=true :");
+        System.out.println(that.toOneTagOneLineString(true, false,true,"\n"));
+        System.out.println("TranslateRadical=false, Finishing=TRUE removeHTMLcomment=true :");
+        System.out.println(that.toOneTagOneLineString(false, true,true,"\n"));
+        System.out.println("TranslateRadical=false, Finishing=false removeHTMLcomment=true :");
+        System.out.println(that.toOneTagOneLineString(false, false,true,"\n"));       
+        
+        assertTrue(result1.trim().equals(that.toOneTagOneLineString(false,false,false,"\n").trim()));
+        assertTrue(result1.trim().equals(that.toOneTagOneLineString(false,false,true,"\n").trim()));
+        assertTrue(result1.trim().equals(that.toOneTagOneLineString(false,true,false,"\n").trim()));
+        assertTrue(result1.trim().equals(that.toOneTagOneLineString(false,true,true,"\n").trim()));
+        
+        assertTrue(result1.trim().equals(that.toOneTagOneLineString(true,false,false,"\n").trim()));
+        assertTrue(result1.trim().equals(that.toOneTagOneLineString(true,false,true,"\n").trim()));
+        assertTrue(result1.trim().equals(that.toOneTagOneLineString(true,true,false,"\n").trim()));
+        assertTrue(result1.trim().equals(that.toOneTagOneLineString(true,true,true,"\n").trim()));
+        
+    }     
 }

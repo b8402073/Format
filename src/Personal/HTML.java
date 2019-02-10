@@ -460,7 +460,17 @@ public class HTML {
                         ret.append(ToCompactOneTag(that));
                     }
                 }
-                if (that.startsWith("<script") || that.startsWith("<pre") || that.startsWith("<style")) {
+                if (stack.empty() && that.startsWith("<script") && that.endsWith("/>")) {  
+                    //如果遇到<script src='GGYY.js' /> var i=123; </script>這種組合還是要把中間的Between text視為javascript                    
+                    if (i+1<Tag.size() ) {
+                        String next= Tag.get(i+1);
+                        if (next.startsWith("</") || next.startsWith("<script")) {
+                            stack.push(that);
+                        }
+                    }else if (i==Tag.size()-1) {
+                        stack.push(that);
+                    }
+                }else if (stack.empty() &&(that.startsWith("<script") || that.startsWith("<pre") || that.startsWith("<style"))) {
                     stack.push(that);
                 } else if (stack.size() > 0 && that.startsWith("</")) {
                     stack.pop();
@@ -630,10 +640,29 @@ public class HTML {
                         ret.append(ToCompactOneTag(that)+changeLine);
                     }
                 }
-                if (that.startsWith("<script") || that.startsWith("<pre") || that.startsWith("<style")) {
+                boolean pop_after_next_between_txt=false;
+                if (stack.empty() && that.startsWith("<script") && that.endsWith("/>")) {  
+                    //基本上這裡是處裡<script src='GGYY.js' />這種tag
+                    //如果遇到<script src='GGYY.js' /> var i=123; </script>這種組合還是要把中間的Between text視為javascript                    
+                    if (i+1<Tag.size()) {
+                        String next= Tag.get(i+1);
+                        if (next.startsWith("</") || next.startsWith("<script")) {
+                            stack.push(that);
+                        }
+                    }else if (i==Tag.size()-1) {
+                        //例如<html><script src='ggyy.js' /> </html>
+                        //這樣會把 </html>視為javascript而不翻譯
+                        stack.push(that);
+                    }
+                    pop_after_next_between_txt=true;
+                }else if (stack.empty() &&(that.startsWith("<script") || that.startsWith("<pre") || that.startsWith("<style"))) {
                     stack.push(that);
                 }else if (stack.size()>0 && that.startsWith("</")) {
-                    stack.pop();
+                    String top=stack.peek();
+                    if ((top.startsWith("<script") && that.startsWith("</script")) || 
+                         (top.startsWith("<pre") && that.startsWith("</pre"))      ||
+                         (top.startsWith("<style") && that.startsWith("</style")) )
+                        stack.pop();
                 }
                 if (i<= Between.size()-1) {
                     that=Between.get(i).trim();
@@ -645,6 +674,8 @@ public class HTML {
                         }
                         ret.append(changeLine);
                     }
+                    if (pop_after_next_between_txt)
+                        stack.pop();
                 }
             }
         }else {

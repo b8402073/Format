@@ -81,6 +81,7 @@ public class CompactString_SpecialAboutAngleBranket {
     public String w19="<html><pre>   <p> </html>";
     public String w20="<html><%   </html>";
     public String w21="<html>A A B B<script><!-- if (1+1==2) \n var a=3; --> GGYY</script></html>";
+    public String w22="<html> <script src='GGYY' /> code>any <script src='LLKK' /> </html>";
     
     public CompactString_SpecialAboutAngleBranket() {
     }

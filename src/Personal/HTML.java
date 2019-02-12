@@ -18,6 +18,14 @@ import java.util.Vector;
  * @author easterday
  */
 public class HTML {
+    public static class TagPair {
+        public Integer start;
+        public Integer end;
+        public int  Level=(-1);
+        public TagPair(int s,int e) {
+            start=s; end=e;
+        }
+    }
 
     //讀進來的一個檔案
     public final StringBuffer MyText;
@@ -42,6 +50,8 @@ public class HTML {
     public Vector<Character> defRadical;
     //視為空白的符號集合
     public static final String White = " |\t|\r|\n|\000";
+    //定義為容器的html tags
+    public Vector<String> defContainer;
 
     public void PrintIssues() {
         System.out.println("DQArea=" + DQArea.toString());
@@ -59,8 +69,15 @@ public class HTML {
         Main.refineStringBuffer(MyText);
         Character[] RadicalSet = {'<', '>', '\'', '"', '&'};
         setDefRadical(RadicalSet);
+        setDefContainer("html,head,body,div,table,thead.tbody,tr,script,pre,style,form");
     }
-
+    public void setDefContainer(String input) {
+        defContainer=new Vector<String>();
+        String[] arr=input.split(",");
+        for (String a:arr) {
+            defContainer.add(a);
+        }
+    }
     public void go() {
         DQArea = new Vector<Pair>();
         SQArea = new Vector<Pair>();

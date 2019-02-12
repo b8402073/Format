@@ -19,11 +19,22 @@ import java.util.Vector;
  */
 public class HTML {
     public static class TagPair {
-        public Integer start;
-        public Integer end;
+        public final String MyText;
+        public final Integer start;
+        public final Integer end;
         public int  Level=(-1);
-        public TagPair(int s,int e) {
-            start=s; end=e;
+        public boolean isContainer;
+        public TagPair(String txt,int s,int e) {
+            MyText=txt;start=s; end=e;
+        }
+        public static String MirrorTag(String input) {
+            if (input.charAt(0)=='<' && input.charAt(1)!='/') {  //normal tag
+                return("</"+input.substring(1));
+            }else if (input.startsWith("</")) {
+                return("<"+input.substring(2));
+            }else {
+                assert(false);
+            }
         }
     }
 
@@ -69,7 +80,7 @@ public class HTML {
         Main.refineStringBuffer(MyText);
         Character[] RadicalSet = {'<', '>', '\'', '"', '&'};
         setDefRadical(RadicalSet);
-        setDefContainer("html,head,body,div,table,thead.tbody,tr,script,pre,style,form");
+        setDefContainer("html,head,body,div,table,thead.tbody,tr,form");
     }
     public void setDefContainer(String input) {
         defContainer=new Vector<String>();
@@ -709,5 +720,33 @@ public class HTML {
             }                
         }
         return ret.toString();
+    }
+    private static boolean isSingleTag(String TagTxt) {
+        if (TagTxt.startsWith("<") && TagTxt.endsWith("/>"))
+            return true;
+        return false;
+    }
+    private Vector<TagPair> collectTagPairs() {
+        Vector<String> Tags=GetAllTags();
+        Vector<TagPair> ret=new Vector<TagPair>();
+        for (int i=0; i<Tags.size(); i++) {
+            String that=Tags.get(i);
+            if (isSingleTag(that)) {
+                ret.add(new TagPair(that,i,i));
+            }else {
+                for (int j=i; j<Tags.size(); j++) {
+                    String hand=Tags.get(j);
+                    if (hand.startsWith(TagPair.MirrorTag(hand))) {
+                        ret.add(new TagPair(hand,i,j));
+                        continue;
+                    }
+                }
+            }
+        }
+        return ret;        
+    }
+    public String toStairString() {
+        Vector<TagPair> hand=collectTagPairs();
+        
     }
 }

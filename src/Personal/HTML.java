@@ -23,7 +23,8 @@ public class HTML {
         public final Integer start;
         public final Integer end;
         public int  Level=(-1);
-        public boolean isContainer;
+        public boolean isContainer=false;
+        public boolean isSingular=false;
         public TagPair(String txt,int s,int e) {
             MyText=txt;start=s; end=e;
         }
@@ -35,6 +36,7 @@ public class HTML {
             }else {
                 assert(false);
             }
+            return "@@?";
         }
     }
 
@@ -726,7 +728,7 @@ public class HTML {
             return true;
         return false;
     }
-    private Vector<TagPair> collectTagPairs() {
+    private Vector<TagPair> collectTagPairs() {  //這個是錯的... ex <div id='A'> <div id='b'> </div> </div>
         Vector<String> Tags=GetAllTags();
         Vector<TagPair> ret=new Vector<TagPair>();
         for (int i=0; i<Tags.size(); i++) {
@@ -747,6 +749,6 @@ public class HTML {
     }
     public String toStairString() {
         Vector<TagPair> hand=collectTagPairs();
-        
+        return "";
     }
 }

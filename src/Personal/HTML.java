@@ -728,19 +728,26 @@ public class HTML {
             return true;
         return false;
     }
-    private Vector<TagPair> collectTagPairs() {  //這個是錯的... ex <div id='A'> <div id='b'> </div> </div>
+    private Vector<TagPair> collectTagPairs() {  
+//請注意各種nested tag的情形... ex <div id='A'> <div id='b'> </div> </div>
         Vector<String> Tags=GetAllTags();
         Vector<TagPair> ret=new Vector<TagPair>();
+
         for (int i=0; i<Tags.size(); i++) {
             String that=Tags.get(i);
             if (isSingleTag(that)) {
                 ret.add(new TagPair(that,i,i));
             }else {
+                Stack<String> stack=new Stack<String>();
                 for (int j=i; j<Tags.size(); j++) {
                     String hand=Tags.get(j);
-                    if (hand.startsWith(TagPair.MirrorTag(hand))) {
+                    if (stack.size()==1 && hand.startsWith(TagPair.MirrorTag(hand))) {
                         ret.add(new TagPair(hand,i,j));
                         continue;
+                    }else if (hand.charAt(0)=='<' && hand.charAt(1)!=' ') {
+                        stack.push(hand);
+                    }else if (hand.startsWith(TagPair.MirrorTag(stack.peek()))) {
+                        stack.pop();
                     }
                 }
             }

@@ -38,6 +38,28 @@ public class HTML {
             }
             return "@@?";
         }
+        public static boolean isStartTag(String inn) {
+            if (inn.charAt(0)=='<' && inn.charAt(1)!='/') {
+                return true;
+            }
+            return false;
+        }
+        public static boolean isEndTag(String inn) {
+            if (inn.charAt(0)=='<' && inn.charAt(1)=='/') {
+                return true;
+            }
+            return false;
+        }
+        public boolean equals(Object that) {
+            if (that instanceof TagPair) {
+                TagPair obj=(TagPair) that;
+                return (start==obj.start && end==obj.end);
+            }
+            return false;
+        }
+        public String toString() {
+            return new String("[start="+start+", end="+end+"]");
+        }
     }
 
     //讀進來的一個檔案
@@ -728,7 +750,7 @@ public class HTML {
             return true;
         return false;
     }
-    private Vector<TagPair> collectTagPairs() {  
+    public Vector<TagPair> collectTagPairs() {  
 //請注意各種nested tag的情形... ex <div id='A'> <div id='b'> </div> </div>
         Vector<String> Tags=GetAllTags();
         Vector<TagPair> ret=new Vector<TagPair>();
@@ -737,14 +759,16 @@ public class HTML {
             String that=Tags.get(i);
             if (isSingleTag(that)) {
                 ret.add(new TagPair(that,i,i));
-            }else {
+            }else if (TagPair.isStartTag(that)) {
                 Stack<String> stack=new Stack<String>();
-                for (int j=i; j<Tags.size(); j++) {
+                stack.push(that);
+                for (int j=i+1; j<Tags.size(); j++) {
                     String hand=Tags.get(j);
-                    if (stack.size()==1 && hand.startsWith(TagPair.MirrorTag(hand))) {
+                    String thatMirror=TagPair.MirrorTag(that);
+                    if (stack.size()==1 && hand.startsWith(thatMirror)) {
                         ret.add(new TagPair(hand,i,j));
-                        continue;
-                    }else if (hand.charAt(0)=='<' && hand.charAt(1)!=' ') {
+                        break;
+                    }else if (TagPair.isStartTag(hand)) {
                         stack.push(hand);
                     }else if (hand.startsWith(TagPair.MirrorTag(stack.peek()))) {
                         stack.pop();
@@ -755,7 +779,7 @@ public class HTML {
         return ret;        
     }
     public String toStairString() {
-        Vector<TagPair> hand=collectTagPairs();
+        Vector<TagPair> hand=collectTagPairs();        
         return "";
     }
 }

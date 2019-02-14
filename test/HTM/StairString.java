@@ -10,10 +10,10 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *  很少用到的功能可以讓助手完成....
+ *
  * @author easterday
  */
-public class OneTagOneLIne_SpecialAboutAngleBranket {
+public class StairString {
     public String jsp1="<html><body> < </body></html>";  //遇到游離子要單獨對待    
     public String jsp2="<html><body> > </body></html>";  //遇到游離子要單獨對待
     public String jsp3="<html><body> <p  ></body></html>"; //這是一個<p> tag
@@ -81,48 +81,19 @@ public class OneTagOneLIne_SpecialAboutAngleBranket {
     public String w19="<html><pre>   <p> </html>";
     public String w20="<html><%   </html>";
     public String w21="<html>A A B B<script><!-- if (1+1==2) \n var a=3; --> GGYY</script></html>";
+    public String w22="<html> <script src='GGYY' /> code>any <script src='LLKK' /> </html>";
     
     
-    public OneTagOneLIne_SpecialAboutAngleBranket() {        
+    public StairString() {
     }
     @Test
-    public void testJ1() {
-//    public String jsp1="<html><body> < </body></html>";  //遇到游離子要單獨對待            
+    public void TestJ1() {
+//    public String jsp1="<html><body> < </body></html>";  //遇到游離子要單獨對待    
         StringBuffer buf=new StringBuffer(jsp1);
-        HTML that=new HTML(buf);
+        HTML that = new HTML(buf);        
         that.go();
-        System.out.println("TranslateRadical=TRUE, Finishing=TRUE  removeHTMLcomment=false :");
-        System.out.println(that.toOneTagOneLineString(true, true,false,"\n"));
-        System.out.println("TranslateRadical=TRUE, Finishing=false removeHTMLcomment=false :");
-        System.out.println(that.toOneTagOneLineString(true, false,false,"\n"));
-        System.out.println("TranslateRadical=false, Finishing=TRUE removeHTMLcomment=false :");
-        System.out.println(that.toOneTagOneLineString(false, true,false,"\n"));
-        System.out.println("TranslateRadical=false, Finishing=false removeHTMLcomment=false :");
-        System.out.println(that.toOneTagOneLineString(false, false,false,"\n"));        
-        System.out.println("TranslateRadical=TRUE, Finishing=TRUE  removeHTMLcomment=true :");
-        System.out.println(that.toOneTagOneLineString(true, true,true,"\n"));
-        System.out.println("TranslateRadical=TRUE, Finishing=false removeHTMLcomment=true :");
-        System.out.println(that.toOneTagOneLineString(true, false,true,"\n"));
-        System.out.println("TranslateRadical=false, Finishing=TRUE removeHTMLcomment=true :");
-        System.out.println(that.toOneTagOneLineString(false, true,true,"\n"));
-        System.out.println("TranslateRadical=false, Finishing=false removeHTMLcomment=true :");
-        System.out.println(that.toOneTagOneLineString(false, false,true,"\n"));       
-        String result1="<html>\n" +"<body>\n" +"&lt;\n" +"</body>\n" +"</html>";
-        String result2="<html>\n" +"<body>\n" +"<\n" +"</body>\n" +"</html>";
+        
+        System.out.println(that.collectTagPairs());
 
-        assertTrue(result2.trim().equals(that.toOneTagOneLineString(false,false,false,"\n").trim()));
-        assertTrue(result2.trim().equals(that.toOneTagOneLineString(false,false,true,"\n").trim()));
-        assertTrue(result2.trim().equals(that.toOneTagOneLineString(false,true,false,"\n").trim()));
-        assertTrue(result2.trim().equals(that.toOneTagOneLineString(false,true,true,"\n").trim()));
-        
-        assertTrue(result1.trim().equals(that.toOneTagOneLineString(true,false,false,"\n").trim()));
-        assertTrue(result1.trim().equals(that.toOneTagOneLineString(true,false,true,"\n").trim()));
-        assertTrue(result1.trim().equals(that.toOneTagOneLineString(true,true,false,"\n").trim()));
-        assertTrue(result1.trim().equals(that.toOneTagOneLineString(true,true,true,"\n").trim()));
-        
-        
-        
-    }
-            
-    
+    }    
 }

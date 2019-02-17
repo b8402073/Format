@@ -24,7 +24,6 @@ public class HTML {
         public final Integer end;
         public int  Level=(-1);
         public boolean isContainer=false;
-        public boolean isSingular=false;
         public TagPair(String txt,int s,int e) {
             MyText=txt;start=s; end=e;
         }
@@ -59,6 +58,12 @@ public class HTML {
         }
         public String toString() {
             return new String("[start="+start+", end="+end+"]");
+        }
+        public boolean Inner(TagPair Child) {
+            if (this.start< Child.start && this.end> Child.end) {
+                return true;
+            }
+            return false;
         }
     }
 
@@ -766,7 +771,15 @@ public class HTML {
                     String hand=Tags.get(j);
                     String thatMirror=TagPair.MirrorTag(that);
                     if (stack.size()==1 && hand.startsWith(thatMirror)) {
-                        ret.add(new TagPair(hand,i,j));
+                        TagPair newPair=new TagPair(that,i,j);
+                        for (String s:defContainer) {
+                            String cmp="<"+s;
+                            if (that.startsWith(cmp)) {
+                                newPair.isContainer=true;
+                                break;
+                            }                                
+                        }
+                        ret.add(newPair);
                         break;
                     }else if (TagPair.isStartTag(hand)) {
                         stack.push(hand);
@@ -778,8 +791,30 @@ public class HTML {
         }
         return ret;        
     }
+    private void adjustContainers(Vector<TagPair> all) {
+        for (int i=0; i<all.size(); i++) {
+            TagPair hand=all.get(i);
+            if (!hand.isContainer)
+                continue;                            
+            Vector<TagPair> parents=GetAllParents(all,hand);
+            for (TagPair p: parents) {
+                p.isContainer=true;
+            }
+        }
+    }
+    private Vector<TagPair> GetAllParents(Vector<TagPair> ALL,TagPair that) {
+        Vector<TagPair> ret=new Vector<TagPair>();
+        for (int i=0; i<ALL.size(); i++) {
+            if (ALL.get(i).Inner(that)) {
+                ret.add(ALL.get(i));
+            }
+        }
+        return ret;
+    }
     public String toStairString() {
         Vector<TagPair> hand=collectTagPairs();        
+        adjustContainers(hand);
+        //adjustLevels(hand);
         return "";
     }
 }

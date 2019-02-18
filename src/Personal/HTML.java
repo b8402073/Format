@@ -6,8 +6,11 @@
 package Personal;
 
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Stack;
 import java.util.Vector;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 /**
  * 上次專案Main class裡面寫了一大堆不知所云的東西的根本原因是因為 對於HTML tag的處理有一點不確定所以就....亂寫一通
@@ -92,6 +95,8 @@ public class HTML {
     public static final String White = " |\t|\r|\n|\000";
     //定義為容器的html tags
     public Vector<String> defContainer;
+    //
+    public DefaultTreeModel MyTree;
 
     public void PrintIssues() {
         System.out.println("DQArea=" + DQArea.toString());
@@ -755,9 +760,8 @@ public class HTML {
             return true;
         return false;
     }
-    public Vector<TagPair> collectTagPairs() {  
+    public Vector<TagPair> collectTagPairs(Vector<String>Tags) {  
 //請注意各種nested tag的情形... ex <div id='A'> <div id='b'> </div> </div>
-        Vector<String> Tags=GetAllTags();
         Vector<TagPair> ret=new Vector<TagPair>();
 
         for (int i=0; i<Tags.size(); i++) {
@@ -811,10 +815,89 @@ public class HTML {
         }
         return ret;
     }
-    public String toStairString() {
-        Vector<TagPair> hand=collectTagPairs();        
-        adjustContainers(hand);
-        //adjustLevels(hand);
-        return "";
+    public String toStairString(String strLevel,String strChangeLine) {
+        Vector<String> Tag = GetAllTags();
+        Vector<String> Between = GetAllBetween();        
+        Vector<TagPair> All_TagPairs=collectTagPairs(Tag);        
+        adjustContainers(All_TagPairs);
+        BuildTree(All_TagPairs);
+        StringBuffer ret=new StringBuffer();
+        MakeStairString(ret,strLevel,strChangeLine,MyTree.getRoot(),Tag,Between,0);
+        return ret.toString();
     }
+    public static void MakeStairString(StringBuffer buf,String strLevel,String strChangeLine,Object rooot,Vector<String> Tags,Vector<String> Betweens,int level) {
+        DefaultMutableTreeNode root=(DefaultMutableTreeNode) rooot;
+        for (int i=0; i<level; i++) {
+            buf.append(strLevel);
+        }
+        TagPair that=(TagPair) root.getUserObject();
+        if (that==null) {
+            for (int i=0; i< root.getChildCount(); i++) {
+                MakeStairString(buf,strLevel,strChangeLine,root.getChildAt(i),Tags,Betweens,0);
+            }
+        }else if (that.isContainer) {
+            buf.append(Tags.get(that.start));
+            buf.append(strChangeLine);
+            for (int i=0; i<level+1; i++) {
+                buf.append(strLevel);
+            }
+            buf.append(Betweens.get(that.start));
+            buf.append(strChangeLine);
+            for (int i=0; i< root.getChildCount(); i++) {
+                MakeStairString(buf,strLevel,strChangeLine,root.getChildAt(i),Tags,Betweens,level+1);
+            }
+            for (int i=0; i<level; i++) {
+                buf.append(strLevel);
+            }            
+            buf.append(Tags.get(that.end));
+            buf.append(strChangeLine);
+        }else {
+            if (that.start==that.end) {
+                //this is a singular tag... like <p/>
+                for (int i=0; i<level; i++) buf.append(strLevel);
+                buf.append(Tags.get(that.start)+strChangeLine);
+                if (Betweens.get(that.start).length()>0) {
+                    for (int i=0; i<level; i++) buf.append(strLevel);
+                    buf.append(Betweens.get(that.start).trim()+strChangeLine);
+                }
+            }else {
+                //this is a non-container tag... like <title>abc</title>
+                for (int i=0; i<level; i++)  buf.append(strLevel);
+                for (int j=that.start; j<=that.end; j++) {
+                    buf.append(Tags.get(j)+ (Betweens.get(j).trim()));
+                }
+                buf.append(strChangeLine);                
+            }
+        }
+    }
+    
+    public void BuildTree(Vector<TagPair> all) {        
+        Vector<TagPair> Hand=new Vector<TagPair>();  
+        for (TagPair t:all) { Hand.add(t); }   //把All_TagPairsCopy到Hand
+        DefaultMutableTreeNode root=new DefaultMutableTreeNode(); 
+        MyTree=new DefaultTreeModel(root,false);
+        TagPair first=Hand.get(0);
+        Hand.remove(0);
+        DefaultMutableTreeNode newNode=new DefaultMutableTreeNode(first);
+        root.add(newNode);
+        while(Hand.size()>0) {
+            TagPair that=Hand.get(0);
+            Hand.remove(0);
+            DefaultMutableTreeNode ins_pos=Deepest_Search(root,that);
+            ins_pos.add(new DefaultMutableTreeNode(that));
+        }                                       
+    }
+    private DefaultMutableTreeNode Deepest_Search(DefaultMutableTreeNode root,TagPair newTP) {
+        if (root.getChildCount()==0)
+            return root;
+         for (int i=0; i<root.getChildCount(); i++) {
+             DefaultMutableTreeNode node =(DefaultMutableTreeNode) root.getChildAt(i);
+             TagPair t=(TagPair) node.getUserObject();
+             if (t.start< newTP.start && t.end>newTP.end ) {
+                 return Deepest_Search( node, newTP);
+             }
+         }
+         return root;
+    }
+    
 }

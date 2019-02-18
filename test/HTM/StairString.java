@@ -93,7 +93,8 @@ public class StairString {
         HTML that = new HTML(buf);        
         that.go();
         
-        System.out.println(that.collectTagPairs());
+       // System.out.println(that.collectTagPairs());
+        System.out.println(that.toStairString("\t","\r\n"));
 
     }    
 }

@@ -364,6 +364,16 @@ public class TestHTM1 {
         System.out.println(that.GetAllTags());
         System.out.println(that.collectTagPairs(that.GetAllTags()));
        // System.out.println(that.collectTagPairs());
-        System.out.println(that.toStairString("#","\r\n"));        
+ 
+        String result=that.toStairString("#", "\n", false);
+        System.out.println(result);
+
+//        System.out.println( TestHTM1.ReportStringDiff(result, ans) );
+//        System.out.println(result.equals(ans));
+//        assertTrue(result.equals(ans)); 
+        System.out.println("-----remove comment-----");
+        String result2=that.toStairString("#","\n",true);
+        System.out.println(result2);
+        
     }    
 }

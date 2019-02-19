@@ -94,7 +94,7 @@ public class StairString {
         that.go();
         
         System.out.println(that.collectTagPairs(that.GetAllTags()));
-        System.out.println(that.toStairString("\t","\r\n"));
+        System.out.println(that.toStairString("\t","\r\n",false));
 
     }    
 }

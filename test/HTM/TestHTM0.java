@@ -219,6 +219,6 @@ public class TestHTM0 {
         System.out.println(that.GetAllTags());
         System.out.println(that.collectTagPairs(that.GetAllTags()));
        // System.out.println(that.collectTagPairs());
-        System.out.println(that.toStairString("\t","\r\n"));        
+        System.out.println(that.toStairString("\t","\r\n",false));        
     }
 }

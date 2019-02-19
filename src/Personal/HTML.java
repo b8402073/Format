@@ -853,18 +853,19 @@ public class HTML {
         return ret;
     }
 
-    public String toStairString(String strLevel, String strChangeLine) {
+    public String toStairString(String strLevel, String strChangeLine,boolean removeCommentTag) {
         Vector<String> Tag = GetAllTags();
         Vector<String> Between = GetAllBetween();
         Vector<TagPair> All_TagPairs = collectTagPairs(Tag);
         adjustContainers(All_TagPairs);
         BuildTree(All_TagPairs);
         StringBuffer ret = new StringBuffer();
-        MakeStairString(ret, strLevel, strChangeLine, MyTree.getRoot(), Tag, Between, 0);
+        MakeStairString(ret, strLevel, strChangeLine, MyTree.getRoot(), Tag, Between,removeCommentTag, 0);
         return ret.toString();
     }
 
-    public static void MakeStairString(StringBuffer buf, String strLevel, String strChangeLine, Object rooot, Vector<String> Tags, Vector<String> Betweens, int level) {
+    public static void MakeStairString(StringBuffer buf, String strLevel, String strChangeLine,
+            Object rooot, Vector<String> Tags, Vector<String> Betweens,boolean removeCommentTag ,int level) {
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) rooot;
         for (int i = 0; i < level; i++) {
             buf.append(strLevel);
@@ -872,7 +873,7 @@ public class HTML {
         TagPair that = (TagPair) root.getUserObject();
         if (that == null) {
             for (int i = 0; i < root.getChildCount(); i++) {
-                MakeStairString(buf, strLevel, strChangeLine, root.getChildAt(i), Tags, Betweens, 0);
+                MakeStairString(buf, strLevel, strChangeLine, root.getChildAt(i), Tags, Betweens,removeCommentTag, 0);
             }
         } else if (that.isContainer) {
             buf.append(Tags.get(that.start));
@@ -885,7 +886,7 @@ public class HTML {
                 buf.append(strChangeLine);                
             }
             for (int i = 0; i < root.getChildCount(); i++) {
-                MakeStairString(buf, strLevel, strChangeLine, root.getChildAt(i), Tags, Betweens, level + 1);
+                MakeStairString(buf, strLevel, strChangeLine, root.getChildAt(i), Tags, Betweens,removeCommentTag, level + 1);
             }
             for (int i = 0; i < level; i++) {
                 buf.append(strLevel);
@@ -895,7 +896,14 @@ public class HTML {
         } else {
             if (that.start == that.end) {
                 //this is a singular tag... like <p/>
-                buf.append(Tags.get(that.start) + strChangeLine);
+                if (!Tags.get(that.start).startsWith("<!--") || !removeCommentTag)
+                    buf.append(Tags.get(that.start) + strChangeLine);
+                else {
+                    for (int i=0; i<level; i++) {
+                        int lastIndex=buf.lastIndexOf(strLevel);
+                        buf.delete(lastIndex, buf.length());
+                    }
+                }
                 if (Betweens.get(that.start).trim().length() > 0) {
                     for (int i = 0; i < level; i++) {
                         buf.append(strLevel);
@@ -904,9 +912,11 @@ public class HTML {
                 }
             } else {
                 //this is a non-container tag... like <title>abc</title>
+/*                
                 for (int i = 0; i < level; i++) {
                     buf.append(strLevel);
                 }
+*/
                 for (int j = that.start; j <= that.end; j++) {
                     buf.append(Tags.get(j) + (Betweens.get(j).trim()));
                 }

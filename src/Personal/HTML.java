@@ -21,49 +21,62 @@ import javax.swing.tree.DefaultTreeModel;
  * @author easterday
  */
 public class HTML {
+
     public static class TagPair {
+
         public final String MyText;
         public final Integer start;
         public final Integer end;
-        public int  Level=(-1);
-        public boolean isContainer=false;
-        public TagPair(String txt,int s,int e) {
-            MyText=txt;start=s; end=e;
+        public int Level = (-1);
+        public boolean isContainer = false;
+
+        public TagPair(String txt, int s, int e) {
+            MyText = txt;
+            start = s;
+            end = e;
         }
+
         public static String MirrorTag(String input) {
-            if (input.charAt(0)=='<' && input.charAt(1)!='/') {  //normal tag
-                return("</"+input.substring(1));
-            }else if (input.startsWith("</")) {
-                return("<"+input.substring(2));
-            }else {
-                assert(false);
+            //"</"+parts[0].substring(1)         ;
+            String[] parts=input.split(White);            
+            if (input.charAt(0) == '<' && input.charAt(1) != '/') {  //normal tag
+                return ("</" + parts[0].substring(1));
+            } else if (input.startsWith("</")) {
+                return ("<" + parts[0].substring(2));
+            } else {
+                assert (false);
             }
             return "@@?";
         }
+
         public static boolean isStartTag(String inn) {
-            if (inn.charAt(0)=='<' && inn.charAt(1)!='/') {
+            if (inn.charAt(0) == '<' && inn.charAt(1) != '/') {
                 return true;
             }
             return false;
         }
+
         public static boolean isEndTag(String inn) {
-            if (inn.charAt(0)=='<' && inn.charAt(1)=='/') {
+            if (inn.charAt(0) == '<' && inn.charAt(1) == '/') {
                 return true;
             }
             return false;
         }
+
         public boolean equals(Object that) {
             if (that instanceof TagPair) {
-                TagPair obj=(TagPair) that;
-                return (start==obj.start && end==obj.end);
+                TagPair obj = (TagPair) that;
+                return (start == obj.start && end == obj.end);
             }
             return false;
         }
+
         public String toString() {
-            return new String("[start="+start+", end="+end+"]");
+            return new String("[start=" + start + ", end=" + end + "]");
         }
+
         public boolean Inner(TagPair Child) {
-            if (this.start< Child.start && this.end> Child.end) {
+            if (this.start < Child.start && this.end > Child.end) {
                 return true;
             }
             return false;
@@ -94,8 +107,7 @@ public class HTML {
     //視為空白的符號集合
     public static final String White = " |\t|\r|\n|\000";
     //定義為容器的html tags
-    public Vector<String> defContainer;
-    //
+    public Vector<String> defContainer;    
     public DefaultTreeModel MyTree;
 
     public void PrintIssues() {
@@ -116,13 +128,15 @@ public class HTML {
         setDefRadical(RadicalSet);
         setDefContainer("html,head,body,div,table,thead.tbody,tr,form");
     }
+
     public void setDefContainer(String input) {
-        defContainer=new Vector<String>();
-        String[] arr=input.split(",");
-        for (String a:arr) {
+        defContainer = new Vector<String>();
+        String[] arr = input.split(",");
+        for (String a : arr) {
             defContainer.add(a);
         }
     }
+
     public void go() {
         DQArea = new Vector<Pair>();
         SQArea = new Vector<Pair>();
@@ -522,17 +536,17 @@ public class HTML {
                         ret.append(ToCompactOneTag(that));
                     }
                 }
-                if (stack.empty() && that.startsWith("<script") && that.endsWith("/>")) {  
+                if (stack.empty() && that.startsWith("<script") && that.endsWith("/>")) {
                     //如果遇到<script src='GGYY.js' /> var i=123; </script>這種組合還是要把中間的Between text視為javascript                    
-                    if (i+1<Tag.size() ) {
-                        String next= Tag.get(i+1);
+                    if (i + 1 < Tag.size()) {
+                        String next = Tag.get(i + 1);
                         if (next.startsWith("</") || next.startsWith("<script")) {
                             stack.push(that);
                         }
-                    }else if (i==Tag.size()-1) {
+                    } else if (i == Tag.size() - 1) {
                         stack.push(that);
                     }
-                }else if (stack.empty() &&(that.startsWith("<script") || that.startsWith("<pre") || that.startsWith("<style"))) {
+                } else if (stack.empty() && (that.startsWith("<script") || that.startsWith("<pre") || that.startsWith("<style"))) {
                     stack.push(that);
                 } else if (stack.size() > 0 && that.startsWith("</")) {
                     stack.pop();
@@ -693,211 +707,248 @@ public class HTML {
                         that += "%>";
                     } else {
                         that += "/>";
-                    }                                        
+                    }
                 }
                 if (!RemoveHTMLComment || !that.startsWith("<!--") || !stack.empty()) {
                     if (that.startsWith("<!--")) {
-                        ret.append(that+changeLine);
-                    }else {
-                        ret.append(ToCompactOneTag(that)+changeLine);
+                        ret.append(that + changeLine);
+                    } else {
+                        ret.append(ToCompactOneTag(that) + changeLine);
                     }
                 }
-                boolean pop_after_next_between_txt=false;
-                if (stack.empty() && that.startsWith("<script") && that.endsWith("/>")) {  
+                boolean pop_after_next_between_txt = false;
+                if (stack.empty() && that.startsWith("<script") && that.endsWith("/>")) {
                     //基本上這裡是處裡<script src='GGYY.js' />這種tag
                     //如果遇到<script src='GGYY.js' /> var i=123; </script>這種組合還是要把中間的Between text視為javascript                    
-                    if (i+1<Tag.size()) {
-                        String next= Tag.get(i+1);
+                    if (i + 1 < Tag.size()) {
+                        String next = Tag.get(i + 1);
                         if (next.startsWith("</") || next.startsWith("<script")) {
                             stack.push(that);
                         }
-                    }else if (i==Tag.size()-1) {
+                    } else if (i == Tag.size() - 1) {
                         //例如<html><script src='ggyy.js' /> </html>
                         //這樣會把 </html>視為javascript而不翻譯
                         stack.push(that);
                     }
-                    pop_after_next_between_txt=true;
-                }else if (stack.empty() &&(that.startsWith("<script") || that.startsWith("<pre") || that.startsWith("<style"))) {
+                    pop_after_next_between_txt = true;
+                } else if (stack.empty() && (that.startsWith("<script") || that.startsWith("<pre") || that.startsWith("<style"))) {
                     stack.push(that);
-                }else if (stack.size()>0 && that.startsWith("</")) {
-                    String top=stack.peek();
-                    if ((top.startsWith("<script") && that.startsWith("</script")) || 
-                         (top.startsWith("<pre") && that.startsWith("</pre"))      ||
-                         (top.startsWith("<style") && that.startsWith("</style")) )
+                } else if (stack.size() > 0 && that.startsWith("</")) {
+                    String top = stack.peek();
+                    if ((top.startsWith("<script") && that.startsWith("</script"))
+                            || (top.startsWith("<pre") && that.startsWith("</pre"))
+                            || (top.startsWith("<style") && that.startsWith("</style"))) {
                         stack.pop();
+                    }
                 }
-                if (i<= Between.size()-1) {
-                    that=Between.get(i).trim();
-                    if (that.length()>0) {
+                if (i <= Between.size() - 1) {
+                    that = Between.get(i).trim();
+                    if (that.length() > 0) {
                         if (stack.empty()) {
-                            InsertToStringBuffer(ret,that.trim(), defRadical,translateRadical);
-                        }else {
-                            InsertToStringBuffer(ret,that.trim(), defRadical,false);
+                            InsertToStringBuffer(ret, that.trim(), defRadical, translateRadical);
+                        } else {
+                            InsertToStringBuffer(ret, that.trim(), defRadical, false);
                         }
                         ret.append(changeLine);
                     }
-                    if (pop_after_next_between_txt)
+                    if (pop_after_next_between_txt) {
                         stack.pop();
+                    }
                 }
             }
-        }else {
-            assert(false);
+        } else {
+            assert (false);
         }
-        int LastBranket=LeftOrRight.get(LeftOrRight.size()-1);
-        if (LastBranket< MyText.length()) {
-            if (MyText.charAt(LastBranket)=='>') {
+        int LastBranket = LeftOrRight.get(LeftOrRight.size() - 1);
+        if (LastBranket < MyText.length()) {
+            if (MyText.charAt(LastBranket) == '>') {
                 if (stack.empty()) {
-                    InsertToStringBuffer(ret,MyText.substring(LastBranket+1,MyText.length()).trim(),defRadical,translateRadical);
-                }else {
-                    InsertToStringBuffer(ret,MyText.substring(LastBranket+1,MyText.length()).trim(),defRadical,false);
+                    InsertToStringBuffer(ret, MyText.substring(LastBranket + 1, MyText.length()).trim(), defRadical, translateRadical);
+                } else {
+                    InsertToStringBuffer(ret, MyText.substring(LastBranket + 1, MyText.length()).trim(), defRadical, false);
                 }
-            }                
+            }
         }
         return ret.toString();
     }
-    private static boolean isSingleTag(String TagTxt) {
-        if (TagTxt.startsWith("<") && TagTxt.endsWith("/>"))
-            return true;
-        return false;
-    }
-    public Vector<TagPair> collectTagPairs(Vector<String>Tags) {  
-//請注意各種nested tag的情形... ex <div id='A'> <div id='b'> </div> </div>
-        Vector<TagPair> ret=new Vector<TagPair>();
 
-        for (int i=0; i<Tags.size(); i++) {
-            String that=Tags.get(i);
-            if (isSingleTag(that)) {
-                ret.add(new TagPair(that,i,i));
-            }else if (TagPair.isStartTag(that)) {
-                Stack<String> stack=new Stack<String>();
+    private boolean isSingleTag(String TagTxt,Vector<String> Tags,int from) {
+        if (TagTxt.startsWith("</"))
+            return false;
+        else if (TagTxt.startsWith("<") && TagTxt.endsWith("/>")) {
+            return true;
+        }else if (TagTxt.startsWith("<%") && TagTxt.endsWith("%>"))
+            return true;
+        else if (TagTxt.startsWith("<!--") && TagTxt.endsWith("-->"))
+            return true;
+        String[] parts=TagTxt.split(White);        
+        for (int i=from; i<Tags.size(); i++) {
+            String that= Tags.get(i);
+            String cmp="</"+parts[0].substring(1);
+            if (that.startsWith(cmp))
+                return false;
+        }
+        return true;        
+    }
+
+    public Vector<TagPair> collectTagPairs(Vector<String> Tags) {
+//請注意各種nested tag的情形... ex <div id='A'> <div id='b'> </div> </div>
+        Vector<TagPair> ret = new Vector<TagPair>();
+
+        for (int i = 0; i < Tags.size(); i++) {
+            String that = Tags.get(i);
+            if (isSingleTag(that,Tags,i)) {
+                ret.add(new TagPair(that, i, i));
+            } else if (TagPair.isStartTag(that)) {
+                Stack<String> stack = new Stack<String>();
                 stack.push(that);
-                for (int j=i+1; j<Tags.size(); j++) {
-                    String hand=Tags.get(j);
-                    String thatMirror=TagPair.MirrorTag(that);
-                    if (stack.size()==1 && hand.startsWith(thatMirror)) {
-                        TagPair newPair=new TagPair(that,i,j);
-                        for (String s:defContainer) {
-                            String cmp="<"+s;
+                for (int j = i + 1; j < Tags.size(); j++) {
+                    String hand = Tags.get(j);
+                    String[] parts=that.split(White);
+                    String thatMirror = TagPair.MirrorTag(that);//@@?
+                    if (isSingleTag(hand,Tags,j))
+                        continue;
+                    else if (stack.size() == 1 && hand.startsWith(thatMirror)) {
+                        TagPair newPair = new TagPair(that, i, j);
+                        for (String s : defContainer) {
+                            String cmp = "<" + s;
                             if (that.startsWith(cmp)) {
-                                newPair.isContainer=true;
+                                newPair.isContainer = true;
                                 break;
-                            }                                
+                            }
                         }
                         ret.add(newPair);
                         break;
-                    }else if (TagPair.isStartTag(hand)) {
+                    } else if (TagPair.isStartTag(hand)) {
                         stack.push(hand);
-                    }else if (hand.startsWith(TagPair.MirrorTag(stack.peek()))) {
+                    } else if (hand.startsWith(TagPair.MirrorTag(stack.peek()))) {
                         stack.pop();
                     }
                 }
             }
         }
-        return ret;        
+        return ret;
     }
+
     private void adjustContainers(Vector<TagPair> all) {
-        for (int i=0; i<all.size(); i++) {
-            TagPair hand=all.get(i);
-            if (!hand.isContainer)
-                continue;                            
-            Vector<TagPair> parents=GetAllParents(all,hand);
-            for (TagPair p: parents) {
-                p.isContainer=true;
+        for (int i = 0; i < all.size(); i++) {
+            TagPair hand = all.get(i);
+            if (!hand.isContainer) {
+                continue;
+            }
+            Vector<TagPair> parents = GetAllParents(all, hand);
+            for (TagPair p : parents) {
+                p.isContainer = true;
             }
         }
     }
-    private Vector<TagPair> GetAllParents(Vector<TagPair> ALL,TagPair that) {
-        Vector<TagPair> ret=new Vector<TagPair>();
-        for (int i=0; i<ALL.size(); i++) {
+
+    private Vector<TagPair> GetAllParents(Vector<TagPair> ALL, TagPair that) {
+        Vector<TagPair> ret = new Vector<TagPair>();
+        for (int i = 0; i < ALL.size(); i++) {
             if (ALL.get(i).Inner(that)) {
                 ret.add(ALL.get(i));
             }
         }
         return ret;
     }
-    public String toStairString(String strLevel,String strChangeLine) {
+
+    public String toStairString(String strLevel, String strChangeLine) {
         Vector<String> Tag = GetAllTags();
-        Vector<String> Between = GetAllBetween();        
-        Vector<TagPair> All_TagPairs=collectTagPairs(Tag);        
+        Vector<String> Between = GetAllBetween();
+        Vector<TagPair> All_TagPairs = collectTagPairs(Tag);
         adjustContainers(All_TagPairs);
         BuildTree(All_TagPairs);
-        StringBuffer ret=new StringBuffer();
-        MakeStairString(ret,strLevel,strChangeLine,MyTree.getRoot(),Tag,Between,0);
+        StringBuffer ret = new StringBuffer();
+        MakeStairString(ret, strLevel, strChangeLine, MyTree.getRoot(), Tag, Between, 0);
         return ret.toString();
     }
-    public static void MakeStairString(StringBuffer buf,String strLevel,String strChangeLine,Object rooot,Vector<String> Tags,Vector<String> Betweens,int level) {
-        DefaultMutableTreeNode root=(DefaultMutableTreeNode) rooot;
-        for (int i=0; i<level; i++) {
+
+    public static void MakeStairString(StringBuffer buf, String strLevel, String strChangeLine, Object rooot, Vector<String> Tags, Vector<String> Betweens, int level) {
+        DefaultMutableTreeNode root = (DefaultMutableTreeNode) rooot;
+        for (int i = 0; i < level; i++) {
             buf.append(strLevel);
         }
-        TagPair that=(TagPair) root.getUserObject();
-        if (that==null) {
-            for (int i=0; i< root.getChildCount(); i++) {
-                MakeStairString(buf,strLevel,strChangeLine,root.getChildAt(i),Tags,Betweens,0);
+        TagPair that = (TagPair) root.getUserObject();
+        if (that == null) {
+            for (int i = 0; i < root.getChildCount(); i++) {
+                MakeStairString(buf, strLevel, strChangeLine, root.getChildAt(i), Tags, Betweens, 0);
             }
-        }else if (that.isContainer) {
+        } else if (that.isContainer) {
             buf.append(Tags.get(that.start));
             buf.append(strChangeLine);
-            for (int i=0; i<level+1; i++) {
+            if (Betweens.get(that.start).trim().length() > 0) {
+                for (int i = 0; i < level + 1; i++) {
+                    buf.append(strLevel);
+                }
+                buf.append(Betweens.get(that.start));
+                buf.append(strChangeLine);                
+            }
+            for (int i = 0; i < root.getChildCount(); i++) {
+                MakeStairString(buf, strLevel, strChangeLine, root.getChildAt(i), Tags, Betweens, level + 1);
+            }
+            for (int i = 0; i < level; i++) {
                 buf.append(strLevel);
             }
-            buf.append(Betweens.get(that.start));
-            buf.append(strChangeLine);
-            for (int i=0; i< root.getChildCount(); i++) {
-                MakeStairString(buf,strLevel,strChangeLine,root.getChildAt(i),Tags,Betweens,level+1);
-            }
-            for (int i=0; i<level; i++) {
-                buf.append(strLevel);
-            }            
             buf.append(Tags.get(that.end));
             buf.append(strChangeLine);
-        }else {
-            if (that.start==that.end) {
+        } else {
+            if (that.start == that.end) {
                 //this is a singular tag... like <p/>
-                for (int i=0; i<level; i++) buf.append(strLevel);
-                buf.append(Tags.get(that.start)+strChangeLine);
-                if (Betweens.get(that.start).length()>0) {
-                    for (int i=0; i<level; i++) buf.append(strLevel);
-                    buf.append(Betweens.get(that.start).trim()+strChangeLine);
+                for (int i = 0; i < level; i++) {
+                    buf.append(strLevel);
                 }
-            }else {
+                buf.append(Tags.get(that.start) + strChangeLine);
+                if (Betweens.get(that.start).trim().length() > 0) {
+                    for (int i = 0; i < level; i++) {
+                        buf.append(strLevel);
+                    }
+                    buf.append(Betweens.get(that.start).trim() + strChangeLine);
+                }
+            } else {
                 //this is a non-container tag... like <title>abc</title>
-                for (int i=0; i<level; i++)  buf.append(strLevel);
-                for (int j=that.start; j<=that.end; j++) {
-                    buf.append(Tags.get(j)+ (Betweens.get(j).trim()));
+                for (int i = 0; i < level; i++) {
+                    buf.append(strLevel);
                 }
-                buf.append(strChangeLine);                
+                for (int j = that.start; j <= that.end; j++) {
+                    buf.append(Tags.get(j) + (Betweens.get(j).trim()));
+                }
+                buf.append(strChangeLine);
             }
         }
     }
-    
-    public void BuildTree(Vector<TagPair> all) {        
-        Vector<TagPair> Hand=new Vector<TagPair>();  
-        for (TagPair t:all) { Hand.add(t); }   //把All_TagPairsCopy到Hand
-        DefaultMutableTreeNode root=new DefaultMutableTreeNode(); 
-        MyTree=new DefaultTreeModel(root,false);
-        TagPair first=Hand.get(0);
+
+    public void BuildTree(Vector<TagPair> all) {
+        Vector<TagPair> Hand = new Vector<TagPair>();
+        for (TagPair t : all) {
+            Hand.add(t);
+        }   //把All_TagPairsCopy到Hand
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+        MyTree = new DefaultTreeModel(root, false);
+        TagPair first = Hand.get(0);
         Hand.remove(0);
-        DefaultMutableTreeNode newNode=new DefaultMutableTreeNode(first);
+        DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(first);
         root.add(newNode);
-        while(Hand.size()>0) {
-            TagPair that=Hand.get(0);
+        while (Hand.size() > 0) {
+            TagPair that = Hand.get(0);
             Hand.remove(0);
-            DefaultMutableTreeNode ins_pos=Deepest_Search(root,that);
+            DefaultMutableTreeNode ins_pos = Deepest_Search(root, that);
             ins_pos.add(new DefaultMutableTreeNode(that));
-        }                                       
+        }
     }
-    private DefaultMutableTreeNode Deepest_Search(DefaultMutableTreeNode root,TagPair newTP) {
-        if (root.getChildCount()==0)
+
+    private DefaultMutableTreeNode Deepest_Search(DefaultMutableTreeNode root, TagPair newTP) {
+        if (root.getChildCount() == 0) {
             return root;
-         for (int i=0; i<root.getChildCount(); i++) {
-             DefaultMutableTreeNode node =(DefaultMutableTreeNode) root.getChildAt(i);
-             TagPair t=(TagPair) node.getUserObject();
-             if (t.start< newTP.start && t.end>newTP.end ) {
-                 return Deepest_Search( node, newTP);
-             }
-         }
-         return root;
+        }
+        for (int i = 0; i < root.getChildCount(); i++) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) root.getChildAt(i);
+            TagPair t = (TagPair) node.getUserObject();
+            if (t.start < newTP.start && t.end > newTP.end) {
+                return Deepest_Search(node, newTP);
+            }
+        }
+        return root;
     }
-    
+
 }

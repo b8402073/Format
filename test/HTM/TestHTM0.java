@@ -211,5 +211,14 @@ public class TestHTM0 {
         assertTrue(result.equals(that.toOneTagOneLineString(false,true,false,"\n").trim()));
         assertTrue(result.equals(that.toOneTagOneLineString(false,true,true,"\n").trim()));
     }
-
+    @Test
+    public void testStairString() {
+        //StringBuffer buf=new StringBuffer(jsp1);
+        HTML that = new HTML(BufHTM0);        
+        that.go();
+        System.out.println(that.GetAllTags());
+        System.out.println(that.collectTagPairs(that.GetAllTags()));
+       // System.out.println(that.collectTagPairs());
+        System.out.println(that.toStairString("\t","\r\n"));        
+    }
 }

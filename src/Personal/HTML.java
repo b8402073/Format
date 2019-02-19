@@ -126,7 +126,7 @@ public class HTML {
         Main.refineStringBuffer(MyText);
         Character[] RadicalSet = {'<', '>', '\'', '"', '&'};
         setDefRadical(RadicalSet);
-        setDefContainer("html,head,body,div,table,thead.tbody,tr,form");
+        setDefContainer("html,head,body,div,table,thead.tbody,tr,form,script");
     }
 
     public void setDefContainer(String input) {
@@ -895,9 +895,6 @@ public class HTML {
         } else {
             if (that.start == that.end) {
                 //this is a singular tag... like <p/>
-                for (int i = 0; i < level; i++) {
-                    buf.append(strLevel);
-                }
                 buf.append(Tags.get(that.start) + strChangeLine);
                 if (Betweens.get(that.start).trim().length() > 0) {
                     for (int i = 0; i < level; i++) {

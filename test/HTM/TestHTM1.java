@@ -356,5 +356,14 @@ public class TestHTM1 {
         assertTrue(result2.trim().equals(that.toOneTagOneLineString(true,true,true,"\n").trim()));
         
     }
-    
+    @Test
+    public void testStairString() {
+        //StringBuffer buf=new StringBuffer(jsp1);
+        HTML that = new HTML(BufHTM1);        
+        that.go();
+        System.out.println(that.GetAllTags());
+        System.out.println(that.collectTagPairs(that.GetAllTags()));
+       // System.out.println(that.collectTagPairs());
+        System.out.println(that.toStairString("#","\r\n"));        
+    }    
 }

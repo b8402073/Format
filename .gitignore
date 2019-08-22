@@ -1,4 +1,7 @@
 /dist/
 /nbproject/
 *.xml
+*.jar
 /.jacocoverage
+/build/
+/bin/

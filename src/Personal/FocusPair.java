@@ -147,7 +147,7 @@ public final class FocusPair {
             }        
     }
     public static boolean IsOperation(String that) {
-        final String OC="()[];=><+-*/%^~@,:!|.~?";  
+        final String OC="()[];=><+-*/%^~@,:!|.~?&";  
         return (OC.indexOf(that)>=0 ||
                 Search(that,JspStatic3.op3) || Search(that,JspStatic3.op2));
             

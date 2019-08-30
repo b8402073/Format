@@ -5,13 +5,14 @@
  */
 package New20190730;
 
-import Personal.JspStatic3;
+import Personal.*;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import java.util.*;
 /**
  *
  * @author ccn
@@ -74,4 +75,25 @@ public class Testing {
         System.out.println(obj.Make3().toString());
     }
 
+	@Test
+	public void testFocus() {
+		String str="<%! public int a() { int i=0;  //µù¸Ñ1\r\n"
+		+ "/****   this is  a book  \r\n"
+		+ "       dog run  */\r\n"
+		+ " do {System.out.println(i); \r\n"
+		+ "++i; }while(i<100); return i;//µù¸Ñ2 \r\n } %>";        
+		JspStatic3 obj=new JspStatic3(new StringBuffer(str));
+		obj.warning();
+		Vector<Focus> tmp=new Vector<Focus>();
+		Focus hand=JspStatic3.GetOneToken(obj.MyText,0,obj.CommentArea,obj.DQArea, obj.SQArea);
+		while(hand!=null) {
+			tmp.add(hand);
+			hand=JspStatic3.GetOneToken(obj.MyText, hand.NextCharPos, obj.CommentArea, obj.DQArea , obj.SQArea);
+		}
+		for (Focus f: tmp) {
+			System.out.println(f.toString());
+		}
+
+	}
+	
 }

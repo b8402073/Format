@@ -5,3 +5,4 @@
 /.jacocoverage
 /build/
 /bin/
+/.nb-gradle/

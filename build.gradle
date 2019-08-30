@@ -1,0 +1,30 @@
+apply plugin: 'java'
+apply plugin: 'jacoco'
+
+version = 0.1
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+sourceSets {
+	main {
+		java {
+			srcDir 'C:/Users/easterday/git/format/src'
+		}
+	}
+	test {
+		java {
+			srcDir 'C:/Users/easterday/git/format/test'
+			srcDir 'C:/Users/easterday/git/format/New20190730'
+		}
+	}		
+}
+dependencies {
+// https://mvnrepository.com/artifact/junit/junit
+testCompile group: 'junit', name: 'junit', version: '4.12'
+
+}
+
+buildDir='build'

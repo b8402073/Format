@@ -6,3 +6,7 @@
 /build/
 /bin/
 /.nb-gradle/
+!/test/Template/build.xml
+*.class
+*.lock
+*.bin

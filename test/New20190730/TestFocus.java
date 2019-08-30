@@ -9,6 +9,13 @@ import Personal.Focus;
 import Personal.JspStatic3;
 import static Personal.JspStatic3.MyText;
 import Personal.Pair;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Vector;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -475,36 +482,89 @@ public class TestFocus {
         }
     }
     @Test
-    public void hello() {
-        for (String line: MakeString1()) {
-            System.out.println("line="+line);
-            System.out.println("removeAllMoney="+ RemoveAllMoney(line));
+    public  void Hello() throws Exception {
+        //WriteFile("C:\\Users\\easterday\\Documents\\NetBeansProjects\\Format\\test\\Template\\temp.java","abcd");
+        Vector<String> hand=OnlyLegal();
+        for (String x: hand) {
+            System.out.println("Legal="+x);
         }
+        System.out.println("hand.size()="+hand.size());
+    }
+    public static Vector<String> OnlyLegal() {
+        Vector<String> ret=new Vector<String>();
+        int x=0; 
+        String template=null;
+        try {
+            template=LoadFile("C:\\Users\\easterday\\Documents\\NetBeansProjects\\Format\\test\\Template\\java.java");
+        }catch(Exception ex) {
+            ex.printStackTrace();
+        }
+        for (String line: MakeString1()) {
+            //System.out.println("line"+x+"="+line); x++;
+            //System.out.println("removeAllMoney="+ RemoveAllMoney(line));
+            String dest=template.replace("%STR%", RemoveAllMoney(line));
+            dest=dest.replace("java", "temp");
+            try {
+                WriteFile("C:\\Users\\easterday\\Documents\\NetBeansProjects\\Format\\test\\Template\\temp.java",dest);
+                CmdLineWorker worker = new CmdLineWorker(false, "C:/ANT/bin/ant.bat", "exec");
+                //"¤GªÌ¾Ü¤@"
+                /***************************************************************************************/
+                //worker.setWorkDir("D:\\NetBeansProject\\Format-master\\test\\Template");
+                worker.setWorkDir("C:\\Users\\easterday\\Documents\\NetBeansProjects\\Format\\test\\Template"); 
+                worker.execute();
+                while (!worker.isDone()) {
+                    try {
+                    Thread.sleep(10);
+                    }catch(Exception ex) {
+                        //do_nothing;
+                    }
+                }
+                if (!worker.Results.toString().contains("error:")) 
+                    ret.add(RemoveAllMoney(line));                                
+            }catch(Exception ex) {
+                ex.printStackTrace();
+            }            
+        }
+        return ret;
+    }
+    public static void WriteFile(String fileOut,String txt) throws Exception{
+        BufferedWriter writer = new BufferedWriter(new FileWriter(new File(fileOut)));
+        writer.write (txt);
+        writer.close();
+    }
+    public static String LoadFile(String fileInn) throws Exception{
+        return  new String(Files.readAllBytes(Paths.get(fileInn)));        
     }
     public static Vector<String>  MakeString1() {
         Vector<String> ret=new Vector<String>();
-        String s="$1\"$2     $3\"$4";
-        for (int i=1; i<=4; i++) {
+        String s="$1\"$2     $3\"$4,  $5\"$6  $7\"$8  ";
+        for (int i=1; i<=8; i++) {
             String temp1=s.replace(("$"+i),  "/*"); 
-            for (int j=1; j<=4; j++) {
+            for (int j=1; j<8; j++) {
                 String temp2= temp1.replace(("$"+j),  "*/");
-                for (int k=1; k<=4; k++) {
-                    String temp3= temp2.replace(("$"+k),"\\\"");
-                    ret.add(temp3);
+                for (int k=1; k<=8; k++) {
+                    if (i!=j && j!=k && i!=k) {
+                        String temp3= temp2.replace(("$"+k),"\\\"");
+                        ret.add(temp3);
+                    }
                 }
             }
 
         }
+        s="$1\"$2     $3\"$4 ";
         for (int i=1; i<=4; i++) {
-            String temp3=s.replace(("$+i"), "*/");
+            String temp3=s.replace(("$+i"), "/*");
             for (int j=1; j<=4; j++) {
-                String temp4=temp3.replace(("$"+j), "/*");
+                String temp4=temp3.replace(("$"+j), "*/");
                 for (int k=1; k<=4; k++) {
-                    String temp5=temp4.replace(("$"+k), "\\\"");
-                    ret.add(temp5);                
+                    if (i!=j && j!=k && i!=k) {
+                        String temp5=temp4.replace(("$"+k), "\\\"");
+                        ret.add(temp5);            
+                    }
                 }                
             }
-        }        
+        } 
+        
         return ret;
     }
     public static String RemoveAllMoney(String inn) {

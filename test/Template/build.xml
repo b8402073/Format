@@ -1,6 +1,14 @@
 <project name="Format_Testing"  default="compile" >
 	<target name="compile">
 		<javac srcdir="C:/Users/easterday/git/Format/test/Template"
-			  destdir="C:/Users/easterday/git/Format/test/Template" />
+                         destdir="C:/Users/easterday/git/Format/test/Template" >
+                    <include name="temp.java"/>
+                </javac>                
 	</target>
+        <target name="exec">
+            <exec executable="C:\\Program Files\\Java\\jdk1.8.0_111\\bin\\javac.exe" > 
+                  <arg value="temp.java" />
+            </exec>
+        </target>
+
 </project>

@@ -1104,17 +1104,14 @@ public class JspStatic3  {
      * **
      * 基本上這個修正是錯的,但是錯得不明顯,暫時可以接受,就接受吧
      */
-    public static void Fix_if_SQDQ_SLeft_SRight_SemiColon_in_CommentArea(StringBuffer text, Vector<Pair> SQArea,
-            Vector<Pair> DQArea, Vector<Pair> CommentArea) {
+    public static void Fix_if_SQDQ_SLeft_SRight_SemiColon_in_CommentArea(StringBuffer text, Vector<Pair> SQArea,Vector<Pair> DQArea, Vector<Pair> CommentArea) {
         Vector<Integer> ALLSQ = new Vector<Integer>();
         Vector<Integer> ALLDQ = new Vector<Integer>();
-        for (Pair SQ : SQArea) {
-            ALLSQ.add(SQ.getStart());
-            ALLSQ.add(SQ.getEnd());
-        }
-        for (Pair DQ : DQArea) {
-            ALLDQ.add(DQ.getStart());
-            ALLDQ.add(DQ.getEnd());
+        for (int i=0; i<text.length(); i++) {
+            if (text.charAt(i)=='\"')
+                ALLDQ.add(i);
+            else if (text.charAt(i)=='\'')
+                ALLSQ.add(i);
         }
         for (int t = CommentArea.size() - 1; t >= 0; t--) {
             Pair Comment = CommentArea.get(t);
@@ -1130,6 +1127,14 @@ public class JspStatic3  {
                     ALLDQ.removeElementAt(i);
                 }
             }
+        }
+        for (int i=ALLDQ.size()-1; i>=0; i--) {
+            if (text.charAt(ALLDQ.get(i)-1)=='\\')
+                ALLDQ.removeElementAt(i);
+        }
+        for (int i=ALLSQ.size()-1; i>=0; i--) {
+            if (text.charAt(ALLSQ.get(i)-1)=='\\')
+                ALLSQ.removeElementAt(i);
         }
         if (ALLDQ.size() % 2 == 1) {
             System.out.println("ALLDQ=" + ALLDQ);

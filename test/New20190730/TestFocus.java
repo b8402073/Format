@@ -454,7 +454,11 @@ public class TestFocus {
     @Test(expected = Exception.class)
     public void testCmdLine() throws Exception{
         CmdLineWorker worker = new CmdLineWorker(false, "C:/ANT/bin/ant.bat", "compile");
-        worker.setWorkDir("D:\\NetBeansProject\\Format-master\\test\\Template");
+        //"二者擇一"
+        /***************************************************************************************/
+        //worker.setWorkDir("D:\\NetBeansProject\\Format-master\\test\\Template");
+        worker.setWorkDir("C:\\Users\\easterday\\Documents\\NetBeansProjects\\Format\\test\\Template");
+        /***************************************************************************************/
         System.out.println("before exec:");
         worker.execute();
         while (!worker.isDone()) {
@@ -467,30 +471,56 @@ public class TestFocus {
         System.out.println("after exec:");
         System.out.println(worker.Results.toString());
         if (worker.Results.toString().contains("error:")) {
-            throw new Exception("GGYY");
+            throw new Exception("要丟出例外才正常(We have to throw Exception here to make a successful TestCase)");
         }
     }
     @Test
     public void hello() {
         for (String line: MakeString1()) {
-            System.out.println(line);
+            System.out.println("line="+line);
+            System.out.println("removeAllMoney="+ RemoveAllMoney(line));
         }
     }
     public static Vector<String>  MakeString1() {
         Vector<String> ret=new Vector<String>();
         String s="$1\"$2     $3\"$4";
         for (int i=1; i<=4; i++) {
-            String ans=s.replace(("$"+i),  "/*");            
-            ret.add(ans);
+            String temp1=s.replace(("$"+i),  "/*"); 
+            for (int j=1; j<=4; j++) {
+                String temp2= temp1.replace(("$"+j),  "*/");
+                for (int k=1; k<=4; k++) {
+                    String temp3= temp2.replace(("$"+k),"\\\"");
+                    ret.add(temp3);
+                }
+            }
+
         }
         for (int i=1; i<=4; i++) {
-            String ans=s.replace(("$+i"), "*/");
-            ret.add(ans);
+            String temp3=s.replace(("$+i"), "*/");
+            for (int j=1; j<=4; j++) {
+                String temp4=temp3.replace(("$"+j), "/*");
+                for (int k=1; k<=4; k++) {
+                    String temp5=temp4.replace(("$"+k), "\\\"");
+                    ret.add(temp5);                
+                }                
+            }
         }        
         return ret;
     }
     public static String RemoveAllMoney(String inn) {
-        return null;
+        StringBuffer ret=new StringBuffer();
+        for (int i=0; i<inn.length(); i++) {
+            if (inn.charAt(i)=='$') {
+                ++i;
+                while(i<inn.length() && Character.isDigit(inn.charAt(i))) {
+                    ++i;
+                }
+                if (i>=inn.length())
+                    break;
+            }
+            ret.append(inn.charAt(i));            
+        }
+        return ret.toString();
     }
     public static boolean FocusEqual(Focus f1, Focus f2) {
         if (f1 != null && f2 != null) {
